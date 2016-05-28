@@ -52,6 +52,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        rvProjects.setAdapter(projectsAdapter);
+
         if (!api.isLoggedIn()) {
             startActivityForResult(new Intent(this, LoginActivity.class), LoginActivity.REQUEST_LOGIN);
         } else {

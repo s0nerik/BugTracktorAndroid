@@ -28,7 +28,7 @@ public class BugTracktorApi {
     }
 
     public void logOut() {
-        prefs.setToken("");
+        prefs.removeToken();
     }
 
     public Observable<Token> login(String email, String password) {
