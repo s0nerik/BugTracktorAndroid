@@ -7,62 +7,152 @@
     android:orientation="vertical"
     android:background="#3d3d3d"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:animateLayoutChanges="true"
     >
 
-    <LinearLayout
-        android:id="@+id/loginForm"
+    <FrameLayout
+        android:id="@+id/forms"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_margin="16dp"
-        android:orientation="vertical"
+        android:animateLayoutChanges="true"
         >
 
-        <ImageView
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            app:srcCompat="@drawable/bug"
-            android:tint="#fff"
-            android:layout_gravity="center"
-            />
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/emailInputLayout"
+        <LinearLayout
+            android:id="@+id/loginForm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
+            android:orientation="vertical"
             >
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/email"
+
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                app:srcCompat="@drawable/bug"
+                android:tint="#fff"
+                android:layout_gravity="center"
+                />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/loginEmailInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                />
-        </android.support.design.widget.TextInputLayout>
+                android:hint="Email"
+                >
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/loginEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    />
+            </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/passwordInputLayout"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/loginPasswordInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                >
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/loginPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPassword"
+                    />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/registerForm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
+            android:orientation="vertical"
+            android:visibility="gone"
             >
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:inputType="textPassword"
-                />
-        </android.support.design.widget.TextInputLayout>
-    </LinearLayout>
 
-    <Button
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                app:srcCompat="@drawable/bug"
+                android:tint="#fff"
+                android:layout_gravity="center"
+                />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/registerEmailInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                >
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/registerEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/registerPasswordInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                >
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/registerPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPassword"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/nicknameInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nickname"
+                >
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/nickname"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/realNameInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Real Name"
+                >
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/realName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/loginForm"
+        android:layout_below="@+id/forms"
         android:text="Login"
         android:layout_marginRight="16dp"
+        />
+
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/newUserSwitch"
+        android:layout_width="120dp"
+        android:layout_height="48dp"
+        android:text="New User"
+        android:layout_marginLeft="16dp"
+        android:layout_below="@+id/forms"
         />
 
 </RelativeLayout>
