@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        android:textColor="@color/md_grey_800"
+        android:textColor="@color/md_grey_600"
         android:layout_below="@+id/title"
         android:singleLine="true"
         android:ellipsize="end"
