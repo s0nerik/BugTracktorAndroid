@@ -4,17 +4,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
+    android:layout_height="72dp"
     android:gravity="center_vertical"
     android:orientation="vertical"
     android:paddingLeft="16dp"
+    android:paddingRight="16dp"
     >
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+        android:textSize="16sp"
+        android:textColor="@color/md_black"
         tools:text="Project"
         />
 
@@ -22,8 +24,11 @@
         android:id="@+id/subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+        android:textSize="14sp"
+        android:textColor="@color/md_grey_800"
         android:layout_below="@+id/title"
+        android:singleLine="true"
+        android:ellipsize="end"
         tools:text="Project description"
         />
 

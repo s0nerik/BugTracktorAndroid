@@ -20,7 +20,8 @@
             >
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="Projects"
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
@@ -32,6 +33,10 @@
                 android:id="@+id/rvProjects"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:overScrollMode="never"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:clipToPadding="false"
                 app:layoutManager="@string/layout_manager_linear"
                 tools:listitem="@layout/item_projects"
                 />
