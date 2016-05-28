@@ -1,5 +1,6 @@
 package com.github.sonerik.bugtracktor.prefs;
 
+import net.yslibrary.simplepreferences.annotation.Key;
 import net.yslibrary.simplepreferences.annotation.Preferences;
 
 /**
@@ -7,4 +8,6 @@ import net.yslibrary.simplepreferences.annotation.Preferences;
  */
 @Preferences
 public class Main {
+    @Key
+    protected String token = "";
 }
