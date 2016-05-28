@@ -43,7 +43,7 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LoginActivity.REQUEST_LOGIN && resultCode == RESULT_OK) {
-            Toast.makeText(this, "Logged in successfuly!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Logged in successfully!", Toast.LENGTH_LONG).show();
         }
     }
 }
