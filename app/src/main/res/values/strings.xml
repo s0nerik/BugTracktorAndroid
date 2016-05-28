@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BugTracktor</string>
+    <string name="layout_manager_linear">android.support.v7.widget.LinearLayoutManager</string>
 </resources>

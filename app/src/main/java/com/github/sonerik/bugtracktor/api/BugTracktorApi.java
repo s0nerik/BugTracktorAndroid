@@ -27,6 +27,10 @@ public class BugTracktorApi {
         return !prefs.getToken().isEmpty();
     }
 
+    public void logOut() {
+        prefs.setToken("");
+    }
+
     public Observable<Token> login(String email, String password) {
         return service.login(email, password)
                       .doOnNext(result -> prefs.setToken(result.getToken()));

@@ -15,7 +15,9 @@
 
         <activity
             android:name=".screens.main.MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -24,7 +26,9 @@
 
         <activity
             android:name=".screens.login.LoginActivity"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"
+            />
 
     </application>
 
