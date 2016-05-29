@@ -16,6 +16,7 @@ import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.models.Permission;
 import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
+import com.github.sonerik.bugtracktor.screens.create_project.CreateProjectActivity;
 import com.github.sonerik.bugtracktor.screens.login.LoginActivity;
 import com.github.sonerik.bugtracktor.ui.adapters.projects.ProjectsAdapter;
 import com.github.sonerik.bugtracktor.ui.adapters.projects.ProjectsItem;
@@ -27,6 +28,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Created by sonerik on 5/28/16.
@@ -64,6 +66,7 @@ public class MainActivity extends BaseActivity {
             startActivityForResult(new Intent(this, LoginActivity.class), LoginActivity.REQUEST_LOGIN);
         } else {
             updateProjects();
+            checkCreateProjectPermission();
         }
     }
 
@@ -131,5 +134,10 @@ public class MainActivity extends BaseActivity {
             projectItems.add(new ProjectsItem(project));
         }
         projectsAdapter.notifyDataSetChanged();
+    }
+
+    @OnClick(R.id.fab)
+    void onFabClicked() {
+        startActivity(new Intent(this, CreateProjectActivity.class));
     }
 }
