@@ -168,6 +168,9 @@
                         android:layout_below="@+id/icMembers"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingBottom="8dp"
+                        android:clipToPadding="false"
+                        tools:listitem="@layout/item_project_members"
                         app:layoutManager="@string/layout_manager_linear"
                         />
                 </RelativeLayout>

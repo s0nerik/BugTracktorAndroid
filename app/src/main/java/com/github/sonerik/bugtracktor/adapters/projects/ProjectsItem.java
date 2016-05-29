@@ -1,4 +1,4 @@
-package com.github.sonerik.bugtracktor.ui.adapters.projects;
+package com.github.sonerik.bugtracktor.adapters.projects;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;

@@ -17,15 +17,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.github.sonerik.bugtracktor.R;
+import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersAdapter;
+import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersItem;
 import com.github.sonerik.bugtracktor.models.Project;
+import com.github.sonerik.bugtracktor.models.ProjectMember;
+import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
-import com.github.sonerik.bugtracktor.ui.adapters.projects.ProjectsAdapter;
-import com.github.sonerik.bugtracktor.ui.adapters.projects.ProjectsItem;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import butterknife.BindView;
 import lombok.val;
@@ -65,8 +66,8 @@ public class ProjectActivity extends BaseActivity {
 
     private Project project;
 
-    private List<ProjectsItem> projectItems = new ArrayList<>();
-    private ProjectsAdapter adapter = new ProjectsAdapter(projectItems);
+    private List<ProjectMembersItem> projectMembers = new ArrayList<>();
+    private ProjectMembersAdapter adapter = new ProjectMembersAdapter(projectMembers);
 
     @Override
     protected int getLayoutId() {
@@ -110,10 +111,12 @@ public class ProjectActivity extends BaseActivity {
         layoutManager.setAutoMeasureEnabled(true);
 
         for (int i = 0; i < 10; i++) {
-            val project = new Project();
-            project.setName(UUID.randomUUID().toString());
-            project.setShortDescription(UUID.randomUUID().toString());
-            projectItems.add(new ProjectsItem(project));
+            val projectMember = new ProjectMember();
+            val user = new User();
+            user.setRealName("Vasya Pupkin");
+            user.setNickname("pupkin_govnoed");
+            projectMember.setUser(user);
+            projectMembers.add(new ProjectMembersItem(projectMember));
         }
 
         adapter.notifyDataSetChanged();
