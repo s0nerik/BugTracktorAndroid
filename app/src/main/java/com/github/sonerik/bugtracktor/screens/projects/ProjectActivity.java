@@ -21,9 +21,12 @@ import android.widget.TextView;
 
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
+import com.github.sonerik.bugtracktor.adapters.issues.IssuesAdapter;
+import com.github.sonerik.bugtracktor.adapters.issues.IssuesItem;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersAdapter;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersItem;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
+import com.github.sonerik.bugtracktor.models.Issue;
 import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
 import com.github.sonerik.bugtracktor.models.User;
@@ -77,11 +80,18 @@ public class ProjectActivity extends BaseActivity {
     ProgressBar progress;
     @BindView(R.id.layoutMembersEmpty)
     LinearLayout layoutMembersEmpty;
+    @BindView(R.id.rvIssues)
+    RecyclerView rvIssues;
+    @BindView(R.id.layoutIssuesEmpty)
+    LinearLayout layoutIssuesEmpty;
 
     private Project project;
 
     private List<ProjectMembersItem> projectMembers = new ArrayList<>();
     private ProjectMembersAdapter membersAdapter = new ProjectMembersAdapter(projectMembers);
+
+    private List<IssuesItem> issueItems = new ArrayList<>();
+    private IssuesAdapter issuesAdapter = new IssuesAdapter(issueItems);
 
     @Override
     protected int getLayoutId() {
@@ -143,17 +153,26 @@ public class ProjectActivity extends BaseActivity {
         }
 
         List<ProjectMember> members = project.getMembers();
-        if (members != null) {
-            if (!members.isEmpty()) {
-                layoutMembersEmpty.setVisibility(View.GONE);
-                for (ProjectMember projectMember : members) {
-                    projectMembers.add(new ProjectMembersItem(projectMember));
-                }
-            } else {
-                layoutMembersEmpty.setVisibility(View.VISIBLE);
+        if (members != null && !members.isEmpty()) {
+            layoutMembersEmpty.setVisibility(View.GONE);
+            for (ProjectMember projectMember : members) {
+                projectMembers.add(new ProjectMembersItem(projectMember));
             }
+        } else {
+            layoutMembersEmpty.setVisibility(View.VISIBLE);
         }
         membersAdapter.notifyDataSetChanged();
+
+        List<Issue> issues = project.getIssues();
+        if (issues != null && !issues.isEmpty()) {
+            layoutIssuesEmpty.setVisibility(View.GONE);
+            for (Issue issue : issues) {
+                issueItems.add(new IssuesItem(issue));
+            }
+        } else {
+            layoutIssuesEmpty.setVisibility(View.VISIBLE);
+        }
+        issuesAdapter.notifyDataSetChanged();
 
         setEditMode(false);
     }
