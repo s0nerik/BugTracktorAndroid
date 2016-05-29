@@ -1,8 +1,10 @@
 package com.github.sonerik.bugtracktor.models;
 
 
-import io.swagger.annotations.*;
 import com.google.gson.annotations.SerializedName;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 
 @ApiModel(description = "")
@@ -18,6 +20,8 @@ public class User  {
   private String nickname = null;
   @SerializedName("real_name")
   private String realName = null;
+  @SerializedName("avatar_url")
+  private String avatarUrl = null;
 
   
   /**
@@ -80,6 +84,18 @@ public class User  {
   }
 
   
+  /**
+   * User's avatar URL.
+   **/
+  @ApiModelProperty(value = "User's avatar URL.")
+  public String getAvatarUrl() {
+    return avatarUrl;
+  }
+  public void setAvatarUrl(String avatarUrl) {
+    this.avatarUrl = avatarUrl;
+  }
+
+  
 
   @Override
   public String toString()  {
@@ -91,6 +107,7 @@ public class User  {
     sb.append("  password: ").append(password).append("\n");
     sb.append("  nickname: ").append(nickname).append("\n");
     sb.append("  realName: ").append(realName).append("\n");
+    sb.append("  avatarUrl: ").append(avatarUrl).append("\n");
     sb.append("}\n");
     return sb.toString();
   }
