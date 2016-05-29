@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -135,7 +136,7 @@ public class MainActivity extends BaseActivity {
                    .compose(Rx.applySchedulers())
                    .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
                    .doOnTerminate(() -> progress.setVisibility(View.GONE))
-                   .subscribe(this::initProjects)
+                   .subscribe(this::initProjects, this::handleRequestForbidden)
         );
     }
 
@@ -145,8 +146,15 @@ public class MainActivity extends BaseActivity {
                    .map(this::checkCreateProjectPermission)
                    .compose(Rx.applySchedulers())
                    .doOnSubscribe(() -> fab.setVisibility(View.GONE))
-                   .subscribe(this::initFab)
+                   .subscribe(this::initFab, this::handleRequestForbidden)
         );
+    }
+
+    protected void handleRequestForbidden(Throwable e) {
+        Log.e(App.TAG, "Request error", e);
+
+        api.logOut();
+        startActivity(new Intent(this, LoginActivity.class));
     }
 
     private boolean checkCreateProjectPermission(List<Permission> permissions) {
