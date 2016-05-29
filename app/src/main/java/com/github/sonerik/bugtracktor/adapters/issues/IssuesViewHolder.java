@@ -17,7 +17,7 @@ public class IssuesViewHolder extends FlexibleViewHolder {
     TextView title;
     @BindView(R.id.subtitle)
     TextView subtitle;
-    @BindView(R.id.role)
+    @BindView(R.id.date)
     TextView date;
     @BindView(R.id.layout)
     View layout;

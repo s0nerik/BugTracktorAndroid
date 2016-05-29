@@ -19,7 +19,7 @@ public class IssuesItem extends AbstractFlexibleItem<IssuesViewHolder> {
 
     @Override
     public int getLayoutRes() {
-        return R.layout.item_project_members;
+        return R.layout.item_issues;
     }
 
     @Override

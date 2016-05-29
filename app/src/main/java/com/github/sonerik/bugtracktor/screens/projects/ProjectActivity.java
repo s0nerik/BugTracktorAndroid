@@ -142,15 +142,15 @@ public class ProjectActivity extends BaseActivity {
         etProjectShortDescription.setText(project.getShortDescription());
 //        txtAuthor.setText(project.get);
 
-        rvMembers.setAdapter(membersAdapter);
-        rvMembers.setNestedScrollingEnabled(false);
-        RecyclerView.LayoutManager layoutManager = rvMembers.getLayoutManager();
-        layoutManager.setAutoMeasureEnabled(true);
-
         User creator = project.getCreator();
         if (creator != null) {
             txtAuthor.setText(creator.getRealName());
         }
+
+        rvMembers.setAdapter(membersAdapter);
+        rvMembers.setNestedScrollingEnabled(false);
+        RecyclerView.LayoutManager layoutManager = rvMembers.getLayoutManager();
+        layoutManager.setAutoMeasureEnabled(true);
 
         List<ProjectMember> members = project.getMembers();
         if (members != null && !members.isEmpty()) {
@@ -162,6 +162,12 @@ public class ProjectActivity extends BaseActivity {
             layoutMembersEmpty.setVisibility(View.VISIBLE);
         }
         membersAdapter.notifyDataSetChanged();
+
+
+        rvIssues.setAdapter(issuesAdapter);
+        rvIssues.setNestedScrollingEnabled(false);
+        layoutManager = rvMembers.getLayoutManager();
+        layoutManager.setAutoMeasureEnabled(true);
 
         List<Issue> issues = project.getIssues();
         if (issues != null && !issues.isEmpty()) {
