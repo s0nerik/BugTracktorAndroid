@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.sonerik.bugtracktor.App;
@@ -36,7 +37,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import lombok.val;
-import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Created by sonerik on 5/29/16.
@@ -74,7 +74,7 @@ public class ProjectActivity extends BaseActivity {
     @BindView(R.id.rvMembers)
     RecyclerView rvMembers;
     @BindView(R.id.progress)
-    MaterialProgressBar progress;
+    ProgressBar progress;
 
     private Project project;
 
