@@ -1,9 +1,11 @@
 package com.github.sonerik.bugtracktor.adapters.project_members;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
 
@@ -11,6 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.viewholders.FlexibleViewHolder;
+import lombok.val;
 
 public class ProjectMembersViewHolder extends FlexibleViewHolder {
     @BindView(R.id.title)
@@ -21,6 +24,8 @@ public class ProjectMembersViewHolder extends FlexibleViewHolder {
     TextView role;
     @BindView(R.id.layout)
     RelativeLayout layout;
+    @BindView(R.id.avatar)
+    ImageView avatar;
 
     public ProjectMembersViewHolder(View view, FlexibleAdapter adapter) {
         super(view, adapter);
@@ -28,8 +33,14 @@ public class ProjectMembersViewHolder extends FlexibleViewHolder {
     }
 
     public void setProjectMember(ProjectMember projectMember) {
-        title.setText(projectMember.getUser().getRealName());
-        subtitle.setText("@"+projectMember.getUser().getNickname());
+        val user = projectMember.getUser();
+        if (user != null) {
+            title.setText(user.getRealName());
+            subtitle.setText("@"+user.getNickname());
+            Glide.with(avatar.getContext())
+                 .load(user.getAvatarUrl())
+                 .into(avatar);
+        }
         role.setText("Developer");
     }
 }

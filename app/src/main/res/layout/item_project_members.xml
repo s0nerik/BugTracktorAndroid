@@ -11,9 +11,10 @@
     >
 
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/avatar"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:src="@color/md_blue_600"
+        tools:src="@color/md_blue_600"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         />

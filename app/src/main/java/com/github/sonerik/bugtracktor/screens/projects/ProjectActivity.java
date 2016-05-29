@@ -114,7 +114,8 @@ public class ProjectActivity extends BaseActivity {
             val projectMember = new ProjectMember();
             val user = new User();
             user.setRealName("Vasya Pupkin");
-            user.setNickname("pupkin_govnoed");
+            user.setNickname("pupkin_saloed");
+            user.setAvatarUrl("http://api.adorable.io/avatar/256/"+(i+1));
             projectMember.setUser(user);
             projectMembers.add(new ProjectMembersItem(projectMember));
         }
