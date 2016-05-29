@@ -3,14 +3,17 @@ package com.github.sonerik.bugtracktor.screens.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
+import com.github.sonerik.bugtracktor.models.Permission;
 import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
 import com.github.sonerik.bugtracktor.screens.login.LoginActivity;
@@ -34,6 +37,9 @@ public class MainActivity extends BaseActivity {
 
     @BindView(R.id.rvProjects)
     RecyclerView rvProjects;
+
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     private List<ProjectsItem> projectItems = new ArrayList<>();
     private ProjectsAdapter projectsAdapter = new ProjectsAdapter(projectItems);
@@ -85,6 +91,7 @@ public class MainActivity extends BaseActivity {
         if (requestCode == LoginActivity.REQUEST_LOGIN && resultCode == RESULT_OK) {
             Toast.makeText(this, "Logged in successfully!", Toast.LENGTH_LONG).show();
             updateProjects();
+            checkCreateProjectPermission();
         }
     }
 
@@ -94,6 +101,28 @@ public class MainActivity extends BaseActivity {
                    .compose(Rx.applySchedulers())
                    .subscribe(this::initProjects)
         );
+    }
+
+    private void checkCreateProjectPermission() {
+        sub.add(
+                api.getPermissions(null)
+                   .map(this::checkCreateProjectPermission)
+                   .compose(Rx.applySchedulers())
+                   .subscribe(this::initFab)
+        );
+    }
+
+    private boolean checkCreateProjectPermission(List<Permission> permissions) {
+        for (Permission permission : permissions) {
+            if (permission.getName() != null && permission.getName().equals("create_project")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void initFab(boolean visibility) {
+        fab.setVisibility(visibility ? View.VISIBLE : View.GONE);
     }
 
     private void initProjects(List<Project> projects) {

@@ -30,6 +30,12 @@
             android:theme="@style/AppTheme"
             />
 
+        <activity
+            android:name=".screens.create_project.CreateProjectActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.Dialog"
+            />
+
     </application>
 
 </manifest>

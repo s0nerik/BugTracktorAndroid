@@ -3,6 +3,7 @@ package com.github.sonerik.bugtracktor.api;
 import com.github.sonerik.bugtracktor.models.Issue;
 import com.github.sonerik.bugtracktor.models.IssueChange;
 import com.github.sonerik.bugtracktor.models.IssueType;
+import com.github.sonerik.bugtracktor.models.Permission;
 import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.models.Success;
 import com.github.sonerik.bugtracktor.models.Token;
@@ -31,6 +32,8 @@ public interface BugTracktorWebService {
     @GET("get_token")
     Observable<Token> login(@Header("email") String email, @Header("password") String password);
 
+    @GET("permissions")
+    Observable<List<Permission>> getPermissions(@Query("projectId") Integer projectId);
 
     // region Projects
 
