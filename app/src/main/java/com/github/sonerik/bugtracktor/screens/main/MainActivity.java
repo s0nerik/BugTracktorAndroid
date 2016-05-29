@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.github.sonerik.bugtracktor.App;
@@ -39,9 +40,10 @@ public class MainActivity extends BaseActivity {
 
     @BindView(R.id.rvProjects)
     RecyclerView rvProjects;
-
     @BindView(R.id.fab)
     FloatingActionButton fab;
+    @BindView(R.id.progress)
+    ProgressBar progress;
 
     private List<ProjectsItem> projectItems = new ArrayList<>();
     private ProjectsAdapter projectsAdapter = new ProjectsAdapter(projectItems);
@@ -65,9 +67,14 @@ public class MainActivity extends BaseActivity {
         if (!api.isLoggedIn()) {
             startActivityForResult(new Intent(this, LoginActivity.class), LoginActivity.REQUEST_LOGIN);
         } else {
-            updateProjects();
             checkCreateProjectPermission();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateProjects();
     }
 
     @Override
@@ -102,6 +109,8 @@ public class MainActivity extends BaseActivity {
         sub.add(
                 api.getProjects()
                    .compose(Rx.applySchedulers())
+                   .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
+                   .doOnTerminate(() -> progress.setVisibility(View.GONE))
                    .subscribe(this::initProjects)
         );
     }
@@ -111,6 +120,7 @@ public class MainActivity extends BaseActivity {
                 api.getPermissions(null)
                    .map(this::checkCreateProjectPermission)
                    .compose(Rx.applySchedulers())
+                   .doOnSubscribe(() -> fab.setVisibility(View.GONE))
                    .subscribe(this::initFab)
         );
     }

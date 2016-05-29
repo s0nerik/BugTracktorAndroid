@@ -53,6 +53,7 @@ public class WebServiceModule {
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         return new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
+                .retryOnConnectionFailure(true)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(chain -> {
                     Request original = chain.request();

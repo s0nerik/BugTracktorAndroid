@@ -1,7 +1,6 @@
 package com.github.sonerik.bugtracktor.screens.create_project;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatButton;
@@ -13,12 +12,15 @@ import android.widget.ProgressBar;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
+import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
+import com.github.sonerik.bugtracktor.utils.Rx;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import lombok.val;
 
 /**
  * Created by sonerik on 5/29/16.
@@ -62,11 +64,26 @@ public class CreateProjectActivity extends BaseActivity {
 
     @OnClick(R.id.btnCreate)
     void onCreateClicked() {
-        progress.setVisibility(View.VISIBLE);
-        btnCancel.setVisibility(View.GONE);
-        btnCreate.setVisibility(View.GONE);
-        editLayout.setVisibility(View.GONE);
-        new Handler().postDelayed(this::finish, 2000);
+        val project = new Project();
+        if (!name.getText().toString().isEmpty())
+            project.setName(name.getText().toString());
+        if (!shortDescription.getText().toString().isEmpty())
+            project.setShortDescription(shortDescription.getText().toString());
+        if (!fullDescription.getText().toString().isEmpty())
+            project.setFullDescription(fullDescription.getText().toString());
+
+        sub.add(
+                api.createProject(project)
+                   .compose(Rx.applySchedulers())
+                   .doOnSubscribe(() -> {
+                       progress.setVisibility(View.VISIBLE);
+                       btnCancel.setVisibility(View.GONE);
+                       btnCreate.setVisibility(View.GONE);
+                       editLayout.setVisibility(View.GONE);
+                   })
+                   .doOnTerminate(this::finish)
+                   .subscribe()
+        );
     }
 
     @OnClick(R.id.btnCancel)
