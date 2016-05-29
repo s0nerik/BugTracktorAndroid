@@ -7,6 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:id="@+id/layout"
+    android:foreground="?selectableItemBackground"
     >
 
     <de.hdodenhof.circleimageview.CircleImageView
