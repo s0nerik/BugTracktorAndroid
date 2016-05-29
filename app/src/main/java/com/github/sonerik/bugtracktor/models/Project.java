@@ -19,6 +19,8 @@ public class Project  {
   private String shortDescription = null;
   @SerializedName("full_description")
   private String fullDescription = null;
+  @SerializedName("creator")
+  private User creator = null;
   @SerializedName("members")
   private List<ProjectMember> members = null;
   @SerializedName("issues")
@@ -76,6 +78,17 @@ public class Project  {
   /**
    **/
   @ApiModelProperty(value = "")
+  public User getCreator() {
+    return creator;
+  }
+  public void setCreator(User creator) {
+    this.creator = creator;
+  }
+
+  
+  /**
+   **/
+  @ApiModelProperty(value = "")
   public List<ProjectMember> getMembers() {
     return members;
   }
@@ -105,6 +118,7 @@ public class Project  {
     sb.append("  name: ").append(name).append("\n");
     sb.append("  shortDescription: ").append(shortDescription).append("\n");
     sb.append("  fullDescription: ").append(fullDescription).append("\n");
+    sb.append("  creator: ").append(creator).append("\n");
     sb.append("  members: ").append(members).append("\n");
     sb.append("  issues: ").append(issues).append("\n");
     sb.append("}\n");

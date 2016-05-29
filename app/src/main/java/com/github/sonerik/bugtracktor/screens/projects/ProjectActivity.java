@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -36,7 +37,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import lombok.val;
 
 /**
  * Created by sonerik on 5/29/16.
@@ -75,11 +75,13 @@ public class ProjectActivity extends BaseActivity {
     RecyclerView rvMembers;
     @BindView(R.id.progress)
     ProgressBar progress;
+    @BindView(R.id.layoutMembersEmpty)
+    LinearLayout layoutMembersEmpty;
 
     private Project project;
 
     private List<ProjectMembersItem> projectMembers = new ArrayList<>();
-    private ProjectMembersAdapter adapter = new ProjectMembersAdapter(projectMembers);
+    private ProjectMembersAdapter membersAdapter = new ProjectMembersAdapter(projectMembers);
 
     @Override
     protected int getLayoutId() {
@@ -130,22 +132,28 @@ public class ProjectActivity extends BaseActivity {
         etProjectShortDescription.setText(project.getShortDescription());
 //        txtAuthor.setText(project.get);
 
-        rvMembers.setAdapter(adapter);
+        rvMembers.setAdapter(membersAdapter);
         rvMembers.setNestedScrollingEnabled(false);
         RecyclerView.LayoutManager layoutManager = rvMembers.getLayoutManager();
         layoutManager.setAutoMeasureEnabled(true);
 
-        for (int i = 0; i < 10; i++) {
-            val projectMember = new ProjectMember();
-            val user = new User();
-            user.setRealName("Vasya Pupkin");
-            user.setNickname("pupkin_saloed");
-            user.setAvatarUrl("http://api.adorable.io/avatar/256/" + (i + 1));
-            projectMember.setUser(user);
-            projectMembers.add(new ProjectMembersItem(projectMember));
+        User creator = project.getCreator();
+        if (creator != null) {
+            txtAuthor.setText(creator.getRealName());
         }
 
-        adapter.notifyDataSetChanged();
+        List<ProjectMember> members = project.getMembers();
+        if (members != null) {
+            if (!members.isEmpty()) {
+                layoutMembersEmpty.setVisibility(View.GONE);
+                for (ProjectMember projectMember : members) {
+                    projectMembers.add(new ProjectMembersItem(projectMember));
+                }
+            } else {
+                layoutMembersEmpty.setVisibility(View.VISIBLE);
+            }
+        }
+        membersAdapter.notifyDataSetChanged();
 
         setEditMode(false);
     }

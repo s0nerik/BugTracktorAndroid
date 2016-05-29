@@ -8,6 +8,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
+import com.github.sonerik.bugtracktor.models.Role;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +44,13 @@ public class ProjectMembersViewHolder extends FlexibleViewHolder {
                  .load(user.getAvatarUrl())
                  .into(avatar);
         }
-        role.setText("Developer");
+
+        List<Role> roles = projectMember.getRoles();
+        if (roles != null) {
+            for (Role r : roles) {
+                role.setText(r.getName());
+            }
+        }
     }
 }
 

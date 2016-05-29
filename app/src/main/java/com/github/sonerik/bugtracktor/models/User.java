@@ -39,7 +39,7 @@ public class User  {
   /**
    * User's email.
    **/
-  @ApiModelProperty(required = true, value = "User's email.")
+  @ApiModelProperty(value = "User's email.")
   public String getEmail() {
     return email;
   }
@@ -51,7 +51,7 @@ public class User  {
   /**
    * User's password.
    **/
-  @ApiModelProperty(required = true, value = "User's password.")
+  @ApiModelProperty(value = "User's password.")
   public String getPassword() {
     return password;
   }
