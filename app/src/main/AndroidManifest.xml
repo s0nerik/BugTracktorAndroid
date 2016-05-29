@@ -36,6 +36,11 @@
             android:theme="@style/Theme.AppCompat.Light.Dialog"
             />
 
+        <activity
+            android:name=".screens.projects.ProjectActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+
     </application>
 
 </manifest>

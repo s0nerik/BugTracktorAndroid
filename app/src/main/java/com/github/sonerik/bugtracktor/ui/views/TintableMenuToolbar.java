@@ -44,6 +44,11 @@ public class TintableMenuToolbar extends Toolbar {
     }
 
     @Override
+    public void setNavigationIcon(@Nullable Drawable icon) {
+        super.setNavigationIcon(applyTint(icon));
+    }
+
+    @Override
     public void inflateMenu(@MenuRes int resId) {
         super.inflateMenu(resId);
         Menu menu = getMenu();

@@ -3,7 +3,8 @@ package com.github.sonerik.bugtracktor.screens.base;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import butterknife.ButterKnife;
 import rx.subscriptions.CompositeSubscription;
@@ -11,7 +12,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by sonerik on 5/28/16.
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends RxAppCompatActivity {
     protected CompositeSubscription sub = new CompositeSubscription();
 
     @LayoutRes
