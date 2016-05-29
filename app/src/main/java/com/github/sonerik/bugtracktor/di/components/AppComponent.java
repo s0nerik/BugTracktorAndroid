@@ -5,6 +5,7 @@ import com.github.sonerik.bugtracktor.di.modules.WebServiceModule;
 import com.github.sonerik.bugtracktor.screens.create_project.CreateProjectActivity;
 import com.github.sonerik.bugtracktor.screens.login.LoginActivity;
 import com.github.sonerik.bugtracktor.screens.main.MainActivity;
+import com.github.sonerik.bugtracktor.screens.projects.ProjectActivity;
 
 import javax.inject.Singleton;
 
@@ -19,4 +20,5 @@ public interface AppComponent {
     void inject(MainActivity a);
     void inject(LoginActivity a);
     void inject(CreateProjectActivity a);
+    void inject(ProjectActivity a);
 }

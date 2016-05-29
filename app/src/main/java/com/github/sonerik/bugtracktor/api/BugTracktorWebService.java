@@ -43,7 +43,7 @@ public interface BugTracktorWebService {
     @POST("projects")
     Observable<Project> createProject(@Body Project project);
 
-    @POST("projects/{projectId}")
+    @GET("projects/{projectId}")
     Observable<Project> getProject(@Path("projectId") int id);
 
     @PATCH("projects/{projectId}")

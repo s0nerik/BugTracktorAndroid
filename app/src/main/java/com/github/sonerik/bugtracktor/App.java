@@ -11,6 +11,8 @@ import com.github.sonerik.bugtracktor.di.modules.WebServiceModule;
  * Created by sonerik on 5/28/16.
  */
 public class App extends Application {
+    public static final String TAG = "BugTracktor";
+
     private static App instance;
 
     private AppComponent appComponent;

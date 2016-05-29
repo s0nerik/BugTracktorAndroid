@@ -11,31 +11,41 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersAdapter;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersItem;
+import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
 import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
+import com.github.sonerik.bugtracktor.utils.Rx;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import lombok.val;
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Created by sonerik on 5/29/16.
  */
 public class ProjectActivity extends BaseActivity {
     public static final String EXTRA_PROJECT = "project";
+
+    @Inject
+    BugTracktorApi api;
 
     @BindView(R.id.etProjectName)
     EditText etProjectName;
@@ -63,6 +73,8 @@ public class ProjectActivity extends BaseActivity {
     TextView labelMembers;
     @BindView(R.id.rvMembers)
     RecyclerView rvMembers;
+    @BindView(R.id.progress)
+    MaterialProgressBar progress;
 
     private Project project;
 
@@ -77,6 +89,8 @@ public class ProjectActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        App.getComponent().inject(this);
+
         if (savedInstanceState == null) {
             project = new Gson().fromJson(getIntent().getStringExtra(EXTRA_PROJECT), Project.class);
         }
@@ -85,6 +99,17 @@ public class ProjectActivity extends BaseActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            init();
+            updateProject();
+        } else {
+            init();
+        }
+    }
+
+    private void init() {
+        Log.d(App.TAG, project.toString());
+
         mainCollapsing.setTitle(project.getName());
         mainToolbar.inflateMenu(R.menu.project_normal);
         mainToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
@@ -115,7 +140,7 @@ public class ProjectActivity extends BaseActivity {
             val user = new User();
             user.setRealName("Vasya Pupkin");
             user.setNickname("pupkin_saloed");
-            user.setAvatarUrl("http://api.adorable.io/avatar/256/"+(i+1));
+            user.setAvatarUrl("http://api.adorable.io/avatar/256/" + (i + 1));
             projectMember.setUser(user);
             projectMembers.add(new ProjectMembersItem(projectMember));
         }
@@ -192,5 +217,15 @@ public class ProjectActivity extends BaseActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         project = new Gson().fromJson(savedInstanceState.getString(EXTRA_PROJECT), Project.class);
+    }
+
+    private void updateProject() {
+        api.getProject(project.getId())
+           .compose(Rx.applySchedulers())
+           .compose(bindToLifecycle())
+           .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
+           .doOnNext(p -> project = p)
+           .doOnTerminate(() -> progress.setVisibility(View.GONE))
+           .subscribe(p -> init());
     }
 }

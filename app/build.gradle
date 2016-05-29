@@ -68,4 +68,6 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.0.0'
 
     compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    compile 'me.zhanghai.android.materialprogressbar:library:1.1.6'
 }

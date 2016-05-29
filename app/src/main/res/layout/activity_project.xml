@@ -178,4 +178,15 @@
 
     </com.github.sonerik.bugtracktor.ui.views.DummyNestedScrollView>
 
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:indeterminate="true"
+        app:mpb_progressStyle="horizontal"
+        style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
+        tools:visibility="visible"
+        />
+    
 </android.support.design.widget.CoordinatorLayout>
