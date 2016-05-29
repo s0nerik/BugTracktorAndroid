@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -38,27 +38,27 @@ public class LoginActivity extends BaseActivity {
     BugTracktorApi api;
 
     @BindView(R.id.loginEmail)
-    AppCompatEditText loginEmail;
+    EditText loginEmail;
     @BindView(R.id.loginPassword)
-    AppCompatEditText loginPassword;
+    EditText loginPassword;
     @BindView(R.id.loginPasswordInputLayout)
     TextInputLayout loginPasswordInputLayout;
     @BindView(R.id.loginForm)
     LinearLayout loginForm;
     @BindView(R.id.registerEmail)
-    AppCompatEditText registerEmail;
+    EditText registerEmail;
     @BindView(R.id.registerEmailInputLayout)
     TextInputLayout registerEmailInputLayout;
     @BindView(R.id.registerPassword)
-    AppCompatEditText registerPassword;
+    EditText registerPassword;
     @BindView(R.id.registerPasswordInputLayout)
     TextInputLayout registerPasswordInputLayout;
     @BindView(R.id.nickname)
-    AppCompatEditText nickname;
+    EditText nickname;
     @BindView(R.id.nicknameInputLayout)
     TextInputLayout nicknameInputLayout;
     @BindView(R.id.realName)
-    AppCompatEditText realName;
+    EditText realName;
     @BindView(R.id.realNameInputLayout)
     TextInputLayout realNameInputLayout;
     @BindView(R.id.registerForm)
@@ -79,6 +79,17 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.getComponent().inject(this);
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        setFakeUserInput();
+    }
+
+    private void setFakeUserInput() {
+        loginEmail.setText("manager@gmail.com");
+        loginPassword.setText("1");
     }
 
     @OnClick(R.id.newUserSwitch)
