@@ -1,5 +1,6 @@
 package com.github.sonerik.bugtracktor.screens.projects;
 
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -137,6 +138,9 @@ public class ProjectActivity extends BaseActivity {
         }
 
         if (state) {
+            etProjectName.setBackgroundTintMode(PorterDuff.Mode.SRC_ATOP);
+            etProjectShortDescription.setBackgroundTintMode(PorterDuff.Mode.SRC_ATOP);
+
             mainToolbar.inflateMenu(R.menu.project_edit);
             behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
                 @Override
@@ -154,6 +158,9 @@ public class ProjectActivity extends BaseActivity {
             etProjectShortDescription.setFocusable(true);
             etProjectShortDescription.setFocusableInTouchMode(true);
         } else {
+            etProjectName.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
+            etProjectShortDescription.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
+
             mainToolbar.inflateMenu(R.menu.project_normal);
             behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
                 @Override
