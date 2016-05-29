@@ -48,6 +48,8 @@ public class MainActivity extends BaseActivity {
     private List<ProjectsItem> projectItems = new ArrayList<>();
     private ProjectsAdapter projectsAdapter = new ProjectsAdapter(projectItems);
 
+    private boolean wasPaused = false;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
@@ -67,14 +69,25 @@ public class MainActivity extends BaseActivity {
         if (!api.isLoggedIn()) {
             startActivityForResult(new Intent(this, LoginActivity.class), LoginActivity.REQUEST_LOGIN);
         } else {
+            updateProjects();
             checkCreateProjectPermission();
         }
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        wasPaused = true;
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        updateProjects();
+        if (wasPaused) {
+            wasPaused = false;
+            updateProjects();
+            checkCreateProjectPermission();
+        }
     }
 
     @Override
