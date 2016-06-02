@@ -32,7 +32,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
+                android:layout_marginTop="72dp"
                 android:layout_marginLeft="72dp"
                 android:layout_marginRight="48dp"
                 android:layout_marginBottom="?attr/actionBarSize"
@@ -248,10 +248,12 @@ Duo amet noster malorum et, duo velit ceteros omittantur ea. Quis mollis intelle
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
                 >
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clipChildren="false"
                     >
                     <ImageView
                         android:id="@+id/icAttachments"
@@ -276,7 +278,6 @@ Duo amet noster malorum et, duo velit ceteros omittantur ea. Quis mollis intelle
                         android:layout_below="@+id/icAttachments"
                         android:orientation="horizontal"
                         android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
                         android:clipToPadding="false"
                         android:layout_marginBottom="8dp"
                         tools:listitem="@layout/item_attachments"

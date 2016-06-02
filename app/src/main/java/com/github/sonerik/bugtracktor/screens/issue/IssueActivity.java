@@ -190,6 +190,7 @@ public class IssueActivity extends BaseActivity {
 
         List<IssueAttachment> attachments = issue.getAttachments();
         if (attachments != null && !attachments.isEmpty()) {
+            cardAttachments.setVisibility(View.VISIBLE);
             for (IssueAttachment attachment : attachments) {
                 attachmentItems.add(new AttachmentsItem(attachment));
             }
@@ -229,6 +230,8 @@ public class IssueActivity extends BaseActivity {
 
             etShortDescription.setFocusable(true);
             etShortDescription.setFocusableInTouchMode(true);
+            etDescription.setFocusable(true);
+            etDescription.setFocusableInTouchMode(true);
         } else {
             etShortDescription.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
             etDescription.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
@@ -245,6 +248,8 @@ public class IssueActivity extends BaseActivity {
 
             etShortDescription.setFocusable(false);
             etShortDescription.setFocusableInTouchMode(false);
+            etDescription.setFocusable(false);
+            etDescription.setFocusableInTouchMode(false);
         }
     }
 

@@ -19,7 +19,7 @@ public class AttachmentsItem extends AbstractFlexibleItem<AttachmentsViewHolder>
 
     @Override
     public int getLayoutRes() {
-        return R.layout.item_issues;
+        return R.layout.item_attachments;
     }
 
     @Override
