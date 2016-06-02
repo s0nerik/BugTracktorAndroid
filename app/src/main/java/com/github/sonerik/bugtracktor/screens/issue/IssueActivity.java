@@ -176,6 +176,13 @@ public class IssueActivity extends BaseActivity {
             txtAuthor.setText(creator.getRealName());
         }
 
+        List<User> assignees = issue.getAssignees();
+        if (assignees != null && !assignees.isEmpty()) {
+            txtAssignee.setText(assignees.get(0).getRealName());
+        } else {
+            txtAssignee.setText("None");
+        }
+
         rvAttachments.setAdapter(attachmentsAdapter);
         rvAttachments.setNestedScrollingEnabled(false);
         RecyclerView.LayoutManager layoutManager = rvAttachments.getLayoutManager();
@@ -206,8 +213,9 @@ public class IssueActivity extends BaseActivity {
 
         if (state) {
             etShortDescription.setBackgroundTintMode(PorterDuff.Mode.SRC_ATOP);
+            etDescription.setBackgroundTintMode(PorterDuff.Mode.SRC_ATOP);
 
-            mainToolbar.inflateMenu(R.menu.project_edit);
+            mainToolbar.inflateMenu(R.menu.issue_edit);
             behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
                 @Override
                 public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
@@ -223,8 +231,9 @@ public class IssueActivity extends BaseActivity {
             etShortDescription.setFocusableInTouchMode(true);
         } else {
             etShortDescription.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
+            etDescription.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
 
-            mainToolbar.inflateMenu(R.menu.project_normal);
+            mainToolbar.inflateMenu(R.menu.issue_normal);
             behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
                 @Override
                 public boolean canDrag(@NonNull AppBarLayout appBarLayout) {

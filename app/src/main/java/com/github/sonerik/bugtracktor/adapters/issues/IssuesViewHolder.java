@@ -30,10 +30,6 @@ public class IssuesViewHolder extends FlexibleViewHolder {
     }
 
     public void setIssue(Issue issue) {
-        val creationDate = issue.getCreationDate();
-        if (creationDate != null)
-            date.setText(creationDate.toString());
-
         val description = issue.getShortDescription();
         if (description != null)
             if (issue.getIssueIndex() != null)
@@ -43,7 +39,11 @@ public class IssuesViewHolder extends FlexibleViewHolder {
 
         val author = issue.getAuthor();
         if (author != null)
-            subtitle.setText(author.getRealName());
+            subtitle.setText("@"+author.getNickname());
+
+        val creationDate = issue.getCreationDate();
+        if (creationDate != null)
+            date.setText(creationDate.toString());
 
         layout.setOnClickListener(v -> RxBus.publish(new EIssueClicked(issue)));
     }

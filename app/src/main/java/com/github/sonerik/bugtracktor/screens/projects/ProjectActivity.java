@@ -121,7 +121,6 @@ public class ProjectActivity extends BaseActivity {
         } else {
             init();
         }
-        initListeners();
     }
 
     private void init() {
@@ -205,6 +204,7 @@ public class ProjectActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         setEditMode(false);
+        initListeners();
     }
 
     private void setEditMode(boolean state) {

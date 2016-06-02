@@ -138,6 +138,7 @@
                         android:layout_height="80dp"
                         android:layout_marginLeft="16dp"
                         app:srcCompat="@drawable/account_switch"
+                        android:visibility="gone"
                         tools:visibility="invisible"
                         />
                     <TextView
@@ -170,6 +171,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
                 >
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -244,7 +246,6 @@ Duo amet noster malorum et, duo velit ceteros omittantur ea. Quis mollis intelle
                 android:id="@+id/cardAttachments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 >
