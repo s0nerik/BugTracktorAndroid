@@ -20,7 +20,6 @@ public class Role  {
   @SerializedName("permissions")
   private List<Permission> permissions = null;
 
-  
   /**
    * Unique role identifier.
    **/
@@ -32,7 +31,6 @@ public class Role  {
     this.id = id;
   }
 
-  
   /**
    * Role name.
    **/
@@ -44,7 +42,6 @@ public class Role  {
     this.name = name;
   }
 
-  
   /**
    * Role description.
    **/
@@ -56,7 +53,6 @@ public class Role  {
     this.description = description;
   }
 
-  
   /**
    **/
   @ApiModelProperty(value = "")
@@ -67,7 +63,31 @@ public class Role  {
     this.permissions = permissions;
   }
 
-  
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Role role = (Role) o;
+    return (id == null ? role.id == null : id.equals(role.id)) &&
+        (name == null ? role.name == null : name.equals(role.name)) &&
+        (description == null ? role.description == null : description.equals(role.description)) &&
+        (permissions == null ? role.permissions == null : permissions.equals(role.permissions));
+  }
+
+  @Override
+  public int hashCode() {
+    int result = 17;
+    result = 31 * result + (id == null ? 0: id.hashCode());
+    result = 31 * result + (name == null ? 0: name.hashCode());
+    result = 31 * result + (description == null ? 0: description.hashCode());
+    result = 31 * result + (permissions == null ? 0: permissions.hashCode());
+    return result;
+  }
 
   @Override
   public String toString()  {

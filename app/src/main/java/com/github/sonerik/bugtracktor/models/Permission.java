@@ -1,8 +1,10 @@
 package com.github.sonerik.bugtracktor.models;
 
 
-import io.swagger.annotations.*;
 import com.google.gson.annotations.SerializedName;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 
 @ApiModel(description = "")
@@ -13,7 +15,6 @@ public class Permission  {
   @SerializedName("description")
   private String description = null;
 
-  
   /**
    * Unique permission name.
    **/
@@ -25,7 +26,6 @@ public class Permission  {
     this.name = name;
   }
 
-  
   /**
    * Permission description.
    **/
@@ -37,7 +37,27 @@ public class Permission  {
     this.description = description;
   }
 
-  
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Permission permission = (Permission) o;
+    return (name == null ? permission.name == null : name.equals(permission.name)) &&
+        (description == null ? permission.description == null : description.equals(permission.description));
+  }
+
+  @Override
+  public int hashCode() {
+    int result = 17;
+    result = 31 * result + (name == null ? 0: name.hashCode());
+    result = 31 * result + (description == null ? 0: description.hashCode());
+    return result;
+  }
 
   @Override
   public String toString()  {

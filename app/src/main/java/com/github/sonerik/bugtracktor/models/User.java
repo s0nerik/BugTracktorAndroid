@@ -23,7 +23,6 @@ public class User  {
   @SerializedName("avatar_url")
   private String avatarUrl = null;
 
-  
   /**
    * Unique user identifier.
    **/
@@ -35,7 +34,6 @@ public class User  {
     this.id = id;
   }
 
-  
   /**
    * User's email.
    **/
@@ -47,7 +45,6 @@ public class User  {
     this.email = email;
   }
 
-  
   /**
    * User's password.
    **/
@@ -59,7 +56,6 @@ public class User  {
     this.password = password;
   }
 
-  
   /**
    * User's nickname.
    **/
@@ -71,7 +67,6 @@ public class User  {
     this.nickname = nickname;
   }
 
-  
   /**
    * User's real name.
    **/
@@ -83,7 +78,6 @@ public class User  {
     this.realName = realName;
   }
 
-  
   /**
    * User's avatar URL.
    **/
@@ -95,7 +89,35 @@ public class User  {
     this.avatarUrl = avatarUrl;
   }
 
-  
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    User user = (User) o;
+    return (id == null ? user.id == null : id.equals(user.id)) &&
+        (email == null ? user.email == null : email.equals(user.email)) &&
+        (password == null ? user.password == null : password.equals(user.password)) &&
+        (nickname == null ? user.nickname == null : nickname.equals(user.nickname)) &&
+        (realName == null ? user.realName == null : realName.equals(user.realName)) &&
+        (avatarUrl == null ? user.avatarUrl == null : avatarUrl.equals(user.avatarUrl));
+  }
+
+  @Override
+  public int hashCode() {
+    int result = 17;
+    result = 31 * result + (id == null ? 0: id.hashCode());
+    result = 31 * result + (email == null ? 0: email.hashCode());
+    result = 31 * result + (password == null ? 0: password.hashCode());
+    result = 31 * result + (nickname == null ? 0: nickname.hashCode());
+    result = 31 * result + (realName == null ? 0: realName.hashCode());
+    result = 31 * result + (avatarUrl == null ? 0: avatarUrl.hashCode());
+    return result;
+  }
 
   @Override
   public String toString()  {

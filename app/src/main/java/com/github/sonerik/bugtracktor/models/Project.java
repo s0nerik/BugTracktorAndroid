@@ -26,7 +26,6 @@ public class Project  {
   @SerializedName("issues")
   private List<Issue> issues = null;
 
-  
   /**
    * Unique project identifier.
    **/
@@ -38,7 +37,6 @@ public class Project  {
     this.id = id;
   }
 
-  
   /**
    * Project name.
    **/
@@ -50,7 +48,6 @@ public class Project  {
     this.name = name;
   }
 
-  
   /**
    * Short description of the project.
    **/
@@ -62,7 +59,6 @@ public class Project  {
     this.shortDescription = shortDescription;
   }
 
-  
   /**
    * Full description of the project.
    **/
@@ -74,7 +70,6 @@ public class Project  {
     this.fullDescription = fullDescription;
   }
 
-  
   /**
    **/
   @ApiModelProperty(value = "")
@@ -85,7 +80,6 @@ public class Project  {
     this.creator = creator;
   }
 
-  
   /**
    **/
   @ApiModelProperty(value = "")
@@ -96,7 +90,6 @@ public class Project  {
     this.members = members;
   }
 
-  
   /**
    **/
   @ApiModelProperty(value = "")
@@ -107,7 +100,37 @@ public class Project  {
     this.issues = issues;
   }
 
-  
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Project project = (Project) o;
+    return (id == null ? project.id == null : id.equals(project.id)) &&
+        (name == null ? project.name == null : name.equals(project.name)) &&
+        (shortDescription == null ? project.shortDescription == null : shortDescription.equals(project.shortDescription)) &&
+        (fullDescription == null ? project.fullDescription == null : fullDescription.equals(project.fullDescription)) &&
+        (creator == null ? project.creator == null : creator.equals(project.creator)) &&
+        (members == null ? project.members == null : members.equals(project.members)) &&
+        (issues == null ? project.issues == null : issues.equals(project.issues));
+  }
+
+  @Override
+  public int hashCode() {
+    int result = 17;
+    result = 31 * result + (id == null ? 0: id.hashCode());
+    result = 31 * result + (name == null ? 0: name.hashCode());
+    result = 31 * result + (shortDescription == null ? 0: shortDescription.hashCode());
+    result = 31 * result + (fullDescription == null ? 0: fullDescription.hashCode());
+    result = 31 * result + (creator == null ? 0: creator.hashCode());
+    result = 31 * result + (members == null ? 0: members.hashCode());
+    result = 31 * result + (issues == null ? 0: issues.hashCode());
+    return result;
+  }
 
   @Override
   public String toString()  {

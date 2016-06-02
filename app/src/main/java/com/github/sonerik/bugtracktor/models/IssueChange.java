@@ -1,8 +1,10 @@
 package com.github.sonerik.bugtracktor.models;
 
 
-import io.swagger.annotations.*;
 import com.google.gson.annotations.SerializedName;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 
 @ApiModel(description = "")
@@ -17,7 +19,6 @@ public class IssueChange  {
   @SerializedName("change")
   private String change = null;
 
-  
   /**
    **/
   @ApiModelProperty(value = "")
@@ -28,7 +29,6 @@ public class IssueChange  {
     this.issueId = issueId;
   }
 
-  
   /**
    **/
   @ApiModelProperty(value = "")
@@ -39,7 +39,6 @@ public class IssueChange  {
     this.authorId = authorId;
   }
 
-  
   /**
    **/
   @ApiModelProperty(value = "")
@@ -50,7 +49,6 @@ public class IssueChange  {
     this.date = date;
   }
 
-  
   /**
    **/
   @ApiModelProperty(value = "")
@@ -61,7 +59,31 @@ public class IssueChange  {
     this.change = change;
   }
 
-  
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    IssueChange issueChange = (IssueChange) o;
+    return (issueId == null ? issueChange.issueId == null : issueId.equals(issueChange.issueId)) &&
+        (authorId == null ? issueChange.authorId == null : authorId.equals(issueChange.authorId)) &&
+        (date == null ? issueChange.date == null : date.equals(issueChange.date)) &&
+        (change == null ? issueChange.change == null : change.equals(issueChange.change));
+  }
+
+  @Override
+  public int hashCode() {
+    int result = 17;
+    result = 31 * result + (issueId == null ? 0: issueId.hashCode());
+    result = 31 * result + (authorId == null ? 0: authorId.hashCode());
+    result = 31 * result + (date == null ? 0: date.hashCode());
+    result = 31 * result + (change == null ? 0: change.hashCode());
+    return result;
+  }
 
   @Override
   public String toString()  {

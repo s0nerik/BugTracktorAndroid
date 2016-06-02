@@ -1,8 +1,10 @@
 package com.github.sonerik.bugtracktor.models;
 
 
-import io.swagger.annotations.*;
 import com.google.gson.annotations.SerializedName;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 
 @ApiModel(description = "")
@@ -15,7 +17,6 @@ public class Error  {
   @SerializedName("fields")
   private String fields = null;
 
-  
   /**
    **/
   @ApiModelProperty(value = "")
@@ -26,7 +27,6 @@ public class Error  {
     this.code = code;
   }
 
-  
   /**
    **/
   @ApiModelProperty(value = "")
@@ -37,7 +37,6 @@ public class Error  {
     this.message = message;
   }
 
-  
   /**
    **/
   @ApiModelProperty(value = "")
@@ -48,7 +47,29 @@ public class Error  {
     this.fields = fields;
   }
 
-  
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Error error = (Error) o;
+    return (code == null ? error.code == null : code.equals(error.code)) &&
+        (message == null ? error.message == null : message.equals(error.message)) &&
+        (fields == null ? error.fields == null : fields.equals(error.fields));
+  }
+
+  @Override
+  public int hashCode() {
+    int result = 17;
+    result = 31 * result + (code == null ? 0: code.hashCode());
+    result = 31 * result + (message == null ? 0: message.hashCode());
+    result = 31 * result + (fields == null ? 0: fields.hashCode());
+    return result;
+  }
 
   @Override
   public String toString()  {

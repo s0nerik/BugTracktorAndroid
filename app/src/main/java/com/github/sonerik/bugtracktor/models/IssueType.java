@@ -1,8 +1,10 @@
 package com.github.sonerik.bugtracktor.models;
 
 
-import io.swagger.annotations.*;
 import com.google.gson.annotations.SerializedName;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 
 @ApiModel(description = "")
@@ -15,7 +17,6 @@ public class IssueType  {
   @SerializedName("description")
   private String description = null;
 
-  
   /**
    * Unique issue type identifier.
    **/
@@ -27,7 +28,6 @@ public class IssueType  {
     this.id = id;
   }
 
-  
   /**
    * Issue type name.
    **/
@@ -39,7 +39,6 @@ public class IssueType  {
     this.name = name;
   }
 
-  
   /**
    * Issue type description.
    **/
@@ -51,7 +50,29 @@ public class IssueType  {
     this.description = description;
   }
 
-  
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    IssueType issueType = (IssueType) o;
+    return (id == null ? issueType.id == null : id.equals(issueType.id)) &&
+        (name == null ? issueType.name == null : name.equals(issueType.name)) &&
+        (description == null ? issueType.description == null : description.equals(issueType.description));
+  }
+
+  @Override
+  public int hashCode() {
+    int result = 17;
+    result = 31 * result + (id == null ? 0: id.hashCode());
+    result = 31 * result + (name == null ? 0: name.hashCode());
+    result = 31 * result + (description == null ? 0: description.hashCode());
+    return result;
+  }
 
   @Override
   public String toString()  {

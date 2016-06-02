@@ -23,7 +23,6 @@ public class ProjectMember  {
   @SerializedName("exit_date")
   private Date exitDate = null;
 
-  
   /**
    * User entity that is attached to the project as it's member.
    **/
@@ -35,7 +34,6 @@ public class ProjectMember  {
     this.user = user;
   }
 
-  
   /**
    **/
   @ApiModelProperty(value = "")
@@ -46,7 +44,6 @@ public class ProjectMember  {
     this.project = project;
   }
 
-  
   /**
    **/
   @ApiModelProperty(value = "")
@@ -57,7 +54,6 @@ public class ProjectMember  {
     this.roles = roles;
   }
 
-  
   /**
    **/
   @ApiModelProperty(value = "")
@@ -68,7 +64,6 @@ public class ProjectMember  {
     this.joinDate = joinDate;
   }
 
-  
   /**
    **/
   @ApiModelProperty(value = "")
@@ -79,7 +74,33 @@ public class ProjectMember  {
     this.exitDate = exitDate;
   }
 
-  
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ProjectMember projectMember = (ProjectMember) o;
+    return (user == null ? projectMember.user == null : user.equals(projectMember.user)) &&
+        (project == null ? projectMember.project == null : project.equals(projectMember.project)) &&
+        (roles == null ? projectMember.roles == null : roles.equals(projectMember.roles)) &&
+        (joinDate == null ? projectMember.joinDate == null : joinDate.equals(projectMember.joinDate)) &&
+        (exitDate == null ? projectMember.exitDate == null : exitDate.equals(projectMember.exitDate));
+  }
+
+  @Override
+  public int hashCode() {
+    int result = 17;
+    result = 31 * result + (user == null ? 0: user.hashCode());
+    result = 31 * result + (project == null ? 0: project.hashCode());
+    result = 31 * result + (roles == null ? 0: roles.hashCode());
+    result = 31 * result + (joinDate == null ? 0: joinDate.hashCode());
+    result = 31 * result + (exitDate == null ? 0: exitDate.hashCode());
+    return result;
+  }
 
   @Override
   public String toString()  {
