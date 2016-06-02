@@ -1,5 +1,6 @@
 package com.github.sonerik.bugtracktor.screens.projects;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,12 +27,15 @@ import com.github.sonerik.bugtracktor.adapters.issues.IssuesItem;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersAdapter;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersItem;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
+import com.github.sonerik.bugtracktor.events.EIssueClicked;
 import com.github.sonerik.bugtracktor.models.Issue;
 import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
 import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
+import com.github.sonerik.bugtracktor.screens.issue.IssueActivity;
 import com.github.sonerik.bugtracktor.utils.Rx;
+import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -117,6 +121,7 @@ public class ProjectActivity extends BaseActivity {
         } else {
             init();
         }
+        initListeners();
     }
 
     private void init() {
@@ -181,6 +186,19 @@ public class ProjectActivity extends BaseActivity {
         issuesAdapter.notifyDataSetChanged();
 
         setEditMode(false);
+    }
+
+    private void initListeners() {
+        RxBus.on(EIssueClicked.class)
+             .compose(bindToLifecycle())
+             .compose(Rx.applySchedulers())
+             .subscribe(e -> {
+                 startActivity(new Intent(this, IssueActivity.class)
+                                       .putExtra(IssueActivity.EXTRA_ISSUE, new Gson().toJson(e.issue))
+                                       // TODO: allow only for those who really can
+                                       .putExtra(IssueActivity.EXTRA_CAN_MANAGE, true)
+                 );
+             });
     }
 
     @Override

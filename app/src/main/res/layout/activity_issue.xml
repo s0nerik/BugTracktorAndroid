@@ -241,6 +241,7 @@ Duo amet noster malorum et, duo velit ceteros omittantur ea. Quis mollis intelle
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
+                android:id="@+id/cardAttachments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"

@@ -7,8 +7,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.github.sonerik.bugtracktor.R;
+import com.github.sonerik.bugtracktor.events.EProjectMemberClicked;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
 import com.github.sonerik.bugtracktor.models.Role;
+import com.github.sonerik.bugtracktor.utils.RxBus;
 
 import java.util.List;
 
@@ -51,6 +53,8 @@ public class ProjectMembersViewHolder extends FlexibleViewHolder {
                 role.setText(r.getName());
             }
         }
+
+        layout.setOnClickListener(v -> RxBus.publish(new EProjectMemberClicked(projectMember)));
     }
 }
 

@@ -4,7 +4,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.sonerik.bugtracktor.R;
+import com.github.sonerik.bugtracktor.events.EIssueClicked;
 import com.github.sonerik.bugtracktor.models.Issue;
+import com.github.sonerik.bugtracktor.utils.RxBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +44,8 @@ public class IssuesViewHolder extends FlexibleViewHolder {
         val author = issue.getAuthor();
         if (author != null)
             subtitle.setText(author.getRealName());
+
+        layout.setOnClickListener(v -> RxBus.publish(new EIssueClicked(issue)));
     }
 }
 

@@ -42,6 +42,21 @@
             android:theme="@style/AppTheme.NoActionBar"
             />
 
+        <activity
+            android:name=".screens.issue.IssueActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+
+        <activity
+            android:name=".screens.project_issues.ProjectIssuesActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+
+        <activity
+            android:name=".screens.project_members.ProjectMembersActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+
     </application>
 
 </manifest>
