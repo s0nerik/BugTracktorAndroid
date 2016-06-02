@@ -262,6 +262,17 @@ Duo amet noster malorum et, duo velit ceteros omittantur ea. Quis mollis intelle
                         android:layout_marginLeft="16dp"
                         app:srcCompat="@drawable/attachment"
                         />
+                    <ImageView
+                        android:id="@+id/icAddAttachment"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_alignParentRight="true"
+                        android:scaleType="center"
+                        android:foreground="?selectableItemBackgroundBorderless"
+                        app:srcCompat="@drawable/plus"
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        />
                     <TextView
                         android:id="@+id/labelAttachments"
                         android:layout_width="match_parent"
@@ -269,7 +280,7 @@ Duo amet noster malorum et, duo velit ceteros omittantur ea. Quis mollis intelle
                         android:textSize="16sp"
                         android:text="Attachments"
                         android:layout_marginLeft="62dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="18dp"
                         />
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rvAttachments"

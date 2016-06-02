@@ -19,6 +19,10 @@ public class AttachmentsViewHolder extends FlexibleViewHolder {
     View layout;
     @BindView(R.id.image)
     ImageView image;
+    @BindView(R.id.icRemove)
+    ImageView icRemove;
+    @BindView(R.id.progress)
+    View progress;
 
     public AttachmentsViewHolder(View view, FlexibleAdapter adapter) {
         super(view, adapter);
@@ -26,11 +30,18 @@ public class AttachmentsViewHolder extends FlexibleViewHolder {
     }
 
     public void setIssueAttachment(IssueAttachment attachment) {
-        Glide.with(image.getContext())
-             .load(attachment.getUrl())
-             .placeholder(R.color.md_grey_800)
-             .into(image);
-        layout.setOnClickListener(v -> RxBus.publish(new EAttachmentClicked(attachment)));
+        if (attachment == null) {
+            progress.setVisibility(View.VISIBLE);
+            image.setBackgroundResource(R.color.md_grey_800);
+        } else {
+            progress.setVisibility(View.GONE);
+            Glide.with(image.getContext())
+                 .load(attachment.getUrl())
+                 .into(image);
+        }
+
+        layout.setOnClickListener(v -> RxBus.publish(new EAttachmentClicked(attachment, EAttachmentClicked.Type.ITEM)));
+        icRemove.setOnClickListener(v -> RxBus.publish(new EAttachmentClicked(attachment, EAttachmentClicked.Type.REMOVE)));
     }
 }
 

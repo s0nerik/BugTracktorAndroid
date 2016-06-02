@@ -2,6 +2,7 @@ package com.github.sonerik.bugtracktor.di.modules;
 
 import android.app.Application;
 
+import com.cloudinary.Cloudinary;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.api.BugTracktorWebService;
 import com.github.sonerik.bugtracktor.prefs.MainPrefs;
@@ -29,8 +30,10 @@ import rx.schedulers.Schedulers;
  */
 @Module
 public class WebServiceModule {
-//    private static final String BASE_URL = "https://bug-tracktor.herokuapp.com/v1/";
+    //    private static final String BASE_URL = "https://bug-tracktor.herokuapp.com/v1/";
     private static final String BASE_URL = "http://192.168.0.103:10010/v1/";
+
+    private static final String CLOUDINARY_URL = "cloudinary://838498517918848:dh_xITvo3G_4y39whY7wGjz7YHs@s0nerik";
 
     @Provides
     @Singleton
@@ -94,9 +97,18 @@ public class WebServiceModule {
     }
 
     @Provides
-    BugTracktorApi provideBugTracktorApi(BugTracktorWebService service,
-                                         Application context,
-                                         MainPrefs prefs) {
-        return new BugTracktorApi(service, context.getCacheDir(), prefs);
+    BugTracktorApi provideBugTracktorApi(
+            BugTracktorWebService service,
+            Application context,
+            MainPrefs prefs,
+            Cloudinary cloudinary
+    ) {
+        return new BugTracktorApi(service, context.getCacheDir(), prefs, cloudinary);
+    }
+
+    @Provides
+    @Singleton
+    Cloudinary provideCloudinary() {
+        return new Cloudinary(CLOUDINARY_URL);
     }
 }

@@ -9,5 +9,8 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public class EAttachmentClicked {
+    public enum Type { ITEM, REMOVE }
+
     public final IssueAttachment attachment;
+    public final Type type;
 }
