@@ -30,8 +30,8 @@ import rx.schedulers.Schedulers;
  */
 @Module
 public class WebServiceModule {
-    //    private static final String BASE_URL = "https://bug-tracktor.herokuapp.com/v1/";
-    private static final String BASE_URL = "http://192.168.0.103:10010/v1/";
+        private static final String BASE_URL = "https://bug-tracktor.herokuapp.com/v1/";
+//    private static final String BASE_URL = "http://192.168.0.103:10010/v1/";
 
     private static final String CLOUDINARY_URL = "cloudinary://838498517918848:dh_xITvo3G_4y39whY7wGjz7YHs@s0nerik";
 

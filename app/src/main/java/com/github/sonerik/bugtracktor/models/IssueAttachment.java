@@ -3,10 +3,12 @@ package com.github.sonerik.bugtracktor.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-
+@Parcel(Parcel.Serialization.BEAN)
 @ApiModel(description = "")
 public class IssueAttachment  {
   

@@ -1,5 +1,6 @@
 package com.github.sonerik.bugtracktor.screens.issue;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.Uri;
@@ -26,6 +27,7 @@ import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.attachments.AttachmentsAdapter;
 import com.github.sonerik.bugtracktor.adapters.attachments.AttachmentsItem;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
+import com.github.sonerik.bugtracktor.bundlers.IssueBundler;
 import com.github.sonerik.bugtracktor.events.EAttachmentClicked;
 import com.github.sonerik.bugtracktor.models.Issue;
 import com.github.sonerik.bugtracktor.models.IssueAttachment;
@@ -35,7 +37,7 @@ import com.github.sonerik.bugtracktor.ui.views.DummyNestedScrollView;
 import com.github.sonerik.bugtracktor.ui.views.TintableMenuToolbar;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
-import com.google.gson.Gson;
+import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -48,14 +50,17 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import icepick.Icepick;
 import icepick.State;
+import io.github.kobakei.grenade.annotation.Extra;
+import io.github.kobakei.grenade.annotation.Navigator;
 
 /**
  * Created by sonerik on 6/2/16.
  */
+@Navigator
 public class IssueActivity extends BaseActivity {
 
-    public static final String EXTRA_CAN_MANAGE = "EXTRA_CAN_MANAGE";
-    public static final String EXTRA_ISSUE = "EXTRA_ISSUE";
+//    public static final String EXTRA_CAN_MANAGE = "EXTRA_CAN_MANAGE";
+//    public static final String EXTRA_ISSUE = "EXTRA_ISSUE";
 
     private static final int PICK_ATTACHMENT = 7865;
 
@@ -111,11 +116,12 @@ public class IssueActivity extends BaseActivity {
 
     @State
     boolean editMode = false;
-
+    @Extra
     @State
     boolean canManage;
-
-    private Issue issue;
+    @Extra
+    @State(IssueBundler.class)
+    Issue issue;
 
     private List<AttachmentsItem> attachmentItems = new ArrayList<>();
     private AttachmentsAdapter attachmentsAdapter = new AttachmentsAdapter(attachmentItems);
@@ -129,12 +135,13 @@ public class IssueActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.getComponent().inject(this);
-        Icepick.restoreInstanceState(this, savedInstanceState);
-
-        if (savedInstanceState == null) {
-            canManage = getIntent().getBooleanExtra(EXTRA_CAN_MANAGE, false);
-            issue = new Gson().fromJson(getIntent().getStringExtra(EXTRA_ISSUE), Issue.class);
-        }
+        IssueActivityNavigator.inject(this, getIntent());
+//        Icepick.restoreInstanceState(this, getIntent().getExtras());
+//
+//        if (savedInstanceState == null) {
+//            canManage = getIntent().getBooleanExtra(EXTRA_CAN_MANAGE, false);
+//            issue = new Gson().fromJson(getIntent().getStringExtra(EXTRA_ISSUE), Issue.class);
+//        }
     }
 
     @Override
@@ -165,14 +172,12 @@ public class IssueActivity extends BaseActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(EXTRA_ISSUE, new Gson().toJson(issue));
         Icepick.saveInstanceState(this, outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        issue = new Gson().fromJson(savedInstanceState.getString(EXTRA_ISSUE), Issue.class);
         Icepick.restoreInstanceState(this, savedInstanceState);
     }
 
@@ -317,17 +322,25 @@ public class IssueActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_ATTACHMENT && resultCode == RESULT_OK) {
             Uri selectedImageUri = data.getData();
-            try {
-                InputStream img = getContentResolver().openInputStream(selectedImageUri);
-                api.addAttachment(issue, img)
-                   .compose(bindToLifecycle())
-                   .compose(Rx.applySchedulers())
-                   .doOnSubscribe(this::onAttachmentSelected)
-                   .subscribe(this::onAttachmentUploaded,
-                              throwable -> Log.e(App.TAG, "Error uploading image: "+throwable));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            RxPermissions.getInstance(this)
+                         .request(Manifest.permission.READ_EXTERNAL_STORAGE)
+                         .filter(granted -> granted)
+                         .compose(bindToLifecycle())
+                         .subscribe(granted -> addAttachmentByUri(selectedImageUri));
+        }
+    }
+
+    private void addAttachmentByUri(Uri uri) {
+        try {
+            InputStream img = getContentResolver().openInputStream(uri);
+            api.addAttachment(issue, img)
+               .compose(bindToLifecycle())
+               .compose(Rx.applySchedulers())
+               .doOnSubscribe(this::onAttachmentSelected)
+               .subscribe(this::onAttachmentUploaded,
+                          throwable -> Log.e(App.TAG, "Error uploading image: "+throwable));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

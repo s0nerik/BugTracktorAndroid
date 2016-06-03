@@ -1,6 +1,5 @@
 package com.github.sonerik.bugtracktor.screens.projects;
 
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,7 +32,7 @@ import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
 import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
-import com.github.sonerik.bugtracktor.screens.issue.IssueActivity;
+import com.github.sonerik.bugtracktor.screens.issue.IssueActivityNavigator;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.google.gson.Gson;
@@ -192,11 +191,8 @@ public class ProjectActivity extends BaseActivity {
              .compose(bindToLifecycle())
              .compose(Rx.applySchedulers())
              .subscribe(e -> {
-                 startActivity(new Intent(this, IssueActivity.class)
-                                       .putExtra(IssueActivity.EXTRA_ISSUE, new Gson().toJson(e.issue))
-                                       // TODO: allow only for those who really can
-                                       .putExtra(IssueActivity.EXTRA_CAN_MANAGE, true)
-                 );
+                 // TODO: allow editing only for those who really can
+                 startActivity(new IssueActivityNavigator(true, e.issue).build(this));
              });
     }
 
