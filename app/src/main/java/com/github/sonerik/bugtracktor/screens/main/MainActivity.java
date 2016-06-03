@@ -14,19 +14,18 @@ import android.widget.Toast;
 
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
+import com.github.sonerik.bugtracktor.adapters.projects.ProjectsAdapter;
+import com.github.sonerik.bugtracktor.adapters.projects.ProjectsItem;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.events.EProjectClicked;
 import com.github.sonerik.bugtracktor.models.Permission;
 import com.github.sonerik.bugtracktor.models.Project;
-import com.github.sonerik.bugtracktor.screens.projects.ProjectActivity;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
 import com.github.sonerik.bugtracktor.screens.create_project.CreateProjectActivity;
 import com.github.sonerik.bugtracktor.screens.login.LoginActivity;
-import com.github.sonerik.bugtracktor.adapters.projects.ProjectsAdapter;
-import com.github.sonerik.bugtracktor.adapters.projects.ProjectsItem;
+import com.github.sonerik.bugtracktor.screens.projects.ProjectActivityNavigator;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
-import com.google.gson.Gson;
 import com.trello.rxlifecycle.RxLifecycle;
 
 import java.util.ArrayList;
@@ -97,9 +96,7 @@ public class MainActivity extends BaseActivity {
 
         RxBus.on(EProjectClicked.class)
              .compose(RxLifecycle.bindActivity(lifecycle()))
-                .subscribe(e -> startActivity(new Intent(this, ProjectActivity.class)
-                                                      .putExtra(ProjectActivity.EXTRA_PROJECT, new Gson().toJson(e.project)))
-                );
+             .subscribe(e -> startActivity(new ProjectActivityNavigator(e.project).build(this)));
     }
 
     @Override

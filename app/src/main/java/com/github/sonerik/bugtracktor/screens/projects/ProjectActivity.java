@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -26,6 +27,7 @@ import com.github.sonerik.bugtracktor.adapters.issues.IssuesItem;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersAdapter;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersItem;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
+import com.github.sonerik.bugtracktor.bundlers.ProjectBundler;
 import com.github.sonerik.bugtracktor.events.EIssueClicked;
 import com.github.sonerik.bugtracktor.models.Issue;
 import com.github.sonerik.bugtracktor.models.Project;
@@ -36,21 +38,23 @@ import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
 import com.github.sonerik.bugtracktor.screens.issue.IssueActivityNavigator;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
-import com.google.gson.Gson;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import icepick.Icepick;
+import icepick.State;
+import io.github.kobakei.grenade.annotation.Extra;
+import io.github.kobakei.grenade.annotation.Navigator;
 import rx.Observable;
 
 /**
  * Created by sonerik on 5/29/16.
  */
+@Navigator
 public class ProjectActivity extends BaseActivity {
-    public static final String EXTRA_PROJECT = "project";
-
     @Inject
     BugTracktorApi api;
 
@@ -88,8 +92,18 @@ public class ProjectActivity extends BaseActivity {
     RecyclerView rvIssues;
     @BindView(R.id.layoutIssuesEmpty)
     LinearLayout layoutIssuesEmpty;
+    @BindView(R.id.btnViewAllMembers)
+    Button btnViewAllMembers;
+    @BindView(R.id.membersLoadingView)
+    TextView membersLoadingView;
+    @BindView(R.id.btnViewAllIssues)
+    Button btnViewAllIssues;
+    @BindView(R.id.issuesLoadingView)
+    TextView issuesLoadingView;
 
-    private Project project;
+    @Extra
+    @State(ProjectBundler.class)
+    Project project;
 
     private BindableRxList<ProjectMembersItem> projectMembers = new BindableRxList<>();
     private ProjectMembersAdapter membersAdapter = new ProjectMembersAdapter(projectMembers);
@@ -106,10 +120,7 @@ public class ProjectActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.getComponent().inject(this);
-
-        if (savedInstanceState == null) {
-            project = new Gson().fromJson(getIntent().getStringExtra(EXTRA_PROJECT), Project.class);
-        }
+        ProjectActivityNavigator.inject(this, getIntent());
 
         Observable.never()
                   .compose(bindToLifecycle())
@@ -168,33 +179,10 @@ public class ProjectActivity extends BaseActivity {
         RecyclerView.LayoutManager layoutManager = rvMembers.getLayoutManager();
         layoutManager.setAutoMeasureEnabled(true);
 
-        List<ProjectMember> members = project.getMembers();
-        if (members != null && !members.isEmpty()) {
-            layoutMembersEmpty.setVisibility(View.GONE);
-            for (ProjectMember projectMember : members) {
-                projectMembers.add(new ProjectMembersItem(projectMember));
-            }
-        } else {
-            layoutMembersEmpty.setVisibility(View.VISIBLE);
-        }
-//        membersAdapter.notifyDataSetChanged();
-
-
         rvIssues.setAdapter(issuesAdapter);
         rvIssues.setNestedScrollingEnabled(false);
         layoutManager = rvMembers.getLayoutManager();
         layoutManager.setAutoMeasureEnabled(true);
-
-        List<Issue> issues = project.getIssues();
-        if (issues != null && !issues.isEmpty()) {
-            layoutIssuesEmpty.setVisibility(View.GONE);
-            for (Issue issue : issues) {
-                issueItems.add(new IssuesItem(issue));
-            }
-        } else {
-            layoutIssuesEmpty.setVisibility(View.VISIBLE);
-        }
-//        issuesAdapter.notifyDataSetChanged();
 
         setEditMode(false);
     }
@@ -207,6 +195,30 @@ public class ProjectActivity extends BaseActivity {
                  // TODO: allow editing only for those who really can
                  startActivity(new IssueActivityNavigator(true, e.issue).build(this));
              });
+    }
+
+    private void updateMembers() {
+        List<ProjectMember> members = project.getMembers();
+        if (members != null && !members.isEmpty()) {
+            layoutMembersEmpty.setVisibility(View.GONE);
+            for (ProjectMember projectMember : members) {
+                projectMembers.add(new ProjectMembersItem(projectMember));
+            }
+        } else {
+            layoutMembersEmpty.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void updateIssues() {
+        List<Issue> issues = project.getIssues();
+        if (issues != null && !issues.isEmpty()) {
+            layoutIssuesEmpty.setVisibility(View.GONE);
+            for (Issue issue : issues) {
+                issueItems.add(new IssuesItem(issue));
+            }
+        } else {
+            layoutIssuesEmpty.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -270,13 +282,13 @@ public class ProjectActivity extends BaseActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(EXTRA_PROJECT, new Gson().toJson(project));
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        project = new Gson().fromJson(savedInstanceState.getString(EXTRA_PROJECT), Project.class);
+        Icepick.restoreInstanceState(this, savedInstanceState);
     }
 
     private void updateProject() {
@@ -284,8 +296,14 @@ public class ProjectActivity extends BaseActivity {
            .compose(Rx.applySchedulers())
            .compose(bindToLifecycle())
            .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
+           .doOnSubscribe(() -> issuesLoadingView.setVisibility(View.VISIBLE))
+           .doOnSubscribe(() -> membersLoadingView.setVisibility(View.VISIBLE))
            .doOnNext(p -> project = p)
+           .doOnTerminate(() -> issuesLoadingView.setVisibility(View.GONE))
+           .doOnTerminate(() -> membersLoadingView.setVisibility(View.GONE))
            .doOnTerminate(() -> progress.setVisibility(View.GONE))
+           .doOnTerminate(this::updateIssues)
+           .doOnTerminate(this::updateMembers)
            .subscribe(p -> init());
     }
 }

@@ -214,6 +214,18 @@
                         android:background="#0fff"
                         android:foreground="?selectableItemBackground"
                         android:text="All Members"
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        />
+
+                    <TextView
+                        android:id="@+id/membersLoadingView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/icMembers"
+                        android:gravity="center"
+                        android:padding="16dp"
+                        android:text="Loading..."
                         />
 
                 </RelativeLayout>
@@ -300,6 +312,18 @@
                         android:background="#0fff"
                         android:foreground="?selectableItemBackground"
                         android:text="All Issues"
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        />
+
+                    <TextView
+                        android:id="@+id/issuesLoadingView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/icIssues"
+                        android:gravity="center"
+                        android:padding="16dp"
+                        android:text="Loading..."
                         />
 
                 </RelativeLayout>
