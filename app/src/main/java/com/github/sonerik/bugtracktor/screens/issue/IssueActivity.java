@@ -32,6 +32,7 @@ import com.github.sonerik.bugtracktor.events.EAttachmentClicked;
 import com.github.sonerik.bugtracktor.models.Issue;
 import com.github.sonerik.bugtracktor.models.IssueAttachment;
 import com.github.sonerik.bugtracktor.models.User;
+import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
 import com.github.sonerik.bugtracktor.ui.views.DummyNestedScrollView;
 import com.github.sonerik.bugtracktor.ui.views.TintableMenuToolbar;
@@ -41,7 +42,6 @@ import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -52,6 +52,7 @@ import icepick.Icepick;
 import icepick.State;
 import io.github.kobakei.grenade.annotation.Extra;
 import io.github.kobakei.grenade.annotation.Navigator;
+import rx.Observable;
 
 /**
  * Created by sonerik on 6/2/16.
@@ -123,7 +124,7 @@ public class IssueActivity extends BaseActivity {
     @State(IssueBundler.class)
     Issue issue;
 
-    private List<AttachmentsItem> attachmentItems = new ArrayList<>();
+    private BindableRxList<AttachmentsItem> attachmentItems = new BindableRxList<>();
     private AttachmentsAdapter attachmentsAdapter = new AttachmentsAdapter(attachmentItems);
 
     @Override
@@ -136,12 +137,12 @@ public class IssueActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         App.getComponent().inject(this);
         IssueActivityNavigator.inject(this, getIntent());
-//        Icepick.restoreInstanceState(this, getIntent().getExtras());
-//
-//        if (savedInstanceState == null) {
-//            canManage = getIntent().getBooleanExtra(EXTRA_CAN_MANAGE, false);
-//            issue = new Gson().fromJson(getIntent().getStringExtra(EXTRA_ISSUE), Issue.class);
-//        }
+
+        Observable.never()
+                  .compose(bindToLifecycle())
+                  .doOnSubscribe(() -> attachmentItems.bind(attachmentsAdapter))
+                  .doOnTerminate(() -> attachmentItems.unbind())
+                  .subscribe();
     }
 
     @Override
@@ -191,7 +192,8 @@ public class IssueActivity extends BaseActivity {
         mainToolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.edit:
-                    setEditMode(true);
+                    setEditMode(true, true);
+                    updateAttachments();
                     break;
                 case R.id.save:
                     saveIssueChanges();
@@ -245,9 +247,9 @@ public class IssueActivity extends BaseActivity {
         RecyclerView.LayoutManager layoutManager = rvAttachments.getLayoutManager();
         layoutManager.setAutoMeasureEnabled(true);
 
-        updateAttachments();
+        setEditMode(editMode, false);
 
-        setEditMode(editMode);
+        updateAttachments();
     }
 
     private void updateAttachments() {
@@ -256,15 +258,14 @@ public class IssueActivity extends BaseActivity {
         if (attachments != null && !attachments.isEmpty()) {
             cardAttachments.setVisibility(View.VISIBLE);
             for (IssueAttachment attachment : attachments) {
-                attachmentItems.add(new AttachmentsItem(attachment));
+                attachmentItems.add(new AttachmentsItem(attachment, editMode));
             }
         } else {
             cardAttachments.setVisibility(View.GONE);
         }
-        attachmentsAdapter.notifyDataSetChanged();
     }
 
-    private void setEditMode(boolean state) {
+    private void setEditMode(boolean state, boolean expandToolbar) {
         if (!canManage) state = false;
         editMode = state;
 
@@ -282,8 +283,10 @@ public class IssueActivity extends BaseActivity {
             etDescription.setBackgroundTintMode(PorterDuff.Mode.SRC_ATOP);
 
             mainToolbar.inflateMenu(R.menu.issue_edit);
-            mainAppbar.setExpanded(true, true);
-            nestedScrollView.fullScroll(View.FOCUS_UP);
+            if (expandToolbar) {
+                mainAppbar.setExpanded(true, true);
+                nestedScrollView.fullScroll(View.FOCUS_UP);
+            }
 
 
             etShortDescription.setFocusable(true);
@@ -350,15 +353,15 @@ public class IssueActivity extends BaseActivity {
                 break;
             case REMOVE:
                 issue.getAttachments().remove(e.attachment);
-                updateAttachments();
+                attachmentItems.remove(new AttachmentsItem(e.attachment, editMode));
                 break;
         }
     }
 
     private void updateIssue() {
         api.getIssue(issue.getProject().getId(), issue.getIssueIndex())
-           .compose(Rx.applySchedulers())
            .compose(bindToLifecycle())
+           .compose(Rx.applySchedulers())
            .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
            .doOnNext(issue -> this.issue = issue)
            .doOnTerminate(() -> progress.setVisibility(View.GONE))
@@ -367,9 +370,9 @@ public class IssueActivity extends BaseActivity {
 
     private void saveIssueChanges() {
         api.updateIssue(issue.getProject().getId(), issue.getIssueIndex(), issue)
-           .compose(Rx.applySchedulers())
            .compose(bindToLifecycle())
-           .doOnSubscribe(() -> setEditMode(false))
+           .compose(Rx.applySchedulers())
+           .doOnSubscribe(() -> setEditMode(false, false))
            .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
            .doOnNext(issue -> this.issue = issue)
            .doOnTerminate(() -> progress.setVisibility(View.GONE))
@@ -377,11 +380,11 @@ public class IssueActivity extends BaseActivity {
     }
 
     private void onAttachmentSelected() {
-        issue.getAttachments().add(null);
+        attachmentItems.add(null);
     }
 
-    private void onAttachmentUploaded(String url) {
-        issue.getAttachments().remove(null);
-        updateAttachments();
+    private void onAttachmentUploaded(IssueAttachment attachment) {
+        attachmentItems.remove(null);
+        attachmentItems.add(new AttachmentsItem(attachment, editMode));
     }
 }

@@ -10,12 +10,15 @@ import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
+@EqualsAndHashCode(of = "issueAttachment")
 @RequiredArgsConstructor
 public class AttachmentsItem extends AbstractFlexibleItem<AttachmentsViewHolder> {
 
     private final IssueAttachment issueAttachment;
+    private final boolean editMode;
 
     @Override
     public int getLayoutRes() {
@@ -30,11 +33,7 @@ public class AttachmentsItem extends AbstractFlexibleItem<AttachmentsViewHolder>
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, AttachmentsViewHolder holder, int position, List payloads) {
         holder.setIssueAttachment(issueAttachment);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return issueAttachment.equals(o);
+        holder.setEditMode(editMode);
     }
 
 }

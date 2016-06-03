@@ -31,18 +31,19 @@ import com.github.sonerik.bugtracktor.models.Issue;
 import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
 import com.github.sonerik.bugtracktor.models.User;
+import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
 import com.github.sonerik.bugtracktor.screens.issue.IssueActivityNavigator;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import rx.Observable;
 
 /**
  * Created by sonerik on 5/29/16.
@@ -90,10 +91,10 @@ public class ProjectActivity extends BaseActivity {
 
     private Project project;
 
-    private List<ProjectMembersItem> projectMembers = new ArrayList<>();
+    private BindableRxList<ProjectMembersItem> projectMembers = new BindableRxList<>();
     private ProjectMembersAdapter membersAdapter = new ProjectMembersAdapter(projectMembers);
 
-    private List<IssuesItem> issueItems = new ArrayList<>();
+    private BindableRxList<IssuesItem> issueItems = new BindableRxList<>();
     private IssuesAdapter issuesAdapter = new IssuesAdapter(issueItems);
 
     @Override
@@ -109,6 +110,18 @@ public class ProjectActivity extends BaseActivity {
         if (savedInstanceState == null) {
             project = new Gson().fromJson(getIntent().getStringExtra(EXTRA_PROJECT), Project.class);
         }
+
+        Observable.never()
+                  .compose(bindToLifecycle())
+                  .doOnSubscribe(() -> {
+                      issueItems.bind(issuesAdapter);
+                      projectMembers.bind(membersAdapter);
+                  })
+                  .doOnTerminate(() -> {
+                      issueItems.unbind();
+                      projectMembers.unbind();
+                  })
+                  .subscribe();
     }
 
     @Override
@@ -164,7 +177,7 @@ public class ProjectActivity extends BaseActivity {
         } else {
             layoutMembersEmpty.setVisibility(View.VISIBLE);
         }
-        membersAdapter.notifyDataSetChanged();
+//        membersAdapter.notifyDataSetChanged();
 
 
         rvIssues.setAdapter(issuesAdapter);
@@ -181,7 +194,7 @@ public class ProjectActivity extends BaseActivity {
         } else {
             layoutIssuesEmpty.setVisibility(View.VISIBLE);
         }
-        issuesAdapter.notifyDataSetChanged();
+//        issuesAdapter.notifyDataSetChanged();
 
         setEditMode(false);
     }

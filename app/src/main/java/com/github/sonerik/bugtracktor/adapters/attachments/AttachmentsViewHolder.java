@@ -30,9 +30,9 @@ public class AttachmentsViewHolder extends FlexibleViewHolder {
     }
 
     public void setIssueAttachment(IssueAttachment attachment) {
+        image.setBackgroundResource(R.color.md_grey_800);
         if (attachment == null) {
             progress.setVisibility(View.VISIBLE);
-            image.setBackgroundResource(R.color.md_grey_800);
         } else {
             progress.setVisibility(View.GONE);
             Glide.with(image.getContext())
@@ -42,6 +42,10 @@ public class AttachmentsViewHolder extends FlexibleViewHolder {
 
         layout.setOnClickListener(v -> RxBus.publish(new EAttachmentClicked(attachment, EAttachmentClicked.Type.ITEM)));
         icRemove.setOnClickListener(v -> RxBus.publish(new EAttachmentClicked(attachment, EAttachmentClicked.Type.REMOVE)));
+    }
+
+    public void setEditMode(boolean state) {
+        icRemove.setVisibility(state ? View.VISIBLE : View.GONE);
     }
 }
 

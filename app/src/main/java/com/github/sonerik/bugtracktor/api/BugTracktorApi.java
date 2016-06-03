@@ -51,7 +51,7 @@ public class BugTracktorApi {
                       .doOnNext(result -> prefs.setToken(result.getToken()));
     }
 
-    public Observable<String> addAttachment(Issue issue, Object attachment) {
+    public Observable<IssueAttachment> addAttachment(Issue issue, Object attachment) {
         return uploadImage(attachment)
                 .concatMap(url -> {
                     IssueAttachment issueAttachment = new IssueAttachment();
@@ -59,7 +59,7 @@ public class BugTracktorApi {
                     if (issue.getAttachments() == null)
                         issue.setAttachments(new ArrayList<>());
                     issue.getAttachments().add(issueAttachment);
-                    return Observable.just(url);
+                    return Observable.just(issueAttachment);
                 })
                 .onErrorReturn(null);
     }
