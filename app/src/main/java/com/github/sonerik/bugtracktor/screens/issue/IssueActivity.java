@@ -41,6 +41,7 @@ import com.github.sonerik.bugtracktor.ui.views.TintableMenuToolbar;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.io.FileNotFoundException;
@@ -171,10 +172,11 @@ public class IssueActivity extends BaseActivity {
              .compose(bindToLifecycle())
              .subscribe(this::onAttachmentClicked);
         RxBus.on(EProjectMemberClicked.class)
-                .compose(bindToLifecycle())
-                .subscribe(e -> {
-                    Debug.d("Member selected: "+e.member);
-                });
+             .compose(bindToLifecycle())
+             .subscribe(e -> {
+                 issue.setAssignees(Lists.newArrayList(e.member.getUser()));
+                 init();
+             });
     }
 
     private void init() {

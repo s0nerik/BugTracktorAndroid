@@ -105,6 +105,9 @@ public class ProjectActivity extends BaseActivity {
     @State(ProjectBundler.class)
     Project project;
 
+    @State
+    boolean editMode;
+
     private BindableRxList<ProjectMembersItem> projectMembers = new BindableRxList<>();
     private ProjectMembersAdapter projectMembersAdapter = new ProjectMembersAdapter(projectMembers);
 
@@ -195,7 +198,7 @@ public class ProjectActivity extends BaseActivity {
         if (members != null && !members.isEmpty()) {
             layoutMembersEmpty.setVisibility(View.GONE);
             for (ProjectMember projectMember : members) {
-                projectMembers.add(new ProjectMembersItem(projectMember));
+                projectMembers.add(new ProjectMembersItem(projectMember, editMode));
             }
         } else {
             layoutMembersEmpty.setVisibility(View.VISIBLE);
@@ -222,6 +225,8 @@ public class ProjectActivity extends BaseActivity {
     }
 
     private void setEditMode(boolean state) {
+        editMode = state;
+
         mainToolbar.getMenu().clear();
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mainAppbar.getLayoutParams();
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();

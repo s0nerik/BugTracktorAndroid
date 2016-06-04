@@ -69,5 +69,9 @@ public class ProjectMembersViewHolder extends FlexibleViewHolder {
             menu.show();
         });
     }
+
+    public void setEditMode(boolean editMode) {
+        btnOverflow.setVisibility(editMode ? View.VISIBLE : View.GONE);
+    }
 }
 

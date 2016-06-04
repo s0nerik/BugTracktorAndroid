@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class ProjectMembersItem extends AbstractFlexibleItem<ProjectMembersViewHolder> {
 
     private final ProjectMember projectMember;
+    private final boolean editMode;
 
     @Override
     public int getLayoutRes() {
@@ -30,6 +31,7 @@ public class ProjectMembersItem extends AbstractFlexibleItem<ProjectMembersViewH
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, ProjectMembersViewHolder holder, int position, List payloads) {
         holder.setProjectMember(projectMember);
+        holder.setEditMode(editMode);
     }
 
     @Override
