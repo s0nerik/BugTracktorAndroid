@@ -72,18 +72,17 @@ public class CreateProjectActivity extends BaseActivity {
         if (!fullDescription.getText().toString().isEmpty())
             project.setFullDescription(fullDescription.getText().toString());
 
-        sub.add(
-                api.createProject(project)
-                   .compose(Rx.applySchedulers())
-                   .doOnSubscribe(() -> {
-                       progress.setVisibility(View.VISIBLE);
-                       btnCancel.setVisibility(View.GONE);
-                       btnCreate.setVisibility(View.GONE);
-                       editLayout.setVisibility(View.GONE);
-                   })
-                   .doOnTerminate(this::finish)
-                   .subscribe()
-        );
+        api.createProject(project)
+           .compose(bindToLifecycle())
+           .compose(Rx.applySchedulers())
+           .doOnSubscribe(() -> {
+               progress.setVisibility(View.VISIBLE);
+               btnCancel.setVisibility(View.GONE);
+               btnCreate.setVisibility(View.GONE);
+               editLayout.setVisibility(View.GONE);
+           })
+           .doOnTerminate(this::finish)
+           .subscribe();
     }
 
     @OnClick(R.id.btnCancel)

@@ -81,4 +81,6 @@ dependencies {
     compile 'com.github.kobakei.grenade:library:0.2.1'
 
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
+
+    compile group: 'com.google.guava', name: 'guava', version: '19.0'
 }

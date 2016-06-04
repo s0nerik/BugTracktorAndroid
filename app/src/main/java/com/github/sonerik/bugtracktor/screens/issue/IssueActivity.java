@@ -38,21 +38,21 @@ import com.github.sonerik.bugtracktor.ui.views.DummyNestedScrollView;
 import com.github.sonerik.bugtracktor.ui.views.TintableMenuToolbar;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
+import com.google.common.collect.ImmutableMap;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import icepick.Icepick;
 import icepick.State;
 import io.github.kobakei.grenade.annotation.Extra;
 import io.github.kobakei.grenade.annotation.Navigator;
-import rx.Observable;
 
 /**
  * Created by sonerik on 6/2/16.
@@ -128,6 +128,11 @@ public class IssueActivity extends BaseActivity {
     private AttachmentsAdapter attachmentsAdapter = new AttachmentsAdapter(attachmentItems);
 
     @Override
+    protected Map<BindableRxList, RecyclerView.Adapter> getBindableLists() {
+        return ImmutableMap.of(attachmentItems, attachmentsAdapter);
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.activity_issue;
     }
@@ -137,12 +142,6 @@ public class IssueActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         App.getComponent().inject(this);
         IssueActivityNavigator.inject(this, getIntent());
-
-        Observable.never()
-                  .compose(bindToLifecycle())
-                  .doOnSubscribe(() -> attachmentItems.bind(attachmentsAdapter))
-                  .doOnTerminate(() -> attachmentItems.unbind())
-                  .subscribe();
     }
 
     @Override
@@ -168,18 +167,6 @@ public class IssueActivity extends BaseActivity {
         RxBus.on(EAttachmentClicked.class)
              .compose(bindToLifecycle())
              .subscribe(this::onAttachmentClicked);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        Icepick.restoreInstanceState(this, savedInstanceState);
     }
 
     private void init() {

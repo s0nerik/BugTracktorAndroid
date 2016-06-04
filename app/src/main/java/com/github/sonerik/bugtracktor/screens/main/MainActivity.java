@@ -20,16 +20,18 @@ import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.events.EProjectClicked;
 import com.github.sonerik.bugtracktor.models.Permission;
 import com.github.sonerik.bugtracktor.models.Project;
+import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
 import com.github.sonerik.bugtracktor.screens.create_project.CreateProjectActivity;
 import com.github.sonerik.bugtracktor.screens.login.LoginActivity;
 import com.github.sonerik.bugtracktor.screens.projects.ProjectActivityNavigator;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
+import com.google.common.collect.ImmutableMap;
 import com.trello.rxlifecycle.RxLifecycle;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -50,10 +52,15 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.progress)
     ProgressBar progress;
 
-    private List<ProjectsItem> projectItems = new ArrayList<>();
+    private BindableRxList<ProjectsItem> projectItems = new BindableRxList<>();
     private ProjectsAdapter projectsAdapter = new ProjectsAdapter(projectItems);
 
     private static boolean wasPaused = false;
+
+    @Override
+    protected Map<BindableRxList, RecyclerView.Adapter> getBindableLists() {
+        return ImmutableMap.of(projectItems, projectsAdapter);
+    }
 
     @Override
     protected int getLayoutId() {
@@ -128,23 +135,21 @@ public class MainActivity extends BaseActivity {
     }
 
     private void updateProjects() {
-        sub.add(
-                api.getProjects()
-                   .compose(Rx.applySchedulers())
-                   .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
-                   .doOnTerminate(() -> progress.setVisibility(View.GONE))
-                   .subscribe(this::initProjects, this::handleRequestForbidden)
-        );
+        api.getProjects()
+           .compose(bindToLifecycle())
+           .compose(Rx.applySchedulers())
+           .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
+           .doOnTerminate(() -> progress.setVisibility(View.GONE))
+           .subscribe(this::initProjects, this::handleRequestForbidden);
     }
 
     private void checkCreateProjectPermission() {
-        sub.add(
-                api.getPermissions(null)
-                   .map(this::checkCreateProjectPermission)
-                   .compose(Rx.applySchedulers())
-                   .doOnSubscribe(() -> fab.setVisibility(View.GONE))
-                   .subscribe(this::initFab, this::handleRequestForbidden)
-        );
+        api.getPermissions(null)
+           .map(this::checkCreateProjectPermission)
+           .compose(bindToLifecycle())
+           .compose(Rx.applySchedulers())
+           .doOnSubscribe(() -> fab.setVisibility(View.GONE))
+           .subscribe(this::initFab, this::handleRequestForbidden);
     }
 
     protected void handleRequestForbidden(Throwable e) {
@@ -172,7 +177,6 @@ public class MainActivity extends BaseActivity {
         for (Project project : projects) {
             projectItems.add(new ProjectsItem(project));
         }
-        projectsAdapter.notifyDataSetChanged();
     }
 
     @OnClick(R.id.fab)

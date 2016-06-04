@@ -10,19 +10,24 @@ import com.github.sonerik.bugtracktor.adapters.issues.IssuesAdapter;
 import com.github.sonerik.bugtracktor.adapters.issues.IssuesItem;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.models.Issue;
+import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
+import com.google.common.collect.ImmutableMap;
 import com.trello.rxlifecycle.RxLifecycle;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import icepick.State;
+import io.github.kobakei.grenade.annotation.Extra;
+import io.github.kobakei.grenade.annotation.Navigator;
 
 /**
  * Created by Alex on 6/1/2016.
  */
+@Navigator
 public class ProjectIssuesActivity extends BaseActivity {
 
     @Inject
@@ -31,12 +36,12 @@ public class ProjectIssuesActivity extends BaseActivity {
     @BindView(R.id.recycler)
     RecyclerView recycler;
 
-    public static final String PROJECT_ID = "PROJECT_ID";
-
-    private List<IssuesItem> issueItems = new ArrayList<>();
+    private BindableRxList<IssuesItem> issueItems = new BindableRxList<>();
     private IssuesAdapter adapter = new IssuesAdapter(issueItems);
 
-    private int projectId;
+    @Extra
+    @State
+    int projectId;
 
     @Override
     protected int getLayoutId() {
@@ -44,13 +49,15 @@ public class ProjectIssuesActivity extends BaseActivity {
     }
 
     @Override
+    protected Map<BindableRxList, RecyclerView.Adapter> getBindableLists() {
+        return ImmutableMap.of(issueItems, adapter);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.getComponent().inject(this);
-
-        if (savedInstanceState == null) {
-            projectId = getIntent().getIntExtra(PROJECT_ID, -1);
-        }
+        ProjectIssuesActivityNavigator.inject(this, getIntent());
     }
 
     @Override
@@ -65,7 +72,6 @@ public class ProjectIssuesActivity extends BaseActivity {
                for (Issue issue : issues) {
                    issueItems.add(new IssuesItem(issue));
                }
-               adapter.notifyDataSetChanged();
            });
     }
 }

@@ -103,23 +103,21 @@ public class LoginActivity extends BaseActivity {
     @OnClick(R.id.btnLogin)
     public void onClick() {
         if (loginForm.getVisibility() == View.VISIBLE) {
-            sub.add(
-                    api.login(loginEmail.getText().toString(), loginPassword.getText().toString())
-                       .compose(Rx.applySchedulers())
-                       .subscribe(this::onLoggedIn, this::onLogInError)
-            );
+            api.login(loginEmail.getText().toString(), loginPassword.getText().toString())
+               .compose(bindToLifecycle())
+               .compose(Rx.applySchedulers())
+               .subscribe(this::onLoggedIn, this::onLogInError);
         } else {
             val user = new User();
             user.setEmail(registerEmail.getText().toString());
             user.setPassword(registerPassword.getText().toString());
             user.setNickname(nickname.getText().toString().isEmpty() ? null : nickname.getText().toString());
             user.setRealName(realName.getText().toString().isEmpty() ? null : realName.getText().toString());
-            sub.add(
-                    api.register(user)
-                       .concatMap(createdUser -> api.login(createdUser.getEmail(), createdUser.getPassword()))
-                       .compose(Rx.applySchedulers())
-                       .subscribe(this::onLoggedIn, this::onLogInError)
-            );
+            api.register(user)
+               .concatMap(createdUser -> api.login(createdUser.getEmail(), createdUser.getPassword()))
+               .compose(bindToLifecycle())
+               .compose(Rx.applySchedulers())
+               .subscribe(this::onLoggedIn, this::onLogInError);
         }
     }
 

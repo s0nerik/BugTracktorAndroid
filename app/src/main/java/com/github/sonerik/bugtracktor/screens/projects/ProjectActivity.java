@@ -38,17 +38,17 @@ import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
 import com.github.sonerik.bugtracktor.screens.issue.IssueActivityNavigator;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
+import com.google.common.collect.ImmutableMap;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import icepick.Icepick;
 import icepick.State;
 import io.github.kobakei.grenade.annotation.Extra;
 import io.github.kobakei.grenade.annotation.Navigator;
-import rx.Observable;
 
 /**
  * Created by sonerik on 5/29/16.
@@ -106,10 +106,15 @@ public class ProjectActivity extends BaseActivity {
     Project project;
 
     private BindableRxList<ProjectMembersItem> projectMembers = new BindableRxList<>();
-    private ProjectMembersAdapter membersAdapter = new ProjectMembersAdapter(projectMembers);
+    private ProjectMembersAdapter projectMembersAdapter = new ProjectMembersAdapter(projectMembers);
 
     private BindableRxList<IssuesItem> issueItems = new BindableRxList<>();
     private IssuesAdapter issuesAdapter = new IssuesAdapter(issueItems);
+
+    @Override
+    protected Map<BindableRxList, RecyclerView.Adapter> getBindableLists() {
+        return ImmutableMap.of(issueItems, issuesAdapter, projectMembers, projectMembersAdapter);
+    }
 
     @Override
     protected int getLayoutId() {
@@ -121,18 +126,6 @@ public class ProjectActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         App.getComponent().inject(this);
         ProjectActivityNavigator.inject(this, getIntent());
-
-        Observable.never()
-                  .compose(bindToLifecycle())
-                  .doOnSubscribe(() -> {
-                      issueItems.bind(issuesAdapter);
-                      projectMembers.bind(membersAdapter);
-                  })
-                  .doOnTerminate(() -> {
-                      issueItems.unbind();
-                      projectMembers.unbind();
-                  })
-                  .subscribe();
     }
 
     @Override
@@ -174,7 +167,7 @@ public class ProjectActivity extends BaseActivity {
             txtAuthor.setText(creator.getRealName());
         }
 
-        rvMembers.setAdapter(membersAdapter);
+        rvMembers.setAdapter(projectMembersAdapter);
         rvMembers.setNestedScrollingEnabled(false);
         RecyclerView.LayoutManager layoutManager = rvMembers.getLayoutManager();
         layoutManager.setAutoMeasureEnabled(true);
@@ -277,18 +270,6 @@ public class ProjectActivity extends BaseActivity {
             etProjectShortDescription.setFocusable(false);
             etProjectShortDescription.setFocusableInTouchMode(false);
         }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        Icepick.restoreInstanceState(this, savedInstanceState);
     }
 
     private void updateProject() {

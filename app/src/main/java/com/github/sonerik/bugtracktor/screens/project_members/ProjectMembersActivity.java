@@ -9,18 +9,23 @@ import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersAdapter;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersItem;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
+import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
+import com.google.common.collect.ImmutableMap;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import icepick.State;
+import io.github.kobakei.grenade.annotation.Extra;
+import io.github.kobakei.grenade.annotation.Navigator;
 
 /**
  * Created by Alex on 6/1/2016.
  */
+@Navigator
 public class ProjectMembersActivity extends BaseActivity {
     @Inject
     BugTracktorApi api;
@@ -28,12 +33,17 @@ public class ProjectMembersActivity extends BaseActivity {
     @BindView(R.id.recycler)
     RecyclerView recycler;
 
-    public static final String PROJECT_ID = "PROJECT_ID";
-
-    private List<ProjectMembersItem> memberItems = new ArrayList<>();
+    private BindableRxList<ProjectMembersItem> memberItems = new BindableRxList<>();
     private ProjectMembersAdapter adapter = new ProjectMembersAdapter(memberItems);
 
-    private int projectId;
+    @Extra
+    @State
+    int projectId;
+
+    @Override
+    protected Map<BindableRxList, RecyclerView.Adapter> getBindableLists() {
+        return ImmutableMap.of(memberItems, adapter);
+    }
 
     @Override
     protected int getLayoutId() {
@@ -44,10 +54,7 @@ public class ProjectMembersActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.getComponent().inject(this);
-
-        if (savedInstanceState == null) {
-            projectId = getIntent().getIntExtra(PROJECT_ID, -1);
-        }
+        ProjectMembersActivityNavigator.inject(this, getIntent());
     }
 
     @Override
