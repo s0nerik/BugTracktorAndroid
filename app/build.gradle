@@ -85,5 +85,7 @@ dependencies {
 
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
 
-    compile group: 'com.google.guava', name: 'guava', version: '19.0'
+    compile 'com.google.guava:guava:19.0'
+
+    compile 'ru.noties:debug:2.0.2'
 }

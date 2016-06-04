@@ -5,6 +5,7 @@ import android.app.Application;
 import com.cloudinary.Cloudinary;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.api.BugTracktorWebService;
+import com.github.sonerik.bugtracktor.models.Token;
 import com.github.sonerik.bugtracktor.prefs.MainPrefs;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -19,6 +20,7 @@ import dagger.Provides;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -30,8 +32,8 @@ import rx.schedulers.Schedulers;
  */
 @Module
 public class WebServiceModule {
-        private static final String BASE_URL = "https://bug-tracktor.herokuapp.com/v1/";
-//    private static final String BASE_URL = "http://192.168.0.103:10010/v1/";
+//    private static final String BASE_URL = "https://bug-tracktor.herokuapp.com/v1/";
+    private static final String BASE_URL = "http://192.168.0.103:10010/v1/";
 
     private static final String CLOUDINARY_URL = "cloudinary://838498517918848:dh_xITvo3G_4y39whY7wGjz7YHs@s0nerik";
 
@@ -61,21 +63,45 @@ public class WebServiceModule {
                 .readTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(chain -> {
                     Request original = chain.request();
-
                     String token = prefs.getToken();
+                    Response response;
                     if (!token.isEmpty()) {
                         // Request customization: add request headers
-                        Request.Builder requestBuilder = original.newBuilder()
-                                                                 .header("api_key", token)
-                                                                 .method(original.method(), original.body());
+                        Request request = original.newBuilder()
+                                                  .header("api_key", token)
+                                                  .method(original.method(), original.body())
+                                                  .build();
+                        response = chain.proceed(request);
 
-                        Request request = requestBuilder.build();
-                        return chain.proceed(request);
+                        // Handle invalid token case (tokens are valid only for 6 hours)
+                        if(response.code() == 403 && !prefs.getEmail().isEmpty() && !prefs.getPassword().isEmpty()) {
+                            Request tokenRequest = new Request.Builder()
+                                    .get()
+                                    .url(BASE_URL + "get_token")
+                                    .addHeader("email", prefs.getEmail())
+                                    .addHeader("password", prefs.getPassword())
+                                    .build();
+                            Response tokenResponse = chain.proceed(tokenRequest);
+                            if (tokenResponse.isSuccessful()) {
+                                Token newToken = new Gson().fromJson(tokenResponse.body().string(), Token.class);
+                                prefs.setToken(newToken.getToken());
+
+                                // Proceed with original request
+                                request = original.newBuilder()
+                                                  .header("api_key", newToken.getToken())
+                                                  .method(original.method(), original.body())
+                                                  .build();
+                                response = chain.proceed(request);
+                            }
+                        }
                     } else {
-                        return chain.proceed(original);
+                        response = chain.proceed(original);
                     }
+
+                    return response;
                 })
-                .cache(cache)
+// TODO: enable cache after finishing testing
+//                .cache(cache)
                 .build();
     }
 

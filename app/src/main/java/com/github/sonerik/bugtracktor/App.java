@@ -7,6 +7,8 @@ import com.github.sonerik.bugtracktor.di.components.DaggerAppComponent;
 import com.github.sonerik.bugtracktor.di.modules.AppModule;
 import com.github.sonerik.bugtracktor.di.modules.WebServiceModule;
 
+import lombok.experimental.Delegate;
+
 /**
  * Created by sonerik on 5/28/16.
  */
@@ -15,6 +17,7 @@ public class App extends Application {
 
     private static App instance;
 
+    @Delegate
     private AppComponent appComponent;
 
     @Override
@@ -33,5 +36,9 @@ public class App extends Application {
 
     public static AppComponent getComponent() {
         return instance.appComponent;
+    }
+
+    public static App get() {
+        return instance;
     }
 }

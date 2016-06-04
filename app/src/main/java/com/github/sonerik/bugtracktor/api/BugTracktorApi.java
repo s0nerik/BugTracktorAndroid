@@ -44,10 +44,14 @@ public class BugTracktorApi {
 
     public void logOut() {
         prefs.removeToken();
+        prefs.removeEmail();
+        prefs.removePassword();
     }
 
     public Observable<Token> login(String email, String password) {
         return service.login(email, password)
+                      .doOnNext(result -> prefs.setEmail(email))
+                      .doOnNext(result -> prefs.setPassword(password))
                       .doOnNext(result -> prefs.setToken(result.getToken()));
     }
 

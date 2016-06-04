@@ -8,6 +8,7 @@ import com.github.sonerik.bugtracktor.screens.login.LoginActivity;
 import com.github.sonerik.bugtracktor.screens.main.MainActivity;
 import com.github.sonerik.bugtracktor.screens.project_issues.ProjectIssuesActivity;
 import com.github.sonerik.bugtracktor.screens.project_members.ProjectMembersActivity;
+import com.github.sonerik.bugtracktor.screens.project_members.SelectProjectMemberActivity;
 import com.github.sonerik.bugtracktor.screens.projects.ProjectActivity;
 
 import javax.inject.Singleton;
@@ -27,4 +28,5 @@ public interface AppComponent {
     void inject(ProjectIssuesActivity a);
     void inject(ProjectMembersActivity a);
     void inject(IssueActivity a);
+    void inject(SelectProjectMemberActivity a);
 }

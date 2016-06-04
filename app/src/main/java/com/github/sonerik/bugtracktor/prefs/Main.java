@@ -10,4 +10,8 @@ import net.yslibrary.simplepreferences.annotation.Preferences;
 public class Main {
     @Key
     protected String token = "";
+    @Key
+    protected String email = "";
+    @Key
+    protected String password = "";
 }

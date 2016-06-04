@@ -29,11 +29,13 @@ import com.github.sonerik.bugtracktor.adapters.attachments.AttachmentsItem;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.bundlers.IssueBundler;
 import com.github.sonerik.bugtracktor.events.EAttachmentClicked;
+import com.github.sonerik.bugtracktor.events.EProjectMemberClicked;
 import com.github.sonerik.bugtracktor.models.Issue;
 import com.github.sonerik.bugtracktor.models.IssueAttachment;
 import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
+import com.github.sonerik.bugtracktor.screens.project_members.SelectProjectMemberActivityNavigator;
 import com.github.sonerik.bugtracktor.ui.views.DummyNestedScrollView;
 import com.github.sonerik.bugtracktor.ui.views.TintableMenuToolbar;
 import com.github.sonerik.bugtracktor.utils.Rx;
@@ -53,6 +55,7 @@ import butterknife.OnClick;
 import icepick.State;
 import io.github.kobakei.grenade.annotation.Extra;
 import io.github.kobakei.grenade.annotation.Navigator;
+import ru.noties.debug.Debug;
 
 /**
  * Created by sonerik on 6/2/16.
@@ -142,6 +145,7 @@ public class IssueActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         App.getComponent().inject(this);
         IssueActivityNavigator.inject(this, getIntent());
+        initListeners();
     }
 
     @Override
@@ -160,17 +164,21 @@ public class IssueActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         init();
-        initListeners();
     }
 
     private void initListeners() {
         RxBus.on(EAttachmentClicked.class)
              .compose(bindToLifecycle())
              .subscribe(this::onAttachmentClicked);
+        RxBus.on(EProjectMemberClicked.class)
+                .compose(bindToLifecycle())
+                .subscribe(e -> {
+                    Debug.d("Member selected: "+e.member);
+                });
     }
 
     private void init() {
-        Log.d(App.TAG, issue.toString());
+        Debug.d("Init:\n"+issue);
 
         mainCollapsing.setTitle(issue.getShortDescription());
         mainToolbar.inflateMenu(R.menu.project_normal);
@@ -299,6 +307,12 @@ public class IssueActivity extends BaseActivity {
             icAssignee.setVisibility(View.VISIBLE);
             icChangeAssignee.setVisibility(View.GONE);
         }
+    }
+
+    @OnClick(R.id.btnAssignee)
+    void onAssigneeClicked() {
+        if (!editMode) return;
+        startActivity(new SelectProjectMemberActivityNavigator(issue.getProject().getId()).build(this));
     }
 
     @OnClick(R.id.icAddAttachment)
