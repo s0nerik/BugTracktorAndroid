@@ -36,6 +36,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
 
 /**
  * Created by sonerik on 5/28/16.
@@ -80,8 +81,7 @@ public class MainActivity extends BaseActivity {
         if (!api.isLoggedIn()) {
             startActivityForResult(new Intent(this, LoginActivity.class), LoginActivity.REQUEST_LOGIN);
         } else {
-            updateProjects();
-            checkCreateProjectPermission();
+            updateData();
         }
     }
 
@@ -96,8 +96,7 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         if (wasPaused) {
             wasPaused = false;
-            updateProjects();
-            checkCreateProjectPermission();
+            updateData();
         }
 
         RxBus.on(EProjectClicked.class)
@@ -128,37 +127,32 @@ public class MainActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LoginActivity.REQUEST_LOGIN && resultCode == RESULT_OK) {
             Toast.makeText(this, "Logged in successfully!", Toast.LENGTH_LONG).show();
-            updateProjects();
-            checkCreateProjectPermission();
+            updateData();
         }
     }
 
-    private void updateProjects() {
-        api.getProjects()
-           .compose(bindToLifecycle())
-           .compose(Rx.applySchedulers())
-           .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
-           .doOnTerminate(() -> progress.setVisibility(View.GONE))
-           .subscribe(this::initProjects);
-//           .subscribe(this::initProjects, this::handleRequestForbidden);
+    private Observable<List<Project>> updateProjects() {
+        return api.getProjects()
+                  .compose(bindToLifecycle())
+                  .compose(Rx.applySchedulers())
+                  .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
+                  .doOnTerminate(() -> progress.setVisibility(View.GONE))
+                  .doOnNext(this::initProjects);
     }
 
-    private void checkCreateProjectPermission() {
-        api.getPermissions(null)
-           .map(this::checkCreateProjectPermission)
-           .compose(bindToLifecycle())
-           .compose(Rx.applySchedulers())
-           .doOnSubscribe(() -> fab.setVisibility(View.GONE))
-           .subscribe(this::initFab);
-//           .subscribe(this::initFab, this::handleRequestForbidden);
+    private Observable<Boolean> checkCreateProjectPermission() {
+        return api.getPermissions(null)
+                  .map(this::checkCreateProjectPermission)
+                  .compose(bindToLifecycle())
+                  .compose(Rx.applySchedulers())
+                  .doOnSubscribe(() -> fab.setVisibility(View.GONE))
+                  .doOnNext(this::initFab);
     }
 
-//    protected void handleRequestForbidden(Throwable e) {
-//        Log.e(App.TAG, "Request error", e);
-//
-//        api.logOut();
-//        startActivity(new Intent(this, LoginActivity.class));
-//    }
+    private void updateData() {
+        updateProjects().concatMap(projects -> checkCreateProjectPermission())
+                        .subscribe(canCreate -> {});
+    }
 
     private boolean checkCreateProjectPermission(List<Permission> permissions) {
         for (Permission permission : permissions) {
