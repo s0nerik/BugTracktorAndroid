@@ -380,11 +380,11 @@ public class IssueActivity extends BaseActivity {
     }
 
     private void onAttachmentSelected() {
-        attachmentItems.add(null);
+        attachmentItems.add(new AttachmentsItem(null, editMode));
     }
 
     private void onAttachmentUploaded(IssueAttachment attachment) {
-        attachmentItems.remove(null);
+        attachmentItems.remove(new AttachmentsItem(null, editMode));
         attachmentItems.add(new AttachmentsItem(attachment, editMode));
     }
 }
