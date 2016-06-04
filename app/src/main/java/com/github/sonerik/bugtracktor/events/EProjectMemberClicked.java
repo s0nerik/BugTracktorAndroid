@@ -9,5 +9,8 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public class EProjectMemberClicked {
+    public enum Type { ITEM, REMOVE }
+
     public final ProjectMember member;
+    public final Type type;
 }

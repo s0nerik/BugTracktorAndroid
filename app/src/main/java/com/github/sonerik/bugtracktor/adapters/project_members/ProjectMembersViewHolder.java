@@ -1,5 +1,7 @@
 package com.github.sonerik.bugtracktor.adapters.project_members;
 
+import android.support.v7.widget.PopupMenu;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -31,6 +33,8 @@ public class ProjectMembersViewHolder extends FlexibleViewHolder {
     RelativeLayout layout;
     @BindView(R.id.avatar)
     ImageView avatar;
+    @BindView(R.id.btnOverflow)
+    ImageView btnOverflow;
 
     public ProjectMembersViewHolder(View view, FlexibleAdapter adapter) {
         super(view, adapter);
@@ -54,7 +58,16 @@ public class ProjectMembersViewHolder extends FlexibleViewHolder {
             }
         }
 
-        layout.setOnClickListener(v -> RxBus.publish(new EProjectMemberClicked(projectMember)));
+        layout.setOnClickListener(v -> RxBus.publish(new EProjectMemberClicked(projectMember, EProjectMemberClicked.Type.ITEM)));
+        btnOverflow.setOnClickListener(v -> {
+            PopupMenu menu = new PopupMenu(btnOverflow.getContext(), btnOverflow, Gravity.RIGHT);
+            menu.inflate(R.menu.edit_project_member);
+            menu.setOnMenuItemClickListener(item -> {
+                RxBus.publish(new EProjectMemberClicked(projectMember, EProjectMemberClicked.Type.REMOVE));
+                return true;
+            });
+            menu.show();
+        });
     }
 }
 
