@@ -25,7 +25,7 @@ import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.attachments.AttachmentsAdapter;
 import com.github.sonerik.bugtracktor.adapters.attachments.AttachmentsItem;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
-import com.github.sonerik.bugtracktor.bundlers.IssueBundler;
+import com.github.sonerik.bugtracktor.bundlers.ParcelBundler;
 import com.github.sonerik.bugtracktor.events.EAttachmentClicked;
 import com.github.sonerik.bugtracktor.events.EProjectMemberClicked;
 import com.github.sonerik.bugtracktor.models.Issue;
@@ -124,7 +124,7 @@ public class IssueActivity extends BaseActivity {
     @State
     boolean canManage;
     @Extra
-    @State(IssueBundler.class)
+    @State(ParcelBundler.class)
     Issue issue;
 
     private BindableRxList<AttachmentsItem> attachmentItems = new BindableRxList<>();

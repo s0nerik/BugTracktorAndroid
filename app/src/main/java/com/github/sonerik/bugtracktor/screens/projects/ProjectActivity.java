@@ -26,7 +26,7 @@ import com.github.sonerik.bugtracktor.adapters.issues.IssuesItem;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersAdapter;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersItem;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
-import com.github.sonerik.bugtracktor.bundlers.ProjectBundler;
+import com.github.sonerik.bugtracktor.bundlers.ParcelBundler;
 import com.github.sonerik.bugtracktor.events.EIssueClicked;
 import com.github.sonerik.bugtracktor.events.EProjectMemberClicked;
 import com.github.sonerik.bugtracktor.models.Issue;
@@ -34,6 +34,7 @@ import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
 import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
+import com.github.sonerik.bugtracktor.screens.add_member.AddMemberActivityNavigator;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
 import com.github.sonerik.bugtracktor.screens.issue.IssueActivityNavigator;
 import com.github.sonerik.bugtracktor.utils.Rx;
@@ -106,7 +107,7 @@ public class ProjectActivity extends BaseActivity {
     ImageView icAddMember;
 
     @Extra
-    @State(ProjectBundler.class)
+    @State(ParcelBundler.class)
     Project project;
 
     @Extra
@@ -218,7 +219,7 @@ public class ProjectActivity extends BaseActivity {
 
     @OnClick(R.id.icAddMember)
     public void onAddMember() {
-
+        startActivity(new AddMemberActivityNavigator(project).build(this));
     }
 
     private void updateMembers() {

@@ -9,12 +9,14 @@ import icepick.Bundler;
 /**
  * Created by Alex on 6/3/2016.
  */
-public class ParcelBundler<T> implements Bundler<T> {
-    public void put(String key, T value, Bundle bundle) {
+public class ParcelBundler implements Bundler<Object> {
+    @Override
+    public void put(String key, Object value, Bundle bundle) {
         bundle.putParcelable(key, Parcels.wrap(value));
     }
 
-    public T get(String key, Bundle bundle) {
+    @Override
+    public Object get(String key, Bundle bundle) {
         return Parcels.unwrap(bundle.getParcelable(key));
     }
 }

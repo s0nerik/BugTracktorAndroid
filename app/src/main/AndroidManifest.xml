@@ -45,6 +45,12 @@
             />
 
         <activity
+            android:name=".screens.add_member.AddMemberActivity"
+            android:label="Add Member"
+            android:theme="@style/Theme.AppCompat.Light.Dialog"
+            />
+
+        <activity
             android:name=".screens.projects.ProjectActivity"
             android:theme="@style/AppTheme.NoActionBar"
             />
