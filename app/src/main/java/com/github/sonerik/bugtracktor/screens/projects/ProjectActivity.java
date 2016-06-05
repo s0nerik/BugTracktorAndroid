@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersIte
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.bundlers.ProjectBundler;
 import com.github.sonerik.bugtracktor.events.EIssueClicked;
+import com.github.sonerik.bugtracktor.events.EProjectMemberClicked;
 import com.github.sonerik.bugtracktor.models.Issue;
 import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
@@ -45,6 +47,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import icepick.State;
 import io.github.kobakei.grenade.annotation.Extra;
 import io.github.kobakei.grenade.annotation.Navigator;
@@ -99,6 +102,8 @@ public class ProjectActivity extends BaseActivity {
     Button btnViewAllIssues;
     @BindView(R.id.issuesLoadingView)
     TextView issuesLoadingView;
+    @BindView(R.id.icAddMember)
+    ImageView icAddMember;
 
     @Extra
     @State(ProjectBundler.class)
@@ -157,6 +162,8 @@ public class ProjectActivity extends BaseActivity {
             switch (item.getItemId()) {
                 case R.id.edit:
                     setEditMode(true, true);
+                    updateMembers();
+                    updateIssues();
                     break;
                 case R.id.save:
                     saveChanges();
@@ -189,10 +196,15 @@ public class ProjectActivity extends BaseActivity {
     private void initListeners() {
         RxBus.on(EIssueClicked.class)
              .compose(bindToLifecycle())
-             .compose(Rx.applySchedulers())
              .subscribe(e -> {
                  // TODO: allow editing only for those who really can
                  startActivity(new IssueActivityNavigator(true, e.issue).build(this));
+             });
+        RxBus.on(EProjectMemberClicked.class)
+             .compose(bindToLifecycle())
+             .subscribe(e -> {
+                 project.getMembers().remove(e.member);
+                 projectMembers.remove(new ProjectMembersItem(e.member, editMode));
              });
         RxTextView.textChanges(etProjectName)
                   .compose(bindToLifecycle())
@@ -203,7 +215,13 @@ public class ProjectActivity extends BaseActivity {
         // TODO: full description tracking
     }
 
+    @OnClick(R.id.icAddMember)
+    public void onAddMember() {
+
+    }
+
     private void updateMembers() {
+        projectMembers.clear();
         List<ProjectMember> members = project.getMembers();
         if (members != null && !members.isEmpty()) {
             layoutMembersEmpty.setVisibility(View.GONE);
@@ -216,6 +234,7 @@ public class ProjectActivity extends BaseActivity {
     }
 
     private void updateIssues() {
+        issueItems.clear();
         List<Issue> issues = project.getIssues();
         if (issues != null && !issues.isEmpty()) {
             layoutIssuesEmpty.setVisibility(View.GONE);
@@ -256,21 +275,20 @@ public class ProjectActivity extends BaseActivity {
                 nestedScrollView.fullScroll(View.FOCUS_UP);
             }
 
-            etProjectName.setFocusable(true);
-            etProjectName.setFocusableInTouchMode(true);
-            etProjectShortDescription.setFocusable(true);
-            etProjectShortDescription.setFocusableInTouchMode(true);
+            icAddMember.setVisibility(View.VISIBLE);
         } else {
             etProjectName.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
             etProjectShortDescription.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
 
             mainToolbar.inflateMenu(R.menu.project_normal);
 
-            etProjectName.setFocusable(false);
-            etProjectName.setFocusableInTouchMode(false);
-            etProjectShortDescription.setFocusable(false);
-            etProjectShortDescription.setFocusableInTouchMode(false);
+            icAddMember.setVisibility(View.GONE);
         }
+
+        etProjectName.setFocusable(state);
+        etProjectName.setFocusableInTouchMode(state);
+        etProjectShortDescription.setFocusable(state);
+        etProjectShortDescription.setFocusableInTouchMode(state);
     }
 
     private void saveChanges() {

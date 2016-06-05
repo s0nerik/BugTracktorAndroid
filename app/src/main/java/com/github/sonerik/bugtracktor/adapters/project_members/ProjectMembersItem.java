@@ -10,8 +10,10 @@ import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
+@EqualsAndHashCode(of = "projectMember")
 @RequiredArgsConstructor
 public class ProjectMembersItem extends AbstractFlexibleItem<ProjectMembersViewHolder> {
 
@@ -32,11 +34,6 @@ public class ProjectMembersItem extends AbstractFlexibleItem<ProjectMembersViewH
     public void bindViewHolder(FlexibleAdapter adapter, ProjectMembersViewHolder holder, int position, List payloads) {
         holder.setProjectMember(projectMember);
         holder.setEditMode(editMode);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return projectMember.equals(o);
     }
 
 }
