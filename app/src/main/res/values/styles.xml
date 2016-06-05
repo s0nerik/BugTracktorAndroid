@@ -25,4 +25,10 @@
 
     <style name="PopupMenu" parent="Widget.AppCompat.PopupMenu.Overflow" />
 
+    <style name="AppDialog" parent="Theme.AppCompat.Light.Dialog" />
+    <style name="AppDialog.NoTitle">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
 </resources>
