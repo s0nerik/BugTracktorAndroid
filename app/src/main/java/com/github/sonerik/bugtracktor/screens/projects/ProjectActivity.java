@@ -1,6 +1,5 @@
 package com.github.sonerik.bugtracktor.screens.projects;
 
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -38,6 +37,7 @@ import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.add_member.AddMemberActivityNavigator;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
 import com.github.sonerik.bugtracktor.screens.issue.IssueActivityNavigator;
+import com.github.sonerik.bugtracktor.utils.EditTextUtils;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.google.common.collect.ImmutableMap;
@@ -275,9 +275,6 @@ public class ProjectActivity extends BaseActivity {
         }
 
         if (state) {
-            etProjectName.setBackgroundTintMode(PorterDuff.Mode.SRC_ATOP);
-            etProjectShortDescription.setBackgroundTintMode(PorterDuff.Mode.SRC_ATOP);
-
             mainToolbar.inflateMenu(R.menu.project_edit);
             if (expandToolbar) {
                 mainAppbar.setExpanded(true, true);
@@ -286,18 +283,13 @@ public class ProjectActivity extends BaseActivity {
 
             icAddMember.setVisibility(View.VISIBLE);
         } else {
-            etProjectName.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
-            etProjectShortDescription.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
-
             mainToolbar.inflateMenu(R.menu.project_normal);
 
             icAddMember.setVisibility(View.GONE);
         }
 
-        etProjectName.setFocusable(state);
-        etProjectName.setFocusableInTouchMode(state);
-        etProjectShortDescription.setFocusable(state);
-        etProjectShortDescription.setFocusableInTouchMode(state);
+        EditTextUtils.setEditingEnabled(etProjectName, state, false);
+        EditTextUtils.setEditingEnabled(etProjectShortDescription, state, false);
     }
 
     private void saveChanges() {

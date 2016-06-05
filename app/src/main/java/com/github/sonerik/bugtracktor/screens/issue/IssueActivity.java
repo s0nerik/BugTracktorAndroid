@@ -2,7 +2,6 @@ package com.github.sonerik.bugtracktor.screens.issue;
 
 import android.Manifest;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -36,6 +35,7 @@ import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
 import com.github.sonerik.bugtracktor.screens.project_members.SelectProjectMemberActivityNavigator;
 import com.github.sonerik.bugtracktor.ui.views.DummyNestedScrollView;
 import com.github.sonerik.bugtracktor.ui.views.TintableMenuToolbar;
+import com.github.sonerik.bugtracktor.utils.EditTextUtils;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.google.common.collect.ImmutableMap;
@@ -255,39 +255,25 @@ public class IssueActivity extends BaseActivity {
         }
 
         if (state) {
-            etShortDescription.setBackgroundTintMode(PorterDuff.Mode.SRC_ATOP);
-            etDescription.setBackgroundTintMode(PorterDuff.Mode.SRC_ATOP);
-
             mainToolbar.inflateMenu(R.menu.issue_edit);
             if (expandToolbar) {
                 mainAppbar.setExpanded(true, true);
                 nestedScrollView.fullScroll(View.FOCUS_UP);
             }
 
-
-            etShortDescription.setFocusable(true);
-            etShortDescription.setFocusableInTouchMode(true);
-            etDescription.setFocusable(true);
-            etDescription.setFocusableInTouchMode(true);
-
             icAddAttachment.setVisibility(View.VISIBLE);
             icAssignee.setVisibility(View.GONE);
             icChangeAssignee.setVisibility(View.VISIBLE);
         } else {
-            etShortDescription.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
-            etDescription.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
-
             mainToolbar.inflateMenu(R.menu.issue_normal);
-
-            etShortDescription.setFocusable(false);
-            etShortDescription.setFocusableInTouchMode(false);
-            etDescription.setFocusable(false);
-            etDescription.setFocusableInTouchMode(false);
 
             icAddAttachment.setVisibility(View.GONE);
             icAssignee.setVisibility(View.VISIBLE);
             icChangeAssignee.setVisibility(View.GONE);
         }
+
+        EditTextUtils.setEditingEnabled(etShortDescription, state, false);
+        EditTextUtils.setEditingEnabled(etDescription, state, true);
     }
 
     @OnClick(R.id.btnAssignee)

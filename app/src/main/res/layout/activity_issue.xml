@@ -217,9 +217,6 @@
                         android:textSize="16sp"
                         tools:text="1"
                         android:layout_below="@+id/icDescription"
-                        android:text="Lorem ipsum dolor sit amet, nisl dico ut mei. Nec facete delicata in. Quas inermis commune no vel. Quo ad impetus vivendo suscipit. Ius ne iusto dignissim, elit indoctum eu quo. Qui cu congue graeco verear, vel ad possim numquam oporteat.
-
-Duo amet noster malorum et, duo velit ceteros omittantur ea. Quis mollis intellegebat pro id. Eam erroribus democritum honestatis ut, tamquam tacimates nec ut. Ex est nusquam insolens percipitur, sed at oblique volutpat."
                         />
 
                     <LinearLayout
