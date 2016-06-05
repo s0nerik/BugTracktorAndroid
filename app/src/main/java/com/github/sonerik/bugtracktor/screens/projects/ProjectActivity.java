@@ -201,6 +201,7 @@ public class ProjectActivity extends BaseActivity {
                  startActivity(new IssueActivityNavigator(true, e.issue).build(this));
              });
         RxBus.on(EProjectMemberClicked.class)
+             .filter(e -> e.type == EProjectMemberClicked.Type.REMOVE)
              .compose(bindToLifecycle())
              .subscribe(e -> {
                  project.getMembers().remove(e.member);

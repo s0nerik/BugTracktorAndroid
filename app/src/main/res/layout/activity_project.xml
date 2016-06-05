@@ -75,6 +75,18 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:layout_collapseMode="pin"
                 />
+
+            <ProgressBar
+                android:id="@+id/progress"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:layout_marginTop="-7dp"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_collapseMode="pin"
+                />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
@@ -344,15 +356,5 @@
         </LinearLayout>
 
     </com.github.sonerik.bugtracktor.ui.views.DummyNestedScrollView>
-
-    <ProgressBar
-        android:id="@+id/progress"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:layout_marginTop="-7dp"
-        android:visibility="gone"
-        />
     
 </android.support.design.widget.CoordinatorLayout>
