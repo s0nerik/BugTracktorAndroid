@@ -41,6 +41,7 @@ public class UsersViewHolder extends FlexibleViewHolder {
         if (user != null) {
             title.setText(user.getRealName());
             subtitle.setText("@"+user.getNickname());
+            email.setText(user.getEmail());
             Glide.with(avatar.getContext())
                  .load(user.getAvatarUrl())
                  .into(avatar);

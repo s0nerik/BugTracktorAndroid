@@ -94,4 +94,6 @@ dependencies {
     compile 'com.hannesdorfmann.fragmentargs:annotation:3.0.2'
     compile 'com.hannesdorfmann.fragmentargs:bundler-parceler:3.0.2'
     apt 'com.hannesdorfmann.fragmentargs:processor:3.0.2'
+
+    compile 'me.relex:circleindicator:1.2.1@aar'
 }

@@ -15,6 +15,7 @@ import butterknife.OnClick;
 import icepick.State;
 import io.github.kobakei.grenade.annotation.Extra;
 import io.github.kobakei.grenade.annotation.Navigator;
+import me.relex.circleindicator.CircleIndicator;
 
 /**
  * Created by sonerik on 6/5/16.
@@ -28,6 +29,8 @@ public class AddMemberActivity extends BaseActivity {
 
     @BindView(R.id.pager)
     ViewPager pager;
+    @BindView(R.id.indicator)
+    CircleIndicator indicator;
 
     @Override
     protected int getLayoutId() {
@@ -39,7 +42,7 @@ public class AddMemberActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         AddMemberActivityNavigator.inject(this, getIntent());
 
-        Fragment[] fragments = new Fragment[] {
+        Fragment[] fragments = new Fragment[]{
                 SelectUserFragmentBuilder.newSelectUserFragment(project),
                 SelectRolesFragmentBuilder.newSelectRolesFragment(project)
         };
@@ -54,6 +57,8 @@ public class AddMemberActivity extends BaseActivity {
                 return fragments.length;
             }
         });
+
+        indicator.setViewPager(pager);
     }
 
     @OnClick(R.id.btnCancel)

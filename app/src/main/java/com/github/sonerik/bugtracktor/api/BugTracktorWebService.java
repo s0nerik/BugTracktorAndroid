@@ -103,6 +103,16 @@ public interface BugTracktorWebService {
 
     // endregion
 
+    // region Users
+
+    @GET("users")
+    Observable<List<User>> getUsers(@Query("limit") Integer limit,
+                                    @Query("offset") Integer offset,
+                                    @Query("name") String name,
+                                    @Query("nickname") String nickname,
+                                    @Query("email") String email);
+
+    // endregion Users
 
     // region Issue changes
 

@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">BugTracktor</string>
     <string name="layout_manager_linear">android.support.v7.widget.LinearLayoutManager</string>
+    <string-array name="add_member_tabs">
+        <item>Select user</item>
+        <item>Select role</item>
+    </string-array>
 </resources>
