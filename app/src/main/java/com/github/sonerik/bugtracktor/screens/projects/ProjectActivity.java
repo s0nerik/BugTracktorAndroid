@@ -2,7 +2,6 @@ package com.github.sonerik.bugtracktor.screens.projects;
 
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -12,7 +11,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,6 +37,7 @@ import com.github.sonerik.bugtracktor.screens.issue.IssueActivityNavigator;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.google.common.collect.ImmutableMap;
+import com.jakewharton.rxbinding.widget.RxTextView;
 
 import java.util.List;
 import java.util.Map;
@@ -105,6 +104,10 @@ public class ProjectActivity extends BaseActivity {
     @State(ProjectBundler.class)
     Project project;
 
+    @Extra
+    @State
+    boolean canManage;
+
     @State
     boolean editMode;
 
@@ -129,6 +132,7 @@ public class ProjectActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         App.getComponent().inject(this);
         ProjectActivityNavigator.inject(this, getIntent());
+        initListeners();
     }
 
     @Override
@@ -136,7 +140,7 @@ public class ProjectActivity extends BaseActivity {
         super.onPostCreate(savedInstanceState);
         if (savedInstanceState == null) {
             init();
-            updateProject();
+            loadProjectData();
         } else {
             init();
         }
@@ -152,10 +156,10 @@ public class ProjectActivity extends BaseActivity {
         mainToolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.edit:
-                    setEditMode(true);
+                    setEditMode(true, true);
                     break;
                 case R.id.save:
-                    setEditMode(false);
+                    saveChanges();
                     break;
             }
             return true;
@@ -163,7 +167,6 @@ public class ProjectActivity extends BaseActivity {
 
         etProjectName.setText(project.getName());
         etProjectShortDescription.setText(project.getShortDescription());
-//        txtAuthor.setText(project.get);
 
         User creator = project.getCreator();
         if (creator != null) {
@@ -180,7 +183,7 @@ public class ProjectActivity extends BaseActivity {
         layoutManager = rvMembers.getLayoutManager();
         layoutManager.setAutoMeasureEnabled(true);
 
-        setEditMode(false);
+        setEditMode(editMode, false);
     }
 
     private void initListeners() {
@@ -191,6 +194,13 @@ public class ProjectActivity extends BaseActivity {
                  // TODO: allow editing only for those who really can
                  startActivity(new IssueActivityNavigator(true, e.issue).build(this));
              });
+        RxTextView.textChanges(etProjectName)
+                  .compose(bindToLifecycle())
+                  .subscribe(text -> project.setName(text.toString()));
+        RxTextView.textChanges(etProjectShortDescription)
+                  .compose(bindToLifecycle())
+                  .subscribe(text -> project.setShortDescription(text.toString()));
+        // TODO: full description tracking
     }
 
     private void updateMembers() {
@@ -220,11 +230,11 @@ public class ProjectActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setEditMode(false);
-        initListeners();
+        init();
     }
 
-    private void setEditMode(boolean state) {
+    private void setEditMode(boolean state, boolean expandToolbar) {
+        if (!canManage) state = false;
         editMode = state;
 
         mainToolbar.getMenu().clear();
@@ -241,16 +251,10 @@ public class ProjectActivity extends BaseActivity {
             etProjectShortDescription.setBackgroundTintMode(PorterDuff.Mode.SRC_ATOP);
 
             mainToolbar.inflateMenu(R.menu.project_edit);
-            behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
-                @Override
-                public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
-                    return false;
-                }
-            });
-            mainAppbar.setExpanded(true, true);
-            nestedScrollView.fullScroll(View.FOCUS_UP);
-
-            nestedScrollView.setOnTouchListener((View v, MotionEvent event) -> true);
+            if (expandToolbar) {
+                mainAppbar.setExpanded(true, true);
+                nestedScrollView.fullScroll(View.FOCUS_UP);
+            }
 
             etProjectName.setFocusable(true);
             etProjectName.setFocusableInTouchMode(true);
@@ -261,14 +265,6 @@ public class ProjectActivity extends BaseActivity {
             etProjectShortDescription.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
 
             mainToolbar.inflateMenu(R.menu.project_normal);
-            behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
-                @Override
-                public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
-                    return true;
-                }
-            });
-
-            nestedScrollView.setOnTouchListener((View v, MotionEvent event) -> false);
 
             etProjectName.setFocusable(false);
             etProjectName.setFocusableInTouchMode(false);
@@ -277,7 +273,18 @@ public class ProjectActivity extends BaseActivity {
         }
     }
 
-    private void updateProject() {
+    private void saveChanges() {
+        api.updateProject(project.getId(), project)
+           .compose(bindToLifecycle())
+           .compose(Rx.applySchedulers())
+           .doOnSubscribe(() -> setEditMode(false, false))
+           .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
+           .doOnNext(project -> this.project = project)
+           .doOnTerminate(() -> progress.setVisibility(View.GONE))
+           .subscribe(project -> init());
+    }
+
+    private void loadProjectData() {
         api.getProject(project.getId())
            .compose(Rx.applySchedulers())
            .compose(bindToLifecycle())

@@ -101,7 +101,8 @@ public class MainActivity extends BaseActivity {
 
         RxBus.on(EProjectClicked.class)
              .compose(RxLifecycle.bindActivity(lifecycle()))
-             .subscribe(e -> startActivity(new ProjectActivityNavigator(e.project).build(this)));
+             // TODO: figure out whether user can edit project
+             .subscribe(e -> startActivity(new ProjectActivityNavigator(e.project, true).build(this)));
     }
 
     @Override

@@ -48,7 +48,7 @@ public interface BugTracktorWebService {
     Observable<Project> getProject(@Path("projectId") int id);
 
     @PATCH("projects/{projectId}")
-    Observable<Project> updateProject(@Path("projectId") int id, Project project);
+    Observable<Project> updateProject(@Path("projectId") int id, @Body Project project);
 
     @DELETE("projects/{projectId}")
     Observable<Success> removeProject(@Path("projectId") int id);

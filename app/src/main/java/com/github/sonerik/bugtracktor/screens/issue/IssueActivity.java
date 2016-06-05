@@ -12,8 +12,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -42,6 +40,7 @@ import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.io.FileNotFoundException;
@@ -152,10 +151,9 @@ public class IssueActivity extends BaseActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
         if (savedInstanceState == null) {
             init();
-            updateIssue();
+            loadIssueData();
         } else {
             init();
         }
@@ -177,6 +175,12 @@ public class IssueActivity extends BaseActivity {
                  issue.setAssignees(Lists.newArrayList(e.member.getUser()));
                  init();
              });
+        RxTextView.textChanges(etShortDescription)
+                  .compose(bindToLifecycle())
+                  .subscribe(text -> issue.setShortDescription(text.toString()));
+        RxTextView.textChanges(etDescription)
+                  .compose(bindToLifecycle())
+                  .subscribe(text -> issue.setFullDescription(text.toString()));
     }
 
     private void init() {
@@ -193,39 +197,14 @@ public class IssueActivity extends BaseActivity {
                     updateAttachments();
                     break;
                 case R.id.save:
-                    saveIssueChanges();
+                    saveChanges();
                     break;
             }
             return true;
         });
 
         etShortDescription.setText(issue.getShortDescription());
-        etShortDescription.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                issue.setShortDescription(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
         etDescription.setText(issue.getFullDescription());
-        etDescription.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                issue.setFullDescription(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
 
         User creator = issue.getAuthor();
         if (creator != null) {
@@ -361,7 +340,7 @@ public class IssueActivity extends BaseActivity {
         }
     }
 
-    private void updateIssue() {
+    private void loadIssueData() {
         api.getIssue(issue.getProject().getId(), issue.getIssueIndex())
            .compose(bindToLifecycle())
            .compose(Rx.applySchedulers())
@@ -371,7 +350,7 @@ public class IssueActivity extends BaseActivity {
            .subscribe(issue -> init());
     }
 
-    private void saveIssueChanges() {
+    private void saveChanges() {
         api.updateIssue(issue.getProject().getId(), issue.getIssueIndex(), issue)
            .compose(bindToLifecycle())
            .compose(Rx.applySchedulers())

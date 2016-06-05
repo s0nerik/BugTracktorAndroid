@@ -2,7 +2,6 @@ package com.github.sonerik.bugtracktor.screens.base;
 
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
 import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
@@ -29,6 +28,9 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(getLayoutId());
+        ButterKnife.bind(this);
+
         for (Map.Entry<BindableRxList, RecyclerView.Adapter> entry : getBindableLists().entrySet()) {
             Observable.never()
                       .compose(bindToLifecycle())
@@ -36,13 +38,6 @@ public abstract class BaseActivity extends RxAppCompatActivity {
                       .doOnTerminate(() -> entry.getKey().unbind())
                       .subscribe();
         }
-    }
-
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        setContentView(getLayoutId());
-        ButterKnife.bind(this);
     }
 
     @Override
