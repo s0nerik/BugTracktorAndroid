@@ -63,9 +63,6 @@ import ru.noties.debug.Debug;
 @Navigator
 public class IssueActivity extends BaseActivity {
 
-//    public static final String EXTRA_CAN_MANAGE = "EXTRA_CAN_MANAGE";
-//    public static final String EXTRA_ISSUE = "EXTRA_ISSUE";
-
     private static final int PICK_ATTACHMENT = 7865;
 
     @Inject
@@ -81,8 +78,6 @@ public class IssueActivity extends BaseActivity {
     CollapsingToolbarLayout mainCollapsing;
     @BindView(R.id.mainAppbar)
     AppBarLayout mainAppbar;
-    @BindView(R.id.labelAuthor)
-    TextView labelAuthor;
     @BindView(R.id.txtAuthor)
     TextView txtAuthor;
     @BindView(R.id.icAssignee)

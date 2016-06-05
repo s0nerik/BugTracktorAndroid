@@ -51,6 +51,24 @@
                         tools:text="Can't get rid of it!"
                         />
                 </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tiAuthor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Author"
+                    android:layout_marginTop="16dp"
+                    >
+                    <EditText
+                        android:id="@+id/txtAuthor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:inputType="textNoSuggestions"
+                        android:backgroundTint="#0fff"
+                        tools:text="Andy James"
+                        />
+                </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
             <com.github.sonerik.bugtracktor.ui.views.TintableMenuToolbar
@@ -98,43 +116,44 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 >
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    >
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="80dp"
-                        android:layout_marginLeft="16dp"
-                        app:srcCompat="@drawable/account"
-                        />
-                    <TextView
-                        android:id="@+id/labelAuthor"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:lineSpacingExtra="8dp"
-                        android:text="Author"
-                        android:layout_marginLeft="62dp"
-                        android:layout_marginTop="16dp"
-                        />
-                    <TextView
-                        android:id="@+id/txtAuthor"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        android:textColor="#333"
-                        tools:text="Vasya Pupkin"
-                        android:layout_marginLeft="62dp"
-                        android:layout_below="@+id/labelAuthor"
-                        android:gravity="center_vertical"
-                        />
-                </RelativeLayout>
+                <!--<RelativeLayout-->
+                    <!--android:id="@+id/btnStatus"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="80dp"-->
+                    <!--&gt;-->
+                    <!--<ImageView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="80dp"-->
+                        <!--android:layout_marginLeft="16dp"-->
+                        <!--app:srcCompat="@drawable/alert_circle_outline"-->
+                        <!--/>-->
+                    <!--<TextView-->
+                        <!--android:id="@+id/labelStatus"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:textSize="16sp"-->
+                        <!--android:lineSpacingExtra="8dp"-->
+                        <!--android:text="Status"-->
+                        <!--android:layout_marginLeft="62dp"-->
+                        <!--android:layout_marginTop="16dp"-->
+                        <!--/>-->
+                    <!--<TextView-->
+                        <!--android:id="@+id/txtStatus"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:textSize="20sp"-->
+                        <!--android:textColor="#333"-->
+                        <!--tools:text="Opened"-->
+                        <!--android:layout_marginLeft="62dp"-->
+                        <!--android:layout_below="@+id/labelStatus"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--/>-->
+                <!--</RelativeLayout>-->
+                <!--android:layout_marginTop="64dp"-->
                 <RelativeLayout
                     android:id="@+id/btnAssignee"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
-                    android:layout_marginTop="64dp"
                     android:foreground="?selectableItemBackground"
                     >
                     <ImageView
