@@ -29,6 +29,7 @@ import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.bundlers.ParcelBundler;
 import com.github.sonerik.bugtracktor.events.EIssueClicked;
 import com.github.sonerik.bugtracktor.events.EProjectMemberClicked;
+import com.github.sonerik.bugtracktor.events.EProjectMemberCreated;
 import com.github.sonerik.bugtracktor.models.Issue;
 import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
@@ -208,6 +209,12 @@ public class ProjectActivity extends BaseActivity {
                  project.getMembers().remove(e.member);
                  projectMembers.remove(new ProjectMembersItem(e.member, editMode));
              });
+        RxBus.on(EProjectMemberCreated.class)
+             .compose(bindToLifecycle())
+             .subscribe(e -> {
+                 project.getMembers().add(e.member);
+                 projectMembers.add(new ProjectMembersItem(e.member, editMode));
+             });
         RxTextView.textChanges(etProjectName)
                   .compose(bindToLifecycle())
                   .subscribe(text -> project.setName(text.toString()));
@@ -301,6 +308,8 @@ public class ProjectActivity extends BaseActivity {
            .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
            .doOnNext(project -> this.project = project)
            .doOnTerminate(() -> progress.setVisibility(View.GONE))
+           .doOnTerminate(this::updateIssues)
+           .doOnTerminate(this::updateMembers)
            .subscribe(project -> init());
     }
 

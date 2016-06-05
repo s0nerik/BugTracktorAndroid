@@ -6,6 +6,7 @@ import com.github.sonerik.bugtracktor.models.IssueType;
 import com.github.sonerik.bugtracktor.models.Permission;
 import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
+import com.github.sonerik.bugtracktor.models.Role;
 import com.github.sonerik.bugtracktor.models.Success;
 import com.github.sonerik.bugtracktor.models.Token;
 import com.github.sonerik.bugtracktor.models.User;
@@ -55,7 +56,6 @@ public interface BugTracktorWebService {
 
     // endregion
 
-
     // region Project issues
 
     @GET("projects/{projectId}/issues")
@@ -75,7 +75,6 @@ public interface BugTracktorWebService {
 
     // endregion
 
-
     // region Project members
 
     @GET("projects/{projectId}/members")
@@ -83,6 +82,13 @@ public interface BugTracktorWebService {
 
     @POST("projects/{projectId}/members")
     Observable<ProjectMember> addProjectMember(@Path("projectId") int id, @Body ProjectMember user);
+
+    // endregion
+
+    // region Project roles
+
+    @GET("projects/{projectId}/roles")
+    Observable<List<Role>> getRoles(@Path("projectId") int projectId);
 
     // endregion
 

@@ -91,6 +91,7 @@ dependencies {
     compile 'ru.noties:debug:2.0.2'
 
     compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-support-v4:0.4.0'
 
     compile 'com.hannesdorfmann.fragmentargs:annotation:3.0.2'
     compile 'com.hannesdorfmann.fragmentargs:bundler-parceler:3.0.2'

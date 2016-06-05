@@ -10,6 +10,7 @@
     >
 
     <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/colorPrimary"
@@ -29,7 +30,7 @@
             />
     </android.support.v7.widget.Toolbar>
 
-    <android.support.v4.view.ViewPager
+    <com.github.sonerik.bugtracktor.ui.views.NonSwipeableViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,6 +44,7 @@
         android:layout_weight="0"
         android:background="#fff"
         android:elevation="8dp"
+        android:animateLayoutChanges="true"
         >
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btnCancel"
@@ -65,7 +67,7 @@
             />
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btnAdd"
+            android:id="@+id/btnNext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#0fff"
@@ -74,6 +76,7 @@
             android:text="Add"
             android:foreground="?selectableItemBackground"
             android:layout_weight="1"
+            android:enabled="false"
             />
     </LinearLayout>
 

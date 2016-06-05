@@ -2,6 +2,7 @@ package com.github.sonerik.bugtracktor.di.components;
 
 import com.github.sonerik.bugtracktor.di.modules.AppModule;
 import com.github.sonerik.bugtracktor.di.modules.WebServiceModule;
+import com.github.sonerik.bugtracktor.screens.add_member.SelectRolesFragment;
 import com.github.sonerik.bugtracktor.screens.add_member.SelectUserFragment;
 import com.github.sonerik.bugtracktor.screens.create_project.CreateProjectActivity;
 import com.github.sonerik.bugtracktor.screens.issue.IssueActivity;
@@ -30,5 +31,7 @@ public interface AppComponent {
     void inject(ProjectMembersActivity a);
     void inject(IssueActivity a);
     void inject(SelectProjectMemberActivity a);
+
     void inject(SelectUserFragment f);
+    void inject(SelectRolesFragment f);
 }
