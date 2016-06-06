@@ -15,7 +15,7 @@
         >
 
         <activity
-            android:name=".screens.main.MainActivity"
+            android:name=".screens.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             >
@@ -26,48 +26,48 @@
         </activity>
 
         <activity
-            android:name=".screens.login.LoginActivity"
+            android:name=".screens.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:launchMode="singleTask"
             />
 
         <activity
-            android:name=".screens.create_project.CreateProjectActivity"
+            android:name=".screens.CreateProjectActivity"
             android:label="New Project"
             android:theme="@style/Theme.AppCompat.Light.Dialog"
             />
 
         <activity
-            android:name=".screens.project_members.SelectProjectMemberActivity"
+            android:name=".screens.SelectProjectMemberActivity"
             android:label="Select Member"
             android:theme="@style/Theme.AppCompat.Light.Dialog"
             />
 
         <activity
-            android:name=".screens.add_member.AddMemberActivity"
+            android:name=".screens.AddMemberActivity"
             android:label="Add Member"
             android:theme="@style/AppDialog.NoTitle"
             />
 
         <activity
-            android:name=".screens.projects.ProjectActivity"
+            android:name=".screens.ProjectActivity"
             android:theme="@style/AppTheme.NoActionBar"
             />
 
         <activity
-            android:name=".screens.issue.IssueActivity"
+            android:name=".screens.IssueActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation|keyboardHidden|screenSize"
             />
 
         <activity
-            android:name=".screens.project_issues.ProjectIssuesActivity"
+            android:name=".screens.ProjectIssuesActivity"
             android:theme="@style/AppTheme.NoActionBar"
             />
 
         <activity
-            android:name=".screens.project_members.ProjectMembersActivity"
+            android:name=".screens.ProjectMembersActivity"
             android:theme="@style/AppTheme.NoActionBar"
             />
 

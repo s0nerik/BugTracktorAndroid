@@ -1,4 +1,4 @@
-package com.github.sonerik.bugtracktor.screens.add_member;
+package com.github.sonerik.bugtracktor.screens;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 
+import com.f2prateek.dart.InjectExtra;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.bundlers.ParcelBundler;
 import com.github.sonerik.bugtracktor.events.EProjectMemberCreated;
@@ -26,15 +27,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import icepick.State;
-import io.github.kobakei.grenade.annotation.Extra;
-import io.github.kobakei.grenade.annotation.Navigator;
 import lombok.val;
 import me.relex.circleindicator.CircleIndicator;
 
 /**
  * Created by sonerik on 6/5/16.
  */
-@Navigator
+//@HensonNavigable
 public class AddMemberActivity extends BaseActivity {
 
     @BindView(R.id.pager)
@@ -48,7 +47,7 @@ public class AddMemberActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Extra
+    @InjectExtra
     @State(ParcelBundler.class)
     Project project;
 
@@ -65,7 +64,6 @@ public class AddMemberActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AddMemberActivityNavigator.inject(this, getIntent());
 
         Fragment[] fragments = new Fragment[]{
                 SelectUserFragmentBuilder.newSelectUserFragment(project),

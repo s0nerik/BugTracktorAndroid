@@ -1,4 +1,4 @@
-package com.github.sonerik.bugtracktor.screens.login;
+package com.github.sonerik.bugtracktor.screens;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.github.sonerik.bugtracktor.screens.main;
+package com.github.sonerik.bugtracktor.screens;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,9 +21,6 @@ import com.github.sonerik.bugtracktor.models.Permission;
 import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
-import com.github.sonerik.bugtracktor.screens.create_project.CreateProjectActivity;
-import com.github.sonerik.bugtracktor.screens.login.LoginActivity;
-import com.github.sonerik.bugtracktor.screens.projects.ProjectActivityNavigator;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.google.common.collect.ImmutableMap;
@@ -102,7 +99,14 @@ public class MainActivity extends BaseActivity {
         RxBus.on(EProjectClicked.class)
              .compose(RxLifecycle.bindActivity(lifecycle()))
              // TODO: figure out whether user can edit project
-             .subscribe(e -> startActivity(new ProjectActivityNavigator(e.project, true).build(this)));
+             .subscribe(e -> {
+                 startActivity(Henson.with(this)
+                                     .gotoProjectActivity()
+                                     .canManage(true)
+                                     .mode(ProjectActivity.Mode.VIEW)
+                                     .project(e.project)
+                                     .build());
+             });
     }
 
     @Override

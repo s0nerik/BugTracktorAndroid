@@ -1,4 +1,4 @@
-package com.github.sonerik.bugtracktor.screens.projects;
+package com.github.sonerik.bugtracktor.screens;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.f2prateek.dart.InjectExtra;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.issues.IssuesAdapter;
@@ -26,6 +27,7 @@ import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersAda
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersItem;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.bundlers.ParcelBundler;
+import com.github.sonerik.bugtracktor.bundlers.SerializableBundler;
 import com.github.sonerik.bugtracktor.events.EIssueClicked;
 import com.github.sonerik.bugtracktor.events.EProjectMemberClicked;
 import com.github.sonerik.bugtracktor.events.EProjectMemberCreated;
@@ -34,9 +36,7 @@ import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
 import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
-import com.github.sonerik.bugtracktor.screens.add_member.AddMemberActivityNavigator;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
-import com.github.sonerik.bugtracktor.screens.issue.IssueActivityNavigator;
 import com.github.sonerik.bugtracktor.utils.EditTextUtils;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
@@ -51,14 +51,14 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import icepick.State;
-import io.github.kobakei.grenade.annotation.Extra;
-import io.github.kobakei.grenade.annotation.Navigator;
 
 /**
  * Created by sonerik on 5/29/16.
  */
-@Navigator
 public class ProjectActivity extends BaseActivity {
+
+    public enum Mode { CREATE, EDIT, VIEW }
+
     @Inject
     BugTracktorApi api;
 
@@ -107,16 +107,17 @@ public class ProjectActivity extends BaseActivity {
     @BindView(R.id.icAddMember)
     ImageView icAddMember;
 
-    @Extra
+    @InjectExtra
     @State(ParcelBundler.class)
     Project project;
 
-    @Extra
+    @InjectExtra
     @State
     boolean canManage;
 
-    @State
-    boolean editMode;
+    @InjectExtra
+    @State(SerializableBundler.class)
+    Mode mode = Mode.VIEW;
 
     private BindableRxList<ProjectMembersItem> projectMembers = new BindableRxList<>();
     private ProjectMembersAdapter projectMembersAdapter = new ProjectMembersAdapter(projectMembers);
@@ -138,7 +139,6 @@ public class ProjectActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.getComponent().inject(this);
-        ProjectActivityNavigator.inject(this, getIntent());
         initListeners();
     }
 
@@ -163,7 +163,7 @@ public class ProjectActivity extends BaseActivity {
         mainToolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.edit:
-                    setEditMode(true, true);
+                    setMode(Mode.EDIT, true);
                     updateMembers();
                     updateIssues();
                     break;
@@ -192,7 +192,7 @@ public class ProjectActivity extends BaseActivity {
         layoutManager = rvMembers.getLayoutManager();
         layoutManager.setAutoMeasureEnabled(true);
 
-        setEditMode(editMode, false);
+        setMode(mode, false);
     }
 
     private void initListeners() {
@@ -200,20 +200,24 @@ public class ProjectActivity extends BaseActivity {
              .compose(bindToLifecycle())
              .subscribe(e -> {
                  // TODO: allow editing only for those who really can
-                 startActivity(new IssueActivityNavigator(true, e.issue).build(this));
+                 startActivity(Henson.with(this)
+                                     .gotoIssueActivity()
+                                     .canManage(true)
+                                     .issue(e.issue)
+                                     .build());
              });
         RxBus.on(EProjectMemberClicked.class)
              .filter(e -> e.type == EProjectMemberClicked.Type.REMOVE)
              .compose(bindToLifecycle())
              .subscribe(e -> {
                  project.getMembers().remove(e.member);
-                 projectMembers.remove(new ProjectMembersItem(e.member, editMode));
+                 projectMembers.remove(new ProjectMembersItem(e.member, canEdit()));
              });
         RxBus.on(EProjectMemberCreated.class)
              .compose(bindToLifecycle())
              .subscribe(e -> {
                  project.getMembers().add(e.member);
-                 projectMembers.add(new ProjectMembersItem(e.member, editMode));
+                 projectMembers.add(new ProjectMembersItem(e.member, canEdit()));
              });
         RxTextView.textChanges(etProjectName)
                   .compose(bindToLifecycle())
@@ -226,7 +230,7 @@ public class ProjectActivity extends BaseActivity {
 
     @OnClick(R.id.icAddMember)
     public void onAddMember() {
-        startActivity(new AddMemberActivityNavigator(project).build(this));
+        startActivity(Henson.with(this).gotoAddMemberActivity().project(project).build());
     }
 
     private void updateMembers() {
@@ -235,7 +239,7 @@ public class ProjectActivity extends BaseActivity {
         if (members != null && !members.isEmpty()) {
             layoutMembersEmpty.setVisibility(View.GONE);
             for (ProjectMember projectMember : members) {
-                projectMembers.add(new ProjectMembersItem(projectMember, editMode));
+                projectMembers.add(new ProjectMembersItem(projectMember, canEdit()));
             }
         } else {
             layoutMembersEmpty.setVisibility(View.VISIBLE);
@@ -261,9 +265,13 @@ public class ProjectActivity extends BaseActivity {
         init();
     }
 
-    private void setEditMode(boolean state, boolean expandToolbar) {
-        if (!canManage) state = false;
-        editMode = state;
+    private boolean canEdit() {
+        return (mode == Mode.EDIT && canManage) || mode == Mode.CREATE;
+    }
+
+    private void setMode(Mode mode, boolean expandToolbar) {
+        if (mode == Mode.EDIT && !canManage) return;
+        this.mode = mode;
 
         mainToolbar.getMenu().clear();
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mainAppbar.getLayoutParams();
@@ -274,7 +282,7 @@ public class ProjectActivity extends BaseActivity {
             params.setBehavior(behavior);
         }
 
-        if (state) {
+        if (canEdit()) {
             mainToolbar.inflateMenu(R.menu.project_edit);
             if (expandToolbar) {
                 mainAppbar.setExpanded(true, true);
@@ -288,15 +296,15 @@ public class ProjectActivity extends BaseActivity {
             icAddMember.setVisibility(View.GONE);
         }
 
-        EditTextUtils.setEditingEnabled(etProjectName, state, false);
-        EditTextUtils.setEditingEnabled(etProjectShortDescription, state, false);
+        EditTextUtils.setEditingEnabled(etProjectName, canEdit(), false);
+        EditTextUtils.setEditingEnabled(etProjectShortDescription, canEdit(), true);
     }
 
     private void saveChanges() {
         api.updateProject(project.getId(), project)
            .compose(bindToLifecycle())
            .compose(Rx.applySchedulers())
-           .doOnSubscribe(() -> setEditMode(false, false))
+           .doOnSubscribe(() -> setMode(Mode.VIEW, false))
            .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
            .doOnNext(project -> this.project = project)
            .doOnTerminate(() -> progress.setVisibility(View.GONE))

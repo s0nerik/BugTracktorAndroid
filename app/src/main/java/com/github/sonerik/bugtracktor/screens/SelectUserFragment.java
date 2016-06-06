@@ -1,4 +1,4 @@
-package com.github.sonerik.bugtracktor.screens.add_member;
+package com.github.sonerik.bugtracktor.screens;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;

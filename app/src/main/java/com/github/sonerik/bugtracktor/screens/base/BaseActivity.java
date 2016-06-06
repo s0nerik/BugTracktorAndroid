@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 
+import com.f2prateek.dart.Dart;
 import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
@@ -30,6 +31,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         ButterKnife.bind(this);
+        Dart.inject(this);
 
         for (Map.Entry<BindableRxList, RecyclerView.Adapter> entry : getBindableLists().entrySet()) {
             Observable.never()

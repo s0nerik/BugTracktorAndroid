@@ -2,16 +2,16 @@ package com.github.sonerik.bugtracktor.di.components;
 
 import com.github.sonerik.bugtracktor.di.modules.AppModule;
 import com.github.sonerik.bugtracktor.di.modules.WebServiceModule;
-import com.github.sonerik.bugtracktor.screens.add_member.SelectRolesFragment;
-import com.github.sonerik.bugtracktor.screens.add_member.SelectUserFragment;
-import com.github.sonerik.bugtracktor.screens.create_project.CreateProjectActivity;
-import com.github.sonerik.bugtracktor.screens.issue.IssueActivity;
-import com.github.sonerik.bugtracktor.screens.login.LoginActivity;
-import com.github.sonerik.bugtracktor.screens.main.MainActivity;
-import com.github.sonerik.bugtracktor.screens.project_issues.ProjectIssuesActivity;
-import com.github.sonerik.bugtracktor.screens.project_members.ProjectMembersActivity;
-import com.github.sonerik.bugtracktor.screens.project_members.SelectProjectMemberActivity;
-import com.github.sonerik.bugtracktor.screens.projects.ProjectActivity;
+import com.github.sonerik.bugtracktor.screens.SelectRolesFragment;
+import com.github.sonerik.bugtracktor.screens.SelectUserFragment;
+import com.github.sonerik.bugtracktor.screens.CreateProjectActivity;
+import com.github.sonerik.bugtracktor.screens.IssueActivity;
+import com.github.sonerik.bugtracktor.screens.LoginActivity;
+import com.github.sonerik.bugtracktor.screens.MainActivity;
+import com.github.sonerik.bugtracktor.screens.ProjectIssuesActivity;
+import com.github.sonerik.bugtracktor.screens.ProjectMembersActivity;
+import com.github.sonerik.bugtracktor.screens.SelectProjectMemberActivity;
+import com.github.sonerik.bugtracktor.screens.ProjectActivity;
 
 import javax.inject.Singleton;
 
