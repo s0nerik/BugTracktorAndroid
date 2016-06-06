@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -53,7 +52,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import icepick.State;
-import ru.noties.debug.Debug;
+import rx.Observable;
 
 /**
  * Created by sonerik on 6/2/16.
@@ -134,23 +133,6 @@ public class IssueActivity extends EditableActivity {
         initListeners();
     }
 
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        if (savedInstanceState == null) {
-            init();
-            loadIssueData();
-        } else {
-            init();
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        init();
-    }
-
     private void initListeners() {
         RxBus.on(EAttachmentClicked.class)
              .compose(bindToLifecycle())
@@ -169,26 +151,10 @@ public class IssueActivity extends EditableActivity {
                   .subscribe(text -> issue.setFullDescription(text.toString()));
     }
 
-    private void init() {
-        Debug.d("Init:\n"+issue);
-
+    @Override
+    protected void init() {
+        super.init();
         mainCollapsing.setTitle(issue.getShortDescription());
-        mainToolbar.inflateMenu(R.menu.project_normal);
-        mainToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        mainToolbar.setNavigationOnClickListener(v -> finish());
-        mainToolbar.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.edit:
-                    setMode(Mode.EDIT, true);
-                    updateAttachments();
-                    break;
-                case R.id.save:
-                    saveChanges();
-                    break;
-            }
-            return true;
-        });
-
         etShortDescription.setText(issue.getShortDescription());
         etDescription.setText(issue.getFullDescription());
 
@@ -208,10 +174,6 @@ public class IssueActivity extends EditableActivity {
         rvAttachments.setNestedScrollingEnabled(false);
         RecyclerView.LayoutManager layoutManager = rvAttachments.getLayoutManager();
         layoutManager.setAutoMeasureEnabled(true);
-
-        setMode(mode, false);
-
-        updateAttachments();
     }
 
     private void updateAttachments() {
@@ -254,6 +216,37 @@ public class IssueActivity extends EditableActivity {
     }
 
     @Override
+    protected Observable loadData() {
+        return api.getIssue(issue.getProject().getId(), issue.getIssueIndex())
+                  .doOnNext(issue -> this.issue = issue);
+    }
+
+    @Override
+    protected Observable saveChanges() {
+        return api.updateIssue(issue.getProject().getId(), issue.getIssueIndex(), issue)
+                  .doOnNext(issue -> this.issue = issue);
+    }
+
+    @Override
+    protected void onModeChanged() {
+        updateAttachments();
+    }
+
+    @Override
+    protected int getMenu(Mode mode) {
+        switch (mode) {
+            case CREATE:
+                return R.menu.issue_edit;
+            case EDIT:
+                return R.menu.issue_edit;
+            case VIEW:
+                return R.menu.issue_normal;
+            default:
+                return R.menu.issue_normal;
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_ATTACHMENT && resultCode == RESULT_OK) {
@@ -291,27 +284,6 @@ public class IssueActivity extends EditableActivity {
         }
     }
 
-    private void loadIssueData() {
-        api.getIssue(issue.getProject().getId(), issue.getIssueIndex())
-           .compose(bindToLifecycle())
-           .compose(Rx.applySchedulers())
-           .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
-           .doOnNext(issue -> this.issue = issue)
-           .doOnTerminate(() -> progress.setVisibility(View.GONE))
-           .subscribe(issue -> init());
-    }
-
-    private void saveChanges() {
-        api.updateIssue(issue.getProject().getId(), issue.getIssueIndex(), issue)
-           .compose(bindToLifecycle())
-           .compose(Rx.applySchedulers())
-           .doOnSubscribe(() -> setMode(Mode.VIEW, false))
-           .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
-           .doOnNext(issue -> this.issue = issue)
-           .doOnTerminate(() -> progress.setVisibility(View.GONE))
-           .subscribe(issue -> init());
-    }
-
     private void onAttachmentSelected() {
         attachmentItems.add(new AttachmentsItem(null, canEdit()));
     }
@@ -319,19 +291,5 @@ public class IssueActivity extends EditableActivity {
     private void onAttachmentUploaded(IssueAttachment attachment) {
         attachmentItems.remove(new AttachmentsItem(null, canEdit()));
         attachmentItems.add(new AttachmentsItem(attachment, canEdit()));
-    }
-
-    @Override
-    protected int getMenu(Mode mode) {
-        switch (mode) {
-            case CREATE:
-                return R.menu.issue_edit;
-            case EDIT:
-                return R.menu.issue_edit;
-            case VIEW:
-                return R.menu.issue_normal;
-            default:
-                return R.menu.issue_normal;
-        }
     }
 }

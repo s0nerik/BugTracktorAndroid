@@ -9,7 +9,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,7 +36,6 @@ import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.EditableActivity;
 import com.github.sonerik.bugtracktor.utils.EditTextUtils;
-import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.google.common.collect.ImmutableMap;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -50,6 +48,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import icepick.State;
+import rx.Observable;
 
 /**
  * Created by sonerik on 5/29/16.
@@ -132,37 +131,9 @@ public class ProjectActivity extends EditableActivity {
     }
 
     @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        if (savedInstanceState == null) {
-            init();
-            loadProjectData();
-        } else {
-            init();
-        }
-    }
-
-    private void init() {
-        Log.d(App.TAG, project.toString());
-
+    protected void init() {
+        super.init();
         mainCollapsing.setTitle(project.getName());
-        mainToolbar.inflateMenu(R.menu.project_normal);
-        mainToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        mainToolbar.setNavigationOnClickListener(v -> finish());
-        mainToolbar.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.edit:
-                    setMode(Mode.EDIT, true);
-                    updateMembers();
-                    updateIssues();
-                    break;
-                case R.id.save:
-                    saveChanges();
-                    break;
-            }
-            return true;
-        });
-
         etProjectName.setText(project.getName());
         etProjectShortDescription.setText(project.getShortDescription());
 
@@ -180,8 +151,6 @@ public class ProjectActivity extends EditableActivity {
         rvIssues.setNestedScrollingEnabled(false);
         layoutManager = rvMembers.getLayoutManager();
         layoutManager.setAutoMeasureEnabled(true);
-
-        setMode(mode, false);
     }
 
     private void initListeners() {
@@ -250,12 +219,6 @@ public class ProjectActivity extends EditableActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        init();
-    }
-
-    @Override
     protected int getMenu(Mode mode) {
         switch (mode) {
             case CREATE:
@@ -277,32 +240,25 @@ public class ProjectActivity extends EditableActivity {
         EditTextUtils.setEditingEnabled(etProjectShortDescription, canEdit(), true);
     }
 
-    private void saveChanges() {
-        api.updateProject(project.getId(), project)
-           .compose(bindToLifecycle())
-           .compose(Rx.applySchedulers())
-           .doOnSubscribe(() -> setMode(Mode.VIEW, false))
-           .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
-           .doOnNext(project -> this.project = project)
-           .doOnTerminate(() -> progress.setVisibility(View.GONE))
-           .doOnTerminate(this::updateIssues)
-           .doOnTerminate(this::updateMembers)
-           .subscribe(project -> init());
+    @Override
+    protected Observable saveChanges() {
+        return api.updateProject(project.getId(), project)
+                  .doOnNext(project -> this.project = project);
     }
 
-    private void loadProjectData() {
-        api.getProject(project.getId())
-           .compose(Rx.applySchedulers())
-           .compose(bindToLifecycle())
-           .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
-           .doOnSubscribe(() -> issuesLoadingView.setVisibility(View.VISIBLE))
-           .doOnSubscribe(() -> membersLoadingView.setVisibility(View.VISIBLE))
-           .doOnNext(p -> project = p)
-           .doOnTerminate(() -> issuesLoadingView.setVisibility(View.GONE))
-           .doOnTerminate(() -> membersLoadingView.setVisibility(View.GONE))
-           .doOnTerminate(() -> progress.setVisibility(View.GONE))
-           .doOnTerminate(this::updateIssues)
-           .doOnTerminate(this::updateMembers)
-           .subscribe(p -> init());
+    @Override
+    protected Observable loadData() {
+        return api.getProject(project.getId())
+                  .doOnSubscribe(() -> issuesLoadingView.setVisibility(View.VISIBLE))
+                  .doOnSubscribe(() -> membersLoadingView.setVisibility(View.VISIBLE))
+                  .doOnNext(p -> project = p)
+                  .doOnTerminate(() -> issuesLoadingView.setVisibility(View.GONE))
+                  .doOnTerminate(() -> membersLoadingView.setVisibility(View.GONE));
+    }
+
+    @Override
+    protected void onModeChanged() {
+        updateIssues();
+        updateMembers();
     }
 }
