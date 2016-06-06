@@ -27,7 +27,6 @@ import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersAda
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersItem;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.bundlers.ParcelBundler;
-import com.github.sonerik.bugtracktor.bundlers.SerializableBundler;
 import com.github.sonerik.bugtracktor.events.EIssueClicked;
 import com.github.sonerik.bugtracktor.events.EProjectMemberClicked;
 import com.github.sonerik.bugtracktor.events.EProjectMemberCreated;
@@ -36,7 +35,7 @@ import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
 import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
-import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
+import com.github.sonerik.bugtracktor.screens.base.EditableActivity;
 import com.github.sonerik.bugtracktor.utils.EditTextUtils;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
@@ -55,9 +54,7 @@ import icepick.State;
 /**
  * Created by sonerik on 5/29/16.
  */
-public class ProjectActivity extends BaseActivity {
-
-    public enum Mode { CREATE, EDIT, VIEW }
+public class ProjectActivity extends EditableActivity {
 
     @Inject
     BugTracktorApi api;
@@ -110,14 +107,6 @@ public class ProjectActivity extends BaseActivity {
     @InjectExtra
     @State(ParcelBundler.class)
     Project project;
-
-    @InjectExtra
-    @State
-    boolean canManage;
-
-    @InjectExtra
-    @State(SerializableBundler.class)
-    Mode mode = Mode.VIEW;
 
     private BindableRxList<ProjectMembersItem> projectMembers = new BindableRxList<>();
     private ProjectMembersAdapter projectMembersAdapter = new ProjectMembersAdapter(projectMembers);
@@ -204,6 +193,7 @@ public class ProjectActivity extends BaseActivity {
                                      .gotoIssueActivity()
                                      .canManage(true)
                                      .issue(e.issue)
+                                     .mode(EditableActivity.Mode.VIEW)
                                      .build());
              });
         RxBus.on(EProjectMemberClicked.class)
@@ -265,37 +255,24 @@ public class ProjectActivity extends BaseActivity {
         init();
     }
 
-    private boolean canEdit() {
-        return (mode == Mode.EDIT && canManage) || mode == Mode.CREATE;
+    @Override
+    protected int getMenu(Mode mode) {
+        switch (mode) {
+            case CREATE:
+                return R.menu.project_edit;
+            case EDIT:
+                return R.menu.project_edit;
+            case VIEW:
+                return R.menu.project_normal;
+            default:
+                return R.menu.project_normal;
+        }
     }
 
-    private void setMode(Mode mode, boolean expandToolbar) {
-        if (mode == Mode.EDIT && !canManage) return;
-        this.mode = mode;
-
-        mainToolbar.getMenu().clear();
-        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mainAppbar.getLayoutParams();
-        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
-
-        if (behavior == null) {
-            behavior = new AppBarLayout.Behavior();
-            params.setBehavior(behavior);
-        }
-
-        if (canEdit()) {
-            mainToolbar.inflateMenu(R.menu.project_edit);
-            if (expandToolbar) {
-                mainAppbar.setExpanded(true, true);
-                nestedScrollView.fullScroll(View.FOCUS_UP);
-            }
-
-            icAddMember.setVisibility(View.VISIBLE);
-        } else {
-            mainToolbar.inflateMenu(R.menu.project_normal);
-
-            icAddMember.setVisibility(View.GONE);
-        }
-
+    @Override
+    protected void setMode(Mode mode, boolean expandToolbar) {
+        super.setMode(mode, expandToolbar);
+        icAddMember.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
         EditTextUtils.setEditingEnabled(etProjectName, canEdit(), false);
         EditTextUtils.setEditingEnabled(etProjectShortDescription, canEdit(), true);
     }

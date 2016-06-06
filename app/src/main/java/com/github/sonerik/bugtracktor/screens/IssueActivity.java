@@ -32,7 +32,7 @@ import com.github.sonerik.bugtracktor.models.Issue;
 import com.github.sonerik.bugtracktor.models.IssueAttachment;
 import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
-import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
+import com.github.sonerik.bugtracktor.screens.base.EditableActivity;
 import com.github.sonerik.bugtracktor.ui.views.DummyNestedScrollView;
 import com.github.sonerik.bugtracktor.ui.views.TintableMenuToolbar;
 import com.github.sonerik.bugtracktor.utils.EditTextUtils;
@@ -58,7 +58,7 @@ import ru.noties.debug.Debug;
 /**
  * Created by sonerik on 6/2/16.
  */
-public class IssueActivity extends BaseActivity {
+public class IssueActivity extends EditableActivity {
 
     private static final int PICK_ATTACHMENT = 7865;
 
@@ -110,11 +110,6 @@ public class IssueActivity extends BaseActivity {
     @BindView(R.id.icAddAttachment)
     ImageView icAddAttachment;
 
-    @State
-    boolean editMode = false;
-    @InjectExtra
-    @State
-    boolean canManage;
     @InjectExtra
     @State(ParcelBundler.class)
     Issue issue;
@@ -184,7 +179,7 @@ public class IssueActivity extends BaseActivity {
         mainToolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.edit:
-                    setEditMode(true, true);
+                    setMode(Mode.EDIT, true);
                     updateAttachments();
                     break;
                 case R.id.save:
@@ -214,7 +209,7 @@ public class IssueActivity extends BaseActivity {
         RecyclerView.LayoutManager layoutManager = rvAttachments.getLayoutManager();
         layoutManager.setAutoMeasureEnabled(true);
 
-        setEditMode(editMode, false);
+        setMode(mode, false);
 
         updateAttachments();
     }
@@ -225,51 +220,27 @@ public class IssueActivity extends BaseActivity {
         if (attachments != null && !attachments.isEmpty()) {
             cardAttachments.setVisibility(View.VISIBLE);
             for (IssueAttachment attachment : attachments) {
-                attachmentItems.add(new AttachmentsItem(attachment, editMode));
+                attachmentItems.add(new AttachmentsItem(attachment, canEdit()));
             }
         } else {
             cardAttachments.setVisibility(View.GONE);
         }
     }
 
-    private void setEditMode(boolean state, boolean expandToolbar) {
-        if (!canManage) state = false;
-        editMode = state;
+    @Override
+    protected void setMode(Mode mode, boolean expandToolbar) {
+        super.setMode(mode, expandToolbar);
+        icAssignee.setVisibility(canEdit() ? View.GONE : View.VISIBLE);
+        icAddAttachment.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
+        icChangeAssignee.setVisibility(canEdit() ? View.VISIBLE :View.GONE);
 
-        mainToolbar.getMenu().clear();
-        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mainAppbar.getLayoutParams();
-        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
-
-        if (behavior == null) {
-            behavior = new AppBarLayout.Behavior();
-            params.setBehavior(behavior);
-        }
-
-        if (state) {
-            mainToolbar.inflateMenu(R.menu.issue_edit);
-            if (expandToolbar) {
-                mainAppbar.setExpanded(true, true);
-                nestedScrollView.fullScroll(View.FOCUS_UP);
-            }
-
-            icAddAttachment.setVisibility(View.VISIBLE);
-            icAssignee.setVisibility(View.GONE);
-            icChangeAssignee.setVisibility(View.VISIBLE);
-        } else {
-            mainToolbar.inflateMenu(R.menu.issue_normal);
-
-            icAddAttachment.setVisibility(View.GONE);
-            icAssignee.setVisibility(View.VISIBLE);
-            icChangeAssignee.setVisibility(View.GONE);
-        }
-
-        EditTextUtils.setEditingEnabled(etShortDescription, state, false);
-        EditTextUtils.setEditingEnabled(etDescription, state, true);
+        EditTextUtils.setEditingEnabled(etShortDescription, canEdit(), false);
+        EditTextUtils.setEditingEnabled(etDescription, canEdit(), true);
     }
 
     @OnClick(R.id.btnAssignee)
     void onAssigneeClicked() {
-        if (!editMode) return;
+        if (!canEdit()) return;
         startActivity(Henson.with(this)
                             .gotoSelectProjectMemberActivity()
                             .projectId(issue.getProject().getId())
@@ -315,7 +286,7 @@ public class IssueActivity extends BaseActivity {
                 break;
             case REMOVE:
                 issue.getAttachments().remove(e.attachment);
-                attachmentItems.remove(new AttachmentsItem(e.attachment, editMode));
+                attachmentItems.remove(new AttachmentsItem(e.attachment, canEdit()));
                 break;
         }
     }
@@ -334,7 +305,7 @@ public class IssueActivity extends BaseActivity {
         api.updateIssue(issue.getProject().getId(), issue.getIssueIndex(), issue)
            .compose(bindToLifecycle())
            .compose(Rx.applySchedulers())
-           .doOnSubscribe(() -> setEditMode(false, false))
+           .doOnSubscribe(() -> setMode(Mode.VIEW, false))
            .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
            .doOnNext(issue -> this.issue = issue)
            .doOnTerminate(() -> progress.setVisibility(View.GONE))
@@ -342,11 +313,25 @@ public class IssueActivity extends BaseActivity {
     }
 
     private void onAttachmentSelected() {
-        attachmentItems.add(new AttachmentsItem(null, editMode));
+        attachmentItems.add(new AttachmentsItem(null, canEdit()));
     }
 
     private void onAttachmentUploaded(IssueAttachment attachment) {
-        attachmentItems.remove(new AttachmentsItem(null, editMode));
-        attachmentItems.add(new AttachmentsItem(attachment, editMode));
+        attachmentItems.remove(new AttachmentsItem(null, canEdit()));
+        attachmentItems.add(new AttachmentsItem(attachment, canEdit()));
+    }
+
+    @Override
+    protected int getMenu(Mode mode) {
+        switch (mode) {
+            case CREATE:
+                return R.menu.issue_edit;
+            case EDIT:
+                return R.menu.issue_edit;
+            case VIEW:
+                return R.menu.issue_normal;
+            default:
+                return R.menu.issue_normal;
+        }
     }
 }
