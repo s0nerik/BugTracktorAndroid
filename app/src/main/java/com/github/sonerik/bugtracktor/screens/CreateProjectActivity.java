@@ -1,4 +1,4 @@
-package com.github.sonerik.bugtracktor.screens.create_project;
+package com.github.sonerik.bugtracktor.screens;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

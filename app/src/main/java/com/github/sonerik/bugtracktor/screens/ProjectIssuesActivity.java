@@ -1,9 +1,10 @@
-package com.github.sonerik.bugtracktor.screens.project_issues;
+package com.github.sonerik.bugtracktor.screens;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
+import com.f2prateek.dart.InjectExtra;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.issues.IssuesAdapter;
@@ -21,13 +22,10 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import icepick.State;
-import io.github.kobakei.grenade.annotation.Extra;
-import io.github.kobakei.grenade.annotation.Navigator;
 
 /**
  * Created by Alex on 6/1/2016.
  */
-@Navigator
 public class ProjectIssuesActivity extends BaseActivity {
 
     @Inject
@@ -39,7 +37,7 @@ public class ProjectIssuesActivity extends BaseActivity {
     private BindableRxList<IssuesItem> issueItems = new BindableRxList<>();
     private IssuesAdapter adapter = new IssuesAdapter(issueItems);
 
-    @Extra
+    @InjectExtra
     @State
     int projectId;
 
@@ -57,7 +55,6 @@ public class ProjectIssuesActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.getComponent().inject(this);
-        ProjectIssuesActivityNavigator.inject(this, getIntent());
     }
 
     @Override

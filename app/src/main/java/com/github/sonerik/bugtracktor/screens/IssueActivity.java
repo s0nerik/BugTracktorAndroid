@@ -1,4 +1,4 @@
-package com.github.sonerik.bugtracktor.screens.issue;
+package com.github.sonerik.bugtracktor.screens;
 
 import android.Manifest;
 import android.content.Intent;
@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.f2prateek.dart.InjectExtra;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.attachments.AttachmentsAdapter;
@@ -32,7 +33,6 @@ import com.github.sonerik.bugtracktor.models.IssueAttachment;
 import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
-import com.github.sonerik.bugtracktor.screens.project_members.SelectProjectMemberActivityNavigator;
 import com.github.sonerik.bugtracktor.ui.views.DummyNestedScrollView;
 import com.github.sonerik.bugtracktor.ui.views.TintableMenuToolbar;
 import com.github.sonerik.bugtracktor.utils.EditTextUtils;
@@ -53,14 +53,11 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import icepick.State;
-import io.github.kobakei.grenade.annotation.Extra;
-import io.github.kobakei.grenade.annotation.Navigator;
 import ru.noties.debug.Debug;
 
 /**
  * Created by sonerik on 6/2/16.
  */
-@Navigator
 public class IssueActivity extends BaseActivity {
 
     private static final int PICK_ATTACHMENT = 7865;
@@ -115,10 +112,10 @@ public class IssueActivity extends BaseActivity {
 
     @State
     boolean editMode = false;
-    @Extra
+    @InjectExtra
     @State
     boolean canManage;
-    @Extra
+    @InjectExtra
     @State(ParcelBundler.class)
     Issue issue;
 
@@ -139,7 +136,6 @@ public class IssueActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.getComponent().inject(this);
-        IssueActivityNavigator.inject(this, getIntent());
         initListeners();
     }
 
@@ -274,7 +270,10 @@ public class IssueActivity extends BaseActivity {
     @OnClick(R.id.btnAssignee)
     void onAssigneeClicked() {
         if (!editMode) return;
-        startActivity(new SelectProjectMemberActivityNavigator(issue.getProject().getId()).build(this));
+        startActivity(Henson.with(this)
+                            .gotoSelectProjectMemberActivity()
+                            .projectId(issue.getProject().getId())
+                            .build());
     }
 
     @OnClick(R.id.icAddAttachment)

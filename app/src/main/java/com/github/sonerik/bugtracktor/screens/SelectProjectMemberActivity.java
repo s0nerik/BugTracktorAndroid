@@ -1,10 +1,11 @@
-package com.github.sonerik.bugtracktor.screens.project_members;
+package com.github.sonerik.bugtracktor.screens;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.f2prateek.dart.InjectExtra;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersAdapter;
@@ -26,19 +27,16 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import icepick.State;
-import io.github.kobakei.grenade.annotation.Extra;
-import io.github.kobakei.grenade.annotation.Navigator;
 
 /**
  * Created by sonerik on 6/4/16.
  */
-@Navigator
 public class SelectProjectMemberActivity extends BaseActivity {
 
     @Inject
     BugTracktorApi api;
 
-    @Extra
+    @InjectExtra
     @State
     int projectId;
 
@@ -64,7 +62,6 @@ public class SelectProjectMemberActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.get().inject(this);
-        SelectProjectMemberActivityNavigator.inject(this, getIntent());
 
         RxBus.on(EProjectMemberClicked.class)
              .compose(bindToLifecycle())
