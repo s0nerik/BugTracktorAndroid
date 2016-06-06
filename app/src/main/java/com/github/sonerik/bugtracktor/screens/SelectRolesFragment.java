@@ -75,7 +75,7 @@ public class SelectRolesFragment extends BaseFragment {
         api.getRoles(project.getId())
            .compose(bindToLifecycle())
            .compose(Rx.applySchedulers())
-           .subscribe(this::onRolesAvailable);
+           .subscribe(this::onRolesAvailable, this::handleRequestError);
     }
 
     private void onRolesAvailable(List<Role> roles) {

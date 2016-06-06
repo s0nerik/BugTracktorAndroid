@@ -86,7 +86,7 @@ public abstract class EditableActivity extends BaseActivity {
                 .compose(bindToLifecycle())
                 .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
                 .doOnTerminate(() -> progress.setVisibility(View.GONE))
-                .subscribe(o -> init());
+                .subscribe(o -> init(), this::handleRequestError);
     }
 
     protected final void startSavingChanges() {
@@ -96,7 +96,7 @@ public abstract class EditableActivity extends BaseActivity {
                 .doOnSubscribe(() -> setMode(Mode.VIEW, false))
                 .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
                 .doOnTerminate(() -> progress.setVisibility(View.GONE))
-                .subscribe(o -> init());
+                .subscribe(o -> init(), this::handleRequestError);
     }
 
     @MenuRes

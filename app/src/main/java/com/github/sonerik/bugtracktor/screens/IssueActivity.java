@@ -10,7 +10,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -267,7 +266,7 @@ public class IssueActivity extends EditableActivity {
                .compose(Rx.applySchedulers())
                .doOnSubscribe(this::onAttachmentSelected)
                .subscribe(this::onAttachmentUploaded,
-                          throwable -> Log.e(App.TAG, "Error uploading image: "+throwable));
+                          this::handleRequestError);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

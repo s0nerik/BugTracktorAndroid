@@ -78,7 +78,7 @@ public class SelectProjectMemberActivity extends BaseActivity {
            .compose(Rx.applySchedulers())
            .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
            .doOnTerminate(() -> progress.setVisibility(View.GONE))
-           .subscribe(this::initMembers);
+           .subscribe(this::initMembers, this::handleRequestError);
     }
 
     private void initMembers(List<ProjectMember> members) {

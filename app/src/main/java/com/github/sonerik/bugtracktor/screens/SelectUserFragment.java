@@ -68,7 +68,7 @@ public class SelectUserFragment extends BaseFragment {
         api.getUsers(null, null, null, null, null)
            .compose(bindToLifecycle())
            .compose(Rx.applySchedulers())
-           .subscribe(this::onUsersLoaded);
+           .subscribe(this::onUsersLoaded, this::handleRequestError);
     }
 
     private void onUsersLoaded(List<User> users) {

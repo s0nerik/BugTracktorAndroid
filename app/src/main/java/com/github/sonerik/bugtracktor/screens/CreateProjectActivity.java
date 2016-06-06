@@ -82,7 +82,7 @@ public class CreateProjectActivity extends BaseActivity {
                editLayout.setVisibility(View.GONE);
            })
            .doOnTerminate(this::finish)
-           .subscribe();
+           .subscribe(o -> {}, this::handleRequestError);
     }
 
     @OnClick(R.id.btnCancel)

@@ -156,7 +156,7 @@ public class MainActivity extends BaseActivity {
 
     private void updateData() {
         updateProjects().concatMap(projects -> checkCreateProjectPermission())
-                        .subscribe(canCreate -> {});
+                        .subscribe(canCreate -> {}, this::handleRequestError);
     }
 
     private boolean checkCreateProjectPermission(List<Permission> permissions) {

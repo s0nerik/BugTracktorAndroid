@@ -69,6 +69,6 @@ public class ProjectIssuesActivity extends BaseActivity {
                for (Issue issue : issues) {
                    issueItems.add(new IssuesItem(issue));
                }
-           });
+           }, this::handleRequestError);
     }
 }

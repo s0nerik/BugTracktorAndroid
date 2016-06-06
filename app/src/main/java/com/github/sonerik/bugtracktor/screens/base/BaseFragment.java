@@ -17,6 +17,7 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import icepick.Icepick;
+import ru.noties.debug.Debug;
 import rx.Observable;
 
 /**
@@ -43,6 +44,10 @@ public abstract class BaseFragment extends RxFragment {
                       .doOnTerminate(() -> entry.getKey().unbind())
                       .subscribe();
         }
+    }
+
+    protected void handleRequestError(Throwable t) {
+        Debug.e(t);
     }
 
     @Nullable
