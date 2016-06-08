@@ -105,6 +105,8 @@ public class ProjectActivity extends EditableActivity {
     TextView issuesLoadingView;
     @BindView(R.id.icAddMember)
     ImageView icAddMember;
+    @BindView(R.id.icAddIssue)
+    ImageView icAddIssue;
 
     @InjectExtra
     @State(ParcelBundler.class)
@@ -165,7 +167,7 @@ public class ProjectActivity extends EditableActivity {
                                      .gotoIssueActivity()
                                      .canManage(true)
                                      .issue(e.issue)
-                                     .mode(EditableActivity.Mode.VIEW)
+                                     .mode(Mode.VIEW)
                                      .build());
              });
         RxBus.on(EProjectMemberClicked.class)
@@ -211,25 +213,39 @@ public class ProjectActivity extends EditableActivity {
     public void onAddMember() {
         startActivity(
                 Henson.with(this)
-                            .gotoAddMemberActivity()
-                            .project(project)
-                            .build()
+                      .gotoAddMemberActivity()
+                      .project(project)
+                      .build()
         );
     }
 
-    @OnClick(R.id.fab)
-    public void onFab() {
+    @OnClick(R.id.icAddIssue)
+    public void onAddIssue() {
         val newIssue = new Issue();
         newIssue.setProject(project);
         startActivity(
                 Henson.with(this)
-                            .gotoIssueActivity()
-                            .canManage(true)
-                            .issue(newIssue)
-                            .mode(Mode.CREATE)
-                            .build()
+                      .gotoIssueActivity()
+                      .canManage(true)
+                      .issue(newIssue)
+                      .mode(Mode.CREATE)
+                      .build()
         );
     }
+
+//    @OnClick(R.id.fab)
+//    public void onFab() {
+//        val newIssue = new Issue();
+//        newIssue.setProject(project);
+//        startActivity(
+//                Henson.with(this)
+//                            .gotoIssueActivity()
+//                            .canManage(true)
+//                            .issue(newIssue)
+//                            .mode(Mode.CREATE)
+//                            .build()
+//        );
+//    }
 
     private void updateMembers() {
         projectMembers.clear();
@@ -301,5 +317,8 @@ public class ProjectActivity extends EditableActivity {
     protected void onModeChanged() {
         updateIssues();
         updateMembers();
+
+        icAddMember.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
+        icAddIssue.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
     }
 }
