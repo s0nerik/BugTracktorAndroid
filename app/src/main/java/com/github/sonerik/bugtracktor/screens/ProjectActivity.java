@@ -36,6 +36,7 @@ import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.EditableActivity;
 import com.github.sonerik.bugtracktor.utils.EditTextUtils;
+import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.google.common.collect.ImmutableMap;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -243,12 +244,14 @@ public class ProjectActivity extends EditableActivity {
     @Override
     protected Observable saveChanges() {
         return api.updateProject(project.getId(), project)
+                  .compose(Rx.applySchedulers())
                   .doOnNext(project -> this.project = project);
     }
 
     @Override
     protected Observable loadData() {
         return api.getProject(project.getId())
+                  .compose(Rx.applySchedulers())
                   .doOnSubscribe(() -> issuesLoadingView.setVisibility(View.VISIBLE))
                   .doOnSubscribe(() -> membersLoadingView.setVisibility(View.VISIBLE))
                   .doOnNext(p -> project = p)

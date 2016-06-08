@@ -3,8 +3,10 @@ package com.github.sonerik.bugtracktor.screens.base;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.f2prateek.dart.Dart;
+import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
@@ -13,7 +15,6 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import icepick.Icepick;
-import ru.noties.debug.Debug;
 import rx.Observable;
 
 /**
@@ -44,7 +45,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     }
 
     protected void handleRequestError(Throwable t) {
-        Debug.e(t);
+        Log.e(App.TAG, "Request error.", t);
     }
 
     @Override

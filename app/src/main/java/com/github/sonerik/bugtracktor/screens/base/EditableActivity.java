@@ -12,7 +12,7 @@ import android.view.View;
 import com.f2prateek.dart.InjectExtra;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.bundlers.SerializableBundler;
-import com.github.sonerik.bugtracktor.utils.Rx;
+import com.trello.rxlifecycle.ActivityEvent;
 
 import butterknife.BindView;
 import icepick.State;
@@ -45,10 +45,10 @@ public abstract class EditableActivity extends BaseActivity {
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         if (savedInstanceState == null) {
-            init();
+//            init();
             startLoadingData();
         } else {
-            init();
+//            init();
         }
     }
 
@@ -82,20 +82,18 @@ public abstract class EditableActivity extends BaseActivity {
 
     protected final void startLoadingData() {
         loadData()
-                .compose(Rx.applySchedulers())
-                .compose(bindToLifecycle())
                 .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
                 .doOnTerminate(() -> progress.setVisibility(View.GONE))
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(o -> init(), this::handleRequestError);
     }
 
     protected final void startSavingChanges() {
         saveChanges()
-                .compose(bindToLifecycle())
-                .compose(Rx.applySchedulers())
                 .doOnSubscribe(() -> setMode(Mode.VIEW, false))
                 .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
                 .doOnTerminate(() -> progress.setVisibility(View.GONE))
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(o -> init(), this::handleRequestError);
     }
 

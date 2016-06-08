@@ -217,12 +217,14 @@ public class IssueActivity extends EditableActivity {
     @Override
     protected Observable loadData() {
         return api.getIssue(issue.getProject().getId(), issue.getIssueIndex())
+                  .compose(Rx.applySchedulers())
                   .doOnNext(issue -> this.issue = issue);
     }
 
     @Override
     protected Observable saveChanges() {
         return api.updateIssue(issue.getProject().getId(), issue.getIssueIndex(), issue)
+                  .compose(Rx.applySchedulers())
                   .doOnNext(issue -> this.issue = issue);
     }
 
