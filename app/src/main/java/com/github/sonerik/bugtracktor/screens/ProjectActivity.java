@@ -180,6 +180,13 @@ public class ProjectActivity extends EditableActivity {
                  project.getMembers().add(e.member);
                  projectMembers.add(new ProjectMembersItem(e.member, canEdit()));
              });
+//        RxBus.on(EIssueChanged.class)
+//             .compose(bindToLifecycle())
+//             .subscribe(e -> {
+//
+//                 init();
+//             });
+
         RxTextView.textChanges(etProjectName)
                   .compose(bindToLifecycle())
                   .subscribe(text -> project.setName(text.toString()));

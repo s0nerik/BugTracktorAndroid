@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -25,15 +26,19 @@ import com.github.sonerik.bugtracktor.adapters.attachments.AttachmentsItem;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.bundlers.ParcelBundler;
 import com.github.sonerik.bugtracktor.events.EAttachmentClicked;
+import com.github.sonerik.bugtracktor.events.EIssueChanged;
+import com.github.sonerik.bugtracktor.events.EIssueTypeClicked;
 import com.github.sonerik.bugtracktor.events.EProjectMemberClicked;
 import com.github.sonerik.bugtracktor.models.Issue;
 import com.github.sonerik.bugtracktor.models.IssueAttachment;
+import com.github.sonerik.bugtracktor.models.IssueType;
 import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.EditableActivity;
 import com.github.sonerik.bugtracktor.ui.views.DummyNestedScrollView;
 import com.github.sonerik.bugtracktor.ui.views.TintableMenuToolbar;
 import com.github.sonerik.bugtracktor.utils.EditTextUtils;
+import com.github.sonerik.bugtracktor.utils.NamingUtils;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.google.common.collect.ImmutableMap;
@@ -107,6 +112,8 @@ public class IssueActivity extends EditableActivity {
     CardView cardAttachments;
     @BindView(R.id.icAddAttachment)
     ImageView icAddAttachment;
+    @BindView(R.id.txtType)
+    TextView txtType;
 
     @InjectExtra
     @State(ParcelBundler.class)
@@ -142,6 +149,12 @@ public class IssueActivity extends EditableActivity {
                  issue.setAssignees(Lists.newArrayList(e.member.getUser()));
                  init();
              });
+        RxBus.on(EIssueTypeClicked.class)
+             .compose(bindToLifecycle())
+             .subscribe(e -> {
+                 issue.setType(e.issueType);
+                 init();
+             });
         RxTextView.textChanges(etShortDescription)
                   .compose(bindToLifecycle())
                   .subscribe(text -> issue.setShortDescription(text.toString()));
@@ -160,6 +173,13 @@ public class IssueActivity extends EditableActivity {
         User creator = issue.getAuthor();
         if (creator != null) {
             txtAuthor.setText(creator.getRealName());
+        }
+
+        IssueType type = issue.getType();
+        if (type != null) {
+            txtType.setText(NamingUtils.getReadableIssueType(type));
+        } else {
+            txtType.setText("Unassigned");
         }
 
         List<User> assignees = issue.getAssignees();
@@ -193,7 +213,7 @@ public class IssueActivity extends EditableActivity {
         super.setMode(mode, expandToolbar);
         icAssignee.setVisibility(canEdit() ? View.GONE : View.VISIBLE);
         icAddAttachment.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
-        icChangeAssignee.setVisibility(canEdit() ? View.VISIBLE :View.GONE);
+        icChangeAssignee.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
 
         EditTextUtils.setEditingEnabled(etShortDescription, canEdit(), false);
         EditTextUtils.setEditingEnabled(etDescription, canEdit(), true);
@@ -208,9 +228,20 @@ public class IssueActivity extends EditableActivity {
                             .build());
     }
 
+    @OnClick(R.id.btnType)
+    void onTypeClicked() {
+        if (!canEdit()) return;
+        startActivity(
+                Henson.with(this)
+                      .gotoSelectIssueTypeActivity()
+                      .projectId(issue.getProject().getId())
+                      .build()
+        );
+    }
+
     @OnClick(R.id.icAddAttachment)
     void onAddAttachment() {
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, PICK_ATTACHMENT);
     }
 

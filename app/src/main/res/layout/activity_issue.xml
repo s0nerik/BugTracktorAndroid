@@ -64,7 +64,7 @@
                         android:layout_height="wrap_content"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
-                        android:inputType="textNoSuggestions"
+                        android:inputType="textNoSuggestions|textCapWords"
                         android:backgroundTint="#0fff"
                         tools:text="Andy James"
                         />
@@ -116,6 +116,44 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 >
+
+                <RelativeLayout
+                    android:id="@+id/btnType"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:foreground="?selectableItemBackground"
+                    >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="80dp"
+                        android:layout_marginLeft="16dp"
+                        app:srcCompat="@drawable/label"
+                        />
+
+                    <TextView
+                        android:id="@+id/labelType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="62dp"
+                        android:layout_marginTop="16dp"
+                        android:lineSpacingExtra="8dp"
+                        android:text="Type"
+                        android:textSize="16sp"
+                        />
+
+                    <TextView
+                        android:id="@+id/txtType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/labelType"
+                        android:layout_marginLeft="62dp"
+                        android:gravity="center_vertical"
+                        android:textColor="#333"
+                        android:textSize="20sp"
+                        tools:text="Bug"
+                        />
+                </RelativeLayout>
                 <!--<RelativeLayout-->
                     <!--android:id="@+id/btnStatus"-->
                     <!--android:layout_width="match_parent"-->
@@ -155,6 +193,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:foreground="?selectableItemBackground"
+                    android:layout_marginTop="80dp"
                     >
                     <ImageView
                         android:id="@+id/icAssignee"

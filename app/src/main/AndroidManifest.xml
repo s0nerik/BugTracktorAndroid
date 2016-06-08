@@ -45,6 +45,12 @@
             />
 
         <activity
+            android:name=".screens.SelectIssueTypeActivity"
+            android:label="Select Issue Type"
+            android:theme="@style/Theme.AppCompat.Light.Dialog"
+            />
+
+        <activity
             android:name=".screens.AddMemberActivity"
             android:label="Add Member"
             android:theme="@style/AppDialog.NoTitle"
