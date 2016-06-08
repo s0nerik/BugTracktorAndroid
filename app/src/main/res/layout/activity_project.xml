@@ -356,5 +356,15 @@
         </LinearLayout>
 
     </com.github.sonerik.bugtracktor.ui.views.DummyNestedScrollView>
-    
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tint="#fff"
+        android:layout_gravity="right|bottom"
+        android:layout_margin="16dp"
+        app:srcCompat="@drawable/plus"
+        />
+
 </android.support.design.widget.CoordinatorLayout>

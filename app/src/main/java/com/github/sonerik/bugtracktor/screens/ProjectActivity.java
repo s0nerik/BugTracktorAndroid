@@ -49,6 +49,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import icepick.State;
+import lombok.val;
 import rx.Observable;
 
 /**
@@ -190,7 +191,26 @@ public class ProjectActivity extends EditableActivity {
 
     @OnClick(R.id.icAddMember)
     public void onAddMember() {
-        startActivity(Henson.with(this).gotoAddMemberActivity().project(project).build());
+        startActivity(
+                Henson.with(this)
+                            .gotoAddMemberActivity()
+                            .project(project)
+                            .build()
+        );
+    }
+
+    @OnClick(R.id.fab)
+    public void onFab() {
+        val newIssue = new Issue();
+        newIssue.setProject(project);
+        startActivity(
+                Henson.with(this)
+                            .gotoIssueActivity()
+                            .canManage(true)
+                            .issue(newIssue)
+                            .mode(Mode.CREATE)
+                            .build()
+        );
     }
 
     private void updateMembers() {

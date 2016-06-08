@@ -216,16 +216,24 @@ public class IssueActivity extends EditableActivity {
 
     @Override
     protected Observable loadData() {
-        return api.getIssue(issue.getProject().getId(), issue.getIssueIndex())
-                  .compose(Rx.applySchedulers())
-                  .doOnNext(issue -> this.issue = issue);
+        if (mode != Mode.CREATE)
+            return api.getIssue(issue.getProject().getId(), issue.getIssueIndex())
+                      .compose(Rx.applySchedulers())
+                      .doOnNext(issue -> this.issue = issue);
+        else
+            return Observable.just(issue);
     }
 
     @Override
     protected Observable saveChanges() {
-        return api.updateIssue(issue.getProject().getId(), issue.getIssueIndex(), issue)
-                  .compose(Rx.applySchedulers())
-                  .doOnNext(issue -> this.issue = issue);
+        if (mode == Mode.CREATE)
+            return api.createIssue(issue.getProject().getId(), issue)
+                      .compose(Rx.applySchedulers())
+                      .doOnNext(issue -> this.issue = issue);
+        else
+            return api.updateIssue(issue.getProject().getId(), issue.getIssueIndex(), issue)
+                      .compose(Rx.applySchedulers())
+                      .doOnNext(issue -> this.issue = issue);
     }
 
     @Override
