@@ -41,9 +41,11 @@ import com.github.sonerik.bugtracktor.utils.EditTextUtils;
 import com.github.sonerik.bugtracktor.utils.NamingUtils;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.rits.cloning.Cloner;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.io.FileNotFoundException;
@@ -67,6 +69,9 @@ public class IssueActivity extends EditableActivity {
 
     @Inject
     BugTracktorApi api;
+
+    @Inject
+    User user;
 
     @BindView(R.id.etShortDescription)
     EditText etShortDescription;
@@ -114,10 +119,14 @@ public class IssueActivity extends EditableActivity {
     ImageView icAddAttachment;
     @BindView(R.id.txtType)
     TextView txtType;
+    @BindView(R.id.layoutAttachmentsEmpty)
+    LinearLayout layoutAttachmentsEmpty;
 
     @InjectExtra
     @State(ParcelBundler.class)
     Issue issue;
+    @State(ParcelBundler.class)
+    Issue originalIssue;
 
     private BindableRxList<AttachmentsItem> attachmentItems = new BindableRxList<>();
     private AttachmentsAdapter attachmentsAdapter = new AttachmentsAdapter(attachmentItems);
@@ -136,6 +145,13 @@ public class IssueActivity extends EditableActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.getComponent().inject(this);
+
+        if (mode == Mode.CREATE) {
+            issue.setAuthor(user);
+        }
+
+        originalIssue = new Cloner().deepClone(issue);
+
         initListeners();
     }
 
@@ -199,12 +215,12 @@ public class IssueActivity extends EditableActivity {
         attachmentItems.clear();
         List<IssueAttachment> attachments = issue.getAttachments();
         if (attachments != null && !attachments.isEmpty()) {
-            cardAttachments.setVisibility(View.VISIBLE);
+            layoutAttachmentsEmpty.setVisibility(View.GONE);
             for (IssueAttachment attachment : attachments) {
                 attachmentItems.add(new AttachmentsItem(attachment, canEdit()));
             }
         } else {
-            cardAttachments.setVisibility(View.GONE);
+            layoutAttachmentsEmpty.setVisibility(View.VISIBLE);
         }
     }
 
@@ -214,6 +230,12 @@ public class IssueActivity extends EditableActivity {
         icAssignee.setVisibility(canEdit() ? View.GONE : View.VISIBLE);
         icAddAttachment.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
         icChangeAssignee.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
+
+        if (!canEdit() && Strings.isNullOrEmpty(issue.getFullDescription())) {
+            layoutDescriptionEmpty.setVisibility(View.VISIBLE);
+        } else {
+            layoutDescriptionEmpty.setVisibility(View.GONE);
+        }
 
         EditTextUtils.setEditingEnabled(etShortDescription, canEdit(), false);
         EditTextUtils.setEditingEnabled(etDescription, canEdit(), true);
@@ -260,11 +282,13 @@ public class IssueActivity extends EditableActivity {
         if (mode == Mode.CREATE)
             return api.createIssue(issue.getProject().getId(), issue)
                       .compose(Rx.applySchedulers())
-                      .doOnNext(issue -> this.issue = issue);
+                      .doOnNext(issue -> this.issue = issue)
+                      .doOnNext(issue -> RxBus.publish(new EIssueChanged(originalIssue, issue, EIssueChanged.Type.CREATED)));
         else
             return api.updateIssue(issue.getProject().getId(), issue.getIssueIndex(), issue)
                       .compose(Rx.applySchedulers())
-                      .doOnNext(issue -> this.issue = issue);
+                      .doOnNext(issue -> this.issue = issue)
+                      .doOnNext(issue -> RxBus.publish(new EIssueChanged(originalIssue, issue, EIssueChanged.Type.UPDATED)));
     }
 
     @Override
@@ -329,6 +353,8 @@ public class IssueActivity extends EditableActivity {
     }
 
     private void onAttachmentUploaded(IssueAttachment attachment) {
+        layoutAttachmentsEmpty.setVisibility(View.GONE);
+
         attachmentItems.remove(new AttachmentsItem(null, canEdit()));
         attachmentItems.add(new AttachmentsItem(attachment, canEdit()));
     }

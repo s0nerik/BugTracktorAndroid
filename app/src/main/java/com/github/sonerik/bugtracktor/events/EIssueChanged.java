@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 public class EIssueChanged {
     public enum Type { CREATED, UPDATED }
 
-    public final Issue issue;
+    public final Issue oldIssue;
+    public final Issue newIssue;
     public final Type type;
 }

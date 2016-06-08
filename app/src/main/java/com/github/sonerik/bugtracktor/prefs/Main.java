@@ -14,4 +14,10 @@ public class Main {
     protected String email = "";
     @Key
     protected String password = "";
+    @Key
+    protected String name = "";
+    @Key
+    protected String nickname = "";
+    @Key
+    protected String avatarUrl = "";
 }

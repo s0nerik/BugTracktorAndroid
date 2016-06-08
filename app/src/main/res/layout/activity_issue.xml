@@ -362,6 +362,35 @@
                         tools:listitem="@layout/item_attachments"
                         app:layoutManager="@string/layout_manager_linear"
                         />
+                    <LinearLayout
+                        android:id="@+id/layoutAttachmentsEmpty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/icAttachments"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        tools:visibility="gone"
+                        >
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            app:srcCompat="@drawable/information_outline"
+                            android:layout_gravity="center"
+                            android:tint="@color/md_grey_600"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
+                            android:gravity="center"
+                            android:text="This issue doesn't have any attachments yet."
+                            />
+                    </LinearLayout>
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>

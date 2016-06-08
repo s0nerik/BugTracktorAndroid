@@ -37,6 +37,9 @@ public interface BugTracktorWebService {
     @GET("permissions")
     Observable<List<Permission>> getPermissions(@Query("projectId") Integer projectId);
 
+    @GET("me")
+    Observable<User> getUserInfo();
+    
     // region Projects
 
     @GET("projects")

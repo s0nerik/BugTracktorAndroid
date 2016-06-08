@@ -46,13 +46,22 @@ public class BugTracktorApi {
         prefs.removeToken();
         prefs.removeEmail();
         prefs.removePassword();
+        prefs.removeName();
+        prefs.removeNickname();
+        prefs.removeAvatarUrl();
     }
 
     public Observable<Token> login(String email, String password) {
         return service.login(email, password)
                       .doOnNext(result -> prefs.setEmail(email))
                       .doOnNext(result -> prefs.setPassword(password))
-                      .doOnNext(result -> prefs.setToken(result.getToken()));
+                      .doOnNext(result -> prefs.setToken(result.getToken()))
+                      .concatMap(token -> service.getUserInfo()
+                                                 .doOnNext(user -> prefs.setName(user.getRealName()))
+                                                 .doOnNext(user -> prefs.setNickname(user.getNickname()))
+                                                 .doOnNext(user -> prefs.setAvatarUrl(user.getAvatarUrl()))
+                                                 .map(o -> token)
+                      );
     }
 
     public Observable<IssueAttachment> addAttachment(Issue issue, Object attachment) {

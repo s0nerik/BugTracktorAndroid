@@ -26,6 +26,7 @@ import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersAda
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersItem;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.bundlers.ParcelBundler;
+import com.github.sonerik.bugtracktor.events.EIssueChanged;
 import com.github.sonerik.bugtracktor.events.EIssueClicked;
 import com.github.sonerik.bugtracktor.events.EProjectMemberClicked;
 import com.github.sonerik.bugtracktor.events.EProjectMemberCreated;
@@ -180,13 +181,23 @@ public class ProjectActivity extends EditableActivity {
                  project.getMembers().add(e.member);
                  projectMembers.add(new ProjectMembersItem(e.member, canEdit()));
              });
-//        RxBus.on(EIssueChanged.class)
-//             .compose(bindToLifecycle())
-//             .subscribe(e -> {
-//
-//                 init();
-//             });
-
+        RxBus.on(EIssueChanged.class)
+             .compose(bindToLifecycle())
+             .subscribe(e -> {
+                 List<Issue> issues = project.getIssues();
+                 if (issues == null) return;
+                 if (e.type == EIssueChanged.Type.CREATED) {
+                     issues.add(e.newIssue);
+                     issueItems.add(new IssuesItem(e.newIssue));
+                 } else if (e.type == EIssueChanged.Type.UPDATED) {
+                     int oldIndex = issues.indexOf(e.oldIssue);
+                     if (oldIndex >= 0) {
+                         issues.set(oldIndex, e.newIssue);
+                         issueItems.set(oldIndex, new IssuesItem(e.newIssue));
+                     }
+                 }
+                 init();
+             });
         RxTextView.textChanges(etProjectName)
                   .compose(bindToLifecycle())
                   .subscribe(text -> project.setName(text.toString()));

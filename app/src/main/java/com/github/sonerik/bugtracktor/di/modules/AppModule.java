@@ -3,6 +3,7 @@ package com.github.sonerik.bugtracktor.di.modules;
 import android.app.Application;
 
 import com.github.sonerik.bugtracktor.App;
+import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.prefs.MainPrefs;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
@@ -11,6 +12,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 /**
  * Created by sonerik on 5/28/16.
@@ -36,6 +38,16 @@ public class AppModule {
     @Singleton
     MainPrefs provideMainPrefs() {
         return MainPrefs.create(app);
+    }
+
+    @Provides
+    User provideCurrentUser(MainPrefs prefs) {
+        val user = new User();
+        user.setEmail(prefs.getEmail());
+        user.setRealName(prefs.getName());
+        user.setNickname(prefs.getNickname());
+        user.setAvatarUrl(prefs.getAvatarUrl());
+        return user;
     }
 
     @Provides
