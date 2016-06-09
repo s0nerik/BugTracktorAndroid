@@ -12,6 +12,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -47,6 +48,8 @@ import com.google.common.collect.Lists;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.rits.cloning.Cloner;
 import com.tbruyelle.rxpermissions.RxPermissions;
+
+import org.apache.commons.lang3.BooleanUtils;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -121,6 +124,10 @@ public class IssueActivity extends EditableActivity {
     TextView txtType;
     @BindView(R.id.layoutAttachmentsEmpty)
     LinearLayout layoutAttachmentsEmpty;
+    @BindView(R.id.btnChangeStatus)
+    Button btnChangeStatus;
+    @BindView(R.id.txtStatus)
+    TextView txtStatus;
 
     @InjectExtra
     @State(ParcelBundler.class)
@@ -231,6 +238,10 @@ public class IssueActivity extends EditableActivity {
         icAddAttachment.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
         icChangeAssignee.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
 
+        btnChangeStatus.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
+        btnChangeStatus.setText(BooleanUtils.isTrue(issue.getIsOpened()) ? "Close" : "Reopen");
+        txtStatus.setText(BooleanUtils.isTrue(issue.getIsOpened()) ? "Opened" : "Closed");
+
         if (!canEdit() && Strings.isNullOrEmpty(issue.getFullDescription())) {
             layoutDescriptionEmpty.setVisibility(View.VISIBLE);
         } else {
@@ -265,6 +276,12 @@ public class IssueActivity extends EditableActivity {
     void onAddAttachment() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, PICK_ATTACHMENT);
+    }
+
+    @OnClick(R.id.btnChangeStatus)
+    void onChangeStatus() {
+        issue.setIsOpened(!BooleanUtils.isTrue(issue.getIsOpened()));
+        init();
     }
 
     @Override

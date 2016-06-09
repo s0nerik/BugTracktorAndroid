@@ -54,13 +54,11 @@
         android:textAllCaps="true"
         android:textStyle="bold"
         android:background="@drawable/bg_label"
-        android:backgroundTint="@color/md_amber_400"
-        android:textColor="@color/md_grey_800"
+        android:backgroundTint="@color/md_green_400"
+        android:textColor="@color/md_grey_50"
         android:padding="4dp"
 
-        android:text="Open"
-
-        tools:text="Open"
+        tools:text="Opened"
         />
 
 </RelativeLayout>

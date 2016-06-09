@@ -154,46 +154,58 @@
                         tools:text="Bug"
                         />
                 </RelativeLayout>
-                <!--<RelativeLayout-->
-                    <!--android:id="@+id/btnStatus"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="80dp"-->
-                    <!--&gt;-->
-                    <!--<ImageView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="80dp"-->
-                        <!--android:layout_marginLeft="16dp"-->
-                        <!--app:srcCompat="@drawable/alert_circle_outline"-->
-                        <!--/>-->
-                    <!--<TextView-->
-                        <!--android:id="@+id/labelStatus"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:textSize="16sp"-->
-                        <!--android:lineSpacingExtra="8dp"-->
-                        <!--android:text="Status"-->
-                        <!--android:layout_marginLeft="62dp"-->
-                        <!--android:layout_marginTop="16dp"-->
-                        <!--/>-->
-                    <!--<TextView-->
-                        <!--android:id="@+id/txtStatus"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:textSize="20sp"-->
-                        <!--android:textColor="#333"-->
-                        <!--tools:text="Opened"-->
-                        <!--android:layout_marginLeft="62dp"-->
-                        <!--android:layout_below="@+id/labelStatus"-->
-                        <!--android:gravity="center_vertical"-->
-                        <!--/>-->
-                <!--</RelativeLayout>-->
+                <RelativeLayout
+                    android:id="@+id/btnStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="80dp"
+                    >
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="56dp"
+                        android:layout_marginLeft="16dp"
+                        app:srcCompat="@drawable/alert_circle_outline"
+                        />
+                    <TextView
+                        android:id="@+id/labelStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:lineSpacingExtra="8dp"
+                        android:text="Status"
+                        android:layout_marginLeft="62dp"
+                        android:layout_marginTop="6dp"
+                        />
+                    <TextView
+                        android:id="@+id/txtStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textColor="#333"
+                        tools:text="Opened"
+                        android:layout_marginLeft="62dp"
+                        android:layout_below="@+id/labelStatus"
+                        android:gravity="center_vertical"
+                        />
+                    <Button
+                        android:id="@+id/btnChangeStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Close"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="8dp"
+                        android:visibility="gone"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        />
+                </RelativeLayout>
                 <!--android:layout_marginTop="64dp"-->
                 <RelativeLayout
                     android:id="@+id/btnAssignee"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:foreground="?selectableItemBackground"
-                    android:layout_marginTop="80dp"
+                    android:layout_marginTop="142dp"
                     >
                     <ImageView
                         android:id="@+id/icAssignee"
