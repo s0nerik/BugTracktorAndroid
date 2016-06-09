@@ -109,12 +109,14 @@ public class LoginActivity extends BaseActivity {
                .subscribe(this::onLoggedIn, this::onLogInError);
         } else {
             val user = new User();
-            user.setEmail(registerEmail.getText().toString());
-            user.setPassword(registerPassword.getText().toString());
+            val email = registerEmail.getText().toString();
+            val password = registerPassword.getText().toString();
+            user.setEmail(email);
+            user.setPassword(password);
             user.setNickname(nickname.getText().toString().isEmpty() ? null : nickname.getText().toString());
             user.setRealName(realName.getText().toString().isEmpty() ? null : realName.getText().toString());
             api.register(user)
-               .concatMap(createdUser -> api.login(createdUser.getEmail(), createdUser.getPassword()))
+               .concatMap(createdUser -> api.login(email, password))
                .compose(bindToLifecycle())
                .compose(Rx.applySchedulers())
                .subscribe(this::onLoggedIn, this::onLogInError);

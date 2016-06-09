@@ -238,7 +238,7 @@ public class IssueActivity extends EditableActivity {
         icAddAttachment.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
         icChangeAssignee.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
 
-        btnChangeStatus.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
+        btnChangeStatus.setVisibility(canEdit() && mode != Mode.CREATE ? View.VISIBLE : View.GONE);
         btnChangeStatus.setText(BooleanUtils.isTrue(issue.getIsOpened()) ? "Close" : "Reopen");
         txtStatus.setText(BooleanUtils.isTrue(issue.getIsOpened()) ? "Opened" : "Closed");
 

@@ -223,6 +223,7 @@ public class ProjectActivity extends EditableActivity {
     public void onAddIssue() {
         val newIssue = new Issue();
         newIssue.setProject(project);
+        newIssue.setIsOpened(true);
         startActivity(
                 Henson.with(this)
                       .gotoIssueActivity()
