@@ -24,7 +24,6 @@ import com.github.sonerik.bugtracktor.adapters.issues.IssuesAdapter;
 import com.github.sonerik.bugtracktor.adapters.issues.IssuesItem;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersAdapter;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersItem;
-import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.bundlers.ParcelBundler;
 import com.github.sonerik.bugtracktor.events.EIssueChanged;
 import com.github.sonerik.bugtracktor.events.EIssueClicked;
@@ -45,8 +44,6 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 import icepick.State;
@@ -57,9 +54,6 @@ import rx.Observable;
  * Created by sonerik on 5/29/16.
  */
 public class ProjectActivity extends EditableActivity {
-
-    @Inject
-    BugTracktorApi api;
 
     @BindView(R.id.etProjectName)
     EditText etProjectName;
@@ -156,6 +150,11 @@ public class ProjectActivity extends EditableActivity {
         rvIssues.setNestedScrollingEnabled(false);
         layoutManager = rvMembers.getLayoutManager();
         layoutManager.setAutoMeasureEnabled(true);
+    }
+
+    @Override
+    protected Integer getProjectId() {
+        return project.getId();
     }
 
     private void initListeners() {
@@ -282,7 +281,10 @@ public class ProjectActivity extends EditableActivity {
             case EDIT:
                 return R.menu.project_edit;
             case VIEW:
-                return R.menu.project_normal;
+                if (hasPermission("update_project"))
+                    return R.menu.project_normal;
+                else
+                    return R.menu.empty;
             default:
                 return R.menu.project_normal;
         }

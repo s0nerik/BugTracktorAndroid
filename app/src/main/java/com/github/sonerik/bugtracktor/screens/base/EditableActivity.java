@@ -11,8 +11,16 @@ import android.view.View;
 
 import com.f2prateek.dart.InjectExtra;
 import com.github.sonerik.bugtracktor.R;
+import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.bundlers.SerializableBundler;
+import com.github.sonerik.bugtracktor.models.Permission;
+import com.github.sonerik.bugtracktor.utils.Rx;
+import com.google.common.collect.FluentIterable;
 import com.trello.rxlifecycle.ActivityEvent;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import icepick.State;
@@ -23,6 +31,9 @@ import rx.Observable;
  */
 public abstract class EditableActivity extends BaseActivity {
     public enum Mode { CREATE, EDIT, VIEW }
+
+    @Inject
+    protected BugTracktorApi api;
 
     @BindView(R.id.progress)
     View progress;
@@ -39,16 +50,20 @@ public abstract class EditableActivity extends BaseActivity {
 
     @InjectExtra
     @State
-    boolean canManage;
+    protected boolean canManage;
+
+    protected List<Permission> permissions;
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         if (savedInstanceState == null) {
-//            init();
             startLoadingData();
-        } else {
-//            init();
+
+            api.getPermissions(getProjectId())
+               .compose(bindToLifecycle())
+               .compose(Rx.applySchedulers())
+               .subscribe(this::onPermissionsAcquired);
         }
     }
 
@@ -76,6 +91,12 @@ public abstract class EditableActivity extends BaseActivity {
         setMode(mode, false);
     }
 
+    protected void onPermissionsAcquired(List<Permission> permissions) {
+        this.permissions = permissions;
+        setMode(mode, false);
+    }
+
+    protected abstract Integer getProjectId();
     protected abstract Observable<?> loadData();
     protected abstract Observable<?> saveChanges();
     protected abstract void onModeChanged();
@@ -95,6 +116,13 @@ public abstract class EditableActivity extends BaseActivity {
                 .doOnTerminate(() -> progress.setVisibility(View.GONE))
                 .compose(bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(o -> init(), this::handleRequestError);
+    }
+
+    protected final boolean hasPermission(String permissionName) {
+        if (permissions == null || permissionName == null)
+            return false;
+        else
+            return FluentIterable.from(permissions).anyMatch(p -> permissionName.equals(p.getName()));
     }
 
     @MenuRes

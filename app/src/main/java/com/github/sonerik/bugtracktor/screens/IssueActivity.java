@@ -24,7 +24,6 @@ import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.attachments.AttachmentsAdapter;
 import com.github.sonerik.bugtracktor.adapters.attachments.AttachmentsItem;
-import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.bundlers.ParcelBundler;
 import com.github.sonerik.bugtracktor.events.EAttachmentClicked;
 import com.github.sonerik.bugtracktor.events.EIssueChanged;
@@ -69,9 +68,6 @@ import rx.Observable;
 public class IssueActivity extends EditableActivity {
 
     private static final int PICK_ATTACHMENT = 7865;
-
-    @Inject
-    BugTracktorApi api;
 
     @Inject
     User user;
@@ -216,6 +212,11 @@ public class IssueActivity extends EditableActivity {
         rvAttachments.setNestedScrollingEnabled(false);
         RecyclerView.LayoutManager layoutManager = rvAttachments.getLayoutManager();
         layoutManager.setAutoMeasureEnabled(true);
+    }
+
+    @Override
+    protected Integer getProjectId() {
+        return issue.getProject().getId();
     }
 
     private void updateAttachments() {
