@@ -96,7 +96,7 @@ public class LoginActivity extends BaseActivity {
     public void onSwitchForm() {
         loginForm.setVisibility(loginForm.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
         registerForm.setVisibility(registerForm.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-        btnLogin.setText(loginForm.getVisibility() == View.VISIBLE ? "Login" : "Register");
+        btnLogin.setText(loginForm.getVisibility() == View.VISIBLE ? "Sign In" : "Sign Up");
         ButterKnife.bind(this);
     }
 

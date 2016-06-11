@@ -142,7 +142,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/forms"
-        android:text="Login"
+        android:text="Sign In"
         android:layout_marginRight="16dp"
         />
 
