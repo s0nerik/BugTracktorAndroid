@@ -76,6 +76,9 @@ public interface BugTracktorWebService {
     @PATCH("projects/{projectId}/issues/{issueIndex}")
     Observable<Issue> updateIssue(@Path("projectId") int projectId, @Path("issueIndex") int issueIndex, @Body Issue issue);
 
+    @DELETE("projects/{projectId}/issues/{issueIndex}")
+    Observable<Issue> closeIssue(@Path("projectId") int projectId, @Path("issueIndex") int issueIndex);
+
     // endregion
 
     // region Project members

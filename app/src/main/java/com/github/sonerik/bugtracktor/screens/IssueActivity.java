@@ -32,6 +32,7 @@ import com.github.sonerik.bugtracktor.events.EProjectMemberClicked;
 import com.github.sonerik.bugtracktor.models.Issue;
 import com.github.sonerik.bugtracktor.models.IssueAttachment;
 import com.github.sonerik.bugtracktor.models.IssueType;
+import com.github.sonerik.bugtracktor.models.Permission;
 import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.EditableActivity;
@@ -239,7 +240,11 @@ public class IssueActivity extends EditableActivity {
         icAddAttachment.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
         icChangeAssignee.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
 
-        btnChangeStatus.setVisibility(canEdit() && mode != Mode.CREATE ? View.VISIBLE : View.GONE);
+        if (BooleanUtils.isTrue(issue.getIsOpened()) && hasPermission("close_issue") && !canManage) {
+            btnChangeStatus.setVisibility(View.VISIBLE);
+        } else {
+            btnChangeStatus.setVisibility(canEdit() && mode != Mode.CREATE ? View.VISIBLE : View.GONE);
+        }
         btnChangeStatus.setText(BooleanUtils.isTrue(issue.getIsOpened()) ? "Close" : "Reopen");
         txtStatus.setText(BooleanUtils.isTrue(issue.getIsOpened()) ? "Opened" : "Closed");
 
@@ -281,8 +286,19 @@ public class IssueActivity extends EditableActivity {
 
     @OnClick(R.id.btnChangeStatus)
     void onChangeStatus() {
-        issue.setIsOpened(!BooleanUtils.isTrue(issue.getIsOpened()));
-        init();
+        if (canEdit()) {
+            issue.setIsOpened(!BooleanUtils.isTrue(issue.getIsOpened()));
+            init();
+        } else {
+            api.closeIssue(getProjectId(), issue.getIssueIndex())
+               .compose(bindToLifecycle())
+               .compose(Rx.applySchedulers())
+               .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
+               .doOnTerminate(() -> progress.setVisibility(View.GONE))
+               .doOnNext(issue -> this.issue = issue)
+               .doOnNext(issue -> RxBus.publish(new EIssueChanged(originalIssue, issue, EIssueChanged.Type.UPDATED)))
+               .subscribe(issue -> init());
+        }
     }
 
     @Override
@@ -322,7 +338,10 @@ public class IssueActivity extends EditableActivity {
             case EDIT:
                 return R.menu.issue_edit;
             case VIEW:
-                return R.menu.issue_normal;
+                if (hasPermission("update_project"))
+                    return R.menu.issue_normal;
+                else
+                    return R.menu.empty;
             default:
                 return R.menu.issue_normal;
         }
@@ -375,5 +394,12 @@ public class IssueActivity extends EditableActivity {
 
         attachmentItems.remove(new AttachmentsItem(null, canEdit()));
         attachmentItems.add(new AttachmentsItem(attachment, canEdit()));
+    }
+
+    @Override
+    protected void onPermissionsAcquired(List<Permission> permissions) {
+        super.onPermissionsAcquired(permissions);
+        canManage = hasPermission("update_issue");
+        setMode(mode, false);
     }
 }

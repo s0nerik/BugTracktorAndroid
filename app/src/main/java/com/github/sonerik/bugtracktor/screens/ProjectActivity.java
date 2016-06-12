@@ -30,6 +30,7 @@ import com.github.sonerik.bugtracktor.events.EIssueClicked;
 import com.github.sonerik.bugtracktor.events.EProjectMemberClicked;
 import com.github.sonerik.bugtracktor.events.EProjectMemberCreated;
 import com.github.sonerik.bugtracktor.models.Issue;
+import com.github.sonerik.bugtracktor.models.Permission;
 import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
 import com.github.sonerik.bugtracktor.models.User;
@@ -323,5 +324,12 @@ public class ProjectActivity extends EditableActivity {
 
         icAddMember.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
         icAddIssue.setVisibility(canEdit() ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    protected void onPermissionsAcquired(List<Permission> permissions) {
+        super.onPermissionsAcquired(permissions);
+        canManage = hasPermission("update_project");
+        setMode(mode, false);
     }
 }
