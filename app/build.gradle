@@ -114,9 +114,6 @@ dependencies {
 
     // endregion
 
-//    compile 'com.vikingsen:pocketknife-core:3.2.0'
-//    provided 'com.vikingsen:pocketknife-compiler:3.2.0'
-
     // region UI
 
     compile 'eu.davidea:flexible-adapter:5.0.0-b6'
