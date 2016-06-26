@@ -2,18 +2,18 @@ package com.github.sonerik.bugtracktor.rx_adapter;
 
 import android.support.v7.widget.RecyclerView;
 
-import rx.Subscription;
+import com.github.s0nerik.rxlist.Event;
+import com.github.s0nerik.rxlist.RxList;
+
+import rx.Observable;
 
 /**
  * Created by Alex on 6/3/2016.
  */
 public class BindableRxList<E> extends RxList<E> {
-    private Subscription sub;
-
-    public <VH extends RecyclerView.ViewHolder> void bind(RecyclerView.Adapter<VH> adapter) {
-        unbind();
-        sub = events()
-                .subscribe(e -> {
+    public <VH extends RecyclerView.ViewHolder> Observable<Event<E>> bind(RecyclerView.Adapter<VH> adapter) {
+        return events()
+                .doOnNext(e -> {
                     switch (e.type) {
                         case ITEM_ADDED:
                             adapter.notifyItemInserted(e.index);
@@ -29,10 +29,5 @@ public class BindableRxList<E> extends RxList<E> {
                             break;
                     }
                 });
-    }
-
-    public void unbind() {
-        if (sub != null)
-            sub.unsubscribe();
     }
 }

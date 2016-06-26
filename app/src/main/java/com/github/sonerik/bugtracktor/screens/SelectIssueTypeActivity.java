@@ -49,7 +49,7 @@ public class SelectIssueTypeActivity extends BaseActivity {
     private IssueTypesAdapter adapter = new IssueTypesAdapter(items);
 
     @Override
-    protected Map<BindableRxList, RecyclerView.Adapter> getBindableLists() {
+    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return ImmutableMap.of(items, adapter);
     }
 

@@ -39,7 +39,7 @@ public class ProjectMembersActivity extends BaseActivity {
     int projectId;
 
     @Override
-    protected Map<BindableRxList, RecyclerView.Adapter> getBindableLists() {
+    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return ImmutableMap.of(memberItems, adapter);
     }
 

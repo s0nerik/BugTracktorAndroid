@@ -15,11 +15,13 @@ import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.BaseFragment;
 import com.github.sonerik.bugtracktor.utils.Rx;
+import com.google.common.collect.ImmutableMap;
 import com.hannesdorfmann.fragmentargs.annotation.Arg;
 import com.hannesdorfmann.fragmentargs.annotation.FragmentWithArgs;
 import com.hannesdorfmann.fragmentargs.bundler.ParcelerArgsBundler;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -47,6 +49,11 @@ public class SelectUserFragment extends BaseFragment {
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_users;
+    }
+
+    @Override
+    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
+        return ImmutableMap.of(items, adapter);
     }
 
     @Override

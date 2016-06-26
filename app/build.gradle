@@ -95,6 +95,8 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
     compile 'com.jakewharton.rxbinding:rxbinding-support-v4:0.4.0'
 
+    compile 'com.github.s0nerik:rxlist:8cee6badec'
+
 //    compile "in.workarounds.bundler:bundler-annotations:0.1.1"
 //    apt "in.workarounds.bundler:bundler-compiler:0.1.1"
 //    compile "in.workarounds.bundler:bundler-parceler:0.1.1"

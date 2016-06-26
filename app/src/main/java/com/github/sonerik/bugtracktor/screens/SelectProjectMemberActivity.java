@@ -49,7 +49,7 @@ public class SelectProjectMemberActivity extends BaseActivity {
     private ProjectMembersAdapter adapter = new ProjectMembersAdapter(items);
 
     @Override
-    protected Map<BindableRxList, RecyclerView.Adapter> getBindableLists() {
+    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return ImmutableMap.of(items, adapter);
     }
 

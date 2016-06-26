@@ -47,7 +47,7 @@ public class ProjectIssuesActivity extends BaseActivity {
     }
 
     @Override
-    protected Map<BindableRxList, RecyclerView.Adapter> getBindableLists() {
+    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return ImmutableMap.of(issueItems, adapter);
     }
 

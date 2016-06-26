@@ -114,7 +114,7 @@ public class ProjectActivity extends EditableActivity {
     private IssuesAdapter issuesAdapter = new IssuesAdapter(issueItems);
 
     @Override
-    protected Map<BindableRxList, RecyclerView.Adapter> getBindableLists() {
+    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return ImmutableMap.of(issueItems, issuesAdapter, projectMembers, projectMembersAdapter);
     }
 

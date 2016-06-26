@@ -55,7 +55,7 @@ public class MainActivity extends BaseActivity {
     private static boolean wasPaused = false;
 
     @Override
-    protected Map<BindableRxList, RecyclerView.Adapter> getBindableLists() {
+    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return ImmutableMap.of(projectItems, projectsAdapter);
     }
 

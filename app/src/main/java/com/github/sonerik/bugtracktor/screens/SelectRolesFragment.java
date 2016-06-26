@@ -48,7 +48,7 @@ public class SelectRolesFragment extends BaseFragment {
     private RolesAdapter adapter = new RolesAdapter(items);
 
     @Override
-    protected Map<BindableRxList, RecyclerView.Adapter> getBindableLists() {
+    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return ImmutableMap.of(items, adapter);
     }
 

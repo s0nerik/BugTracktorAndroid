@@ -136,7 +136,7 @@ public class IssueActivity extends EditableActivity {
     private AttachmentsAdapter attachmentsAdapter = new AttachmentsAdapter(attachmentItems);
 
     @Override
-    protected Map<BindableRxList, RecyclerView.Adapter> getBindableLists() {
+    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return ImmutableMap.of(attachmentItems, attachmentsAdapter);
     }
 

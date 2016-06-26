@@ -15,13 +15,12 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import icepick.Icepick;
-import rx.Observable;
 
 /**
  * Created by sonerik on 5/28/16.
  */
 public abstract class BaseActivity extends RxAppCompatActivity {
-    protected Map<BindableRxList, RecyclerView.Adapter> getBindableLists() {
+    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return new HashMap<>();
     }
 
@@ -35,12 +34,12 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         ButterKnife.bind(this);
         Dart.inject(this);
 
-        for (Map.Entry<BindableRxList, RecyclerView.Adapter> entry : getBindableLists().entrySet()) {
-            Observable.never()
-                      .compose(bindToLifecycle())
-                      .doOnSubscribe(() -> entry.getKey().bind(entry.getValue()))
-                      .doOnTerminate(() -> entry.getKey().unbind())
-                      .subscribe();
+        for (Map.Entry<BindableRxList<?>, RecyclerView.Adapter<?>>
+                entry : getBindableLists().entrySet()) {
+            entry.getKey()
+                 .bind(entry.getValue())
+                 .compose(bindToLifecycle())
+                 .subscribe();
         }
     }
 
