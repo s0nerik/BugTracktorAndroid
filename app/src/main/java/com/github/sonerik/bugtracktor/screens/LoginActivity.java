@@ -69,6 +69,8 @@ public class LoginActivity extends BaseActivity {
     AppCompatButton btnLogin;
     @BindView(R.id.newUserSwitch)
     SwitchCompat newUserSwitch;
+    @BindView(R.id.progress)
+    View progress;
 
     @Override
     protected int getLayoutId() {
@@ -121,6 +123,11 @@ public class LoginActivity extends BaseActivity {
                .compose(Rx.applySchedulers())
                .subscribe(this::onLoggedIn, this::onLogInError);
         }
+
+        forms.setVisibility(View.GONE);
+        btnLogin.setVisibility(View.GONE);
+        newUserSwitch.setVisibility(View.GONE);
+        progress.setVisibility(View.VISIBLE);
     }
 
     private void onLoggedIn(Token result) {

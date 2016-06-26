@@ -60,7 +60,7 @@ public class WebServiceModule {
         return new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
                 .retryOnConnectionFailure(true)
-                .readTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(3, TimeUnit.MINUTES)
                 .addInterceptor(chain -> {
                     Request original = chain.request();
                     String token = prefs.getToken();
