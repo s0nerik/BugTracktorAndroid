@@ -110,7 +110,7 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-support-v4:0.4.0'
 
     compile 'com.github.s0nerik:rxlist:1.0.0'
-    compile 'com.github.s0nerik:rxlist-binder:4c6b1f9c2c'
+    compile 'com.github.s0nerik:rxlist-binder:1.0.0'
 
     // endregion
 
