@@ -8,10 +8,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.github.s0nerik.rxbus.RxBus;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.events.EUserClicked;
 import com.github.sonerik.bugtracktor.models.User;
-import com.github.sonerik.bugtracktor.utils.RxBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,12 +47,12 @@ public class UsersViewHolder extends FlexibleViewHolder {
                  .into(avatar);
         }
 
-        layout.setOnClickListener(v -> RxBus.publish(new EUserClicked(user, EUserClicked.Type.ITEM)));
+        layout.setOnClickListener(v -> RxBus.post(new EUserClicked(user, EUserClicked.Type.ITEM)));
         btnOverflow.setOnClickListener(v -> {
             PopupMenu menu = new PopupMenu(btnOverflow.getContext(), btnOverflow, Gravity.RIGHT);
             menu.inflate(R.menu.edit_project_member);
             menu.setOnMenuItemClickListener(item -> {
-                RxBus.publish(new EUserClicked(user, EUserClicked.Type.REMOVE));
+                RxBus.post(new EUserClicked(user, EUserClicked.Type.REMOVE));
                 return true;
             });
             menu.show();

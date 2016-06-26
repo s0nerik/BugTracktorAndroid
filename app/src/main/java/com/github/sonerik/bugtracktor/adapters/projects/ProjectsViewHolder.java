@@ -4,10 +4,10 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.s0nerik.rxbus.RxBus;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.events.EProjectClicked;
 import com.github.sonerik.bugtracktor.models.Project;
-import com.github.sonerik.bugtracktor.utils.RxBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +30,7 @@ public class ProjectsViewHolder extends FlexibleViewHolder {
     public void setProject(Project project) {
         title.setText(project.getName());
         subtitle.setText(project.getShortDescription());
-        layout.setOnClickListener(v -> RxBus.publish(new EProjectClicked(project)));
+        layout.setOnClickListener(v -> RxBus.post(new EProjectClicked(project)));
     }
 }
 

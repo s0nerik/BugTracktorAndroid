@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.f2prateek.dart.InjectExtra;
+import com.github.s0nerik.rxbus.RxBus;
 import com.github.s0nerik.rxlist.RxList;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
@@ -16,7 +17,6 @@ import com.github.sonerik.bugtracktor.events.EProjectMemberClicked;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
 import com.github.sonerik.bugtracktor.utils.Rx;
-import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
 

@@ -8,11 +8,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.s0nerik.rxbus.RxBus;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.events.EIssueTypeClicked;
 import com.github.sonerik.bugtracktor.models.IssueType;
 import com.github.sonerik.bugtracktor.utils.NamingUtils;
-import com.github.sonerik.bugtracktor.utils.RxBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,12 +38,12 @@ public class IssueTypesViewHolder extends FlexibleViewHolder {
         title.setText(NamingUtils.getReadableIssueType(issueType));
         subtitle.setText(issueType.getDescription());
 
-        layout.setOnClickListener(v -> RxBus.publish(new EIssueTypeClicked(issueType, EIssueTypeClicked.Type.ITEM)));
+        layout.setOnClickListener(v -> RxBus.post(new EIssueTypeClicked(issueType, EIssueTypeClicked.Type.ITEM)));
         btnOverflow.setOnClickListener(v -> {
             PopupMenu menu = new PopupMenu(btnOverflow.getContext(), btnOverflow, Gravity.RIGHT);
             menu.inflate(R.menu.edit_project_member);
             menu.setOnMenuItemClickListener(item -> {
-                RxBus.publish(new EIssueTypeClicked(issueType, EIssueTypeClicked.Type.REMOVE));
+                RxBus.post(new EIssueTypeClicked(issueType, EIssueTypeClicked.Type.REMOVE));
                 return true;
             });
             menu.show();

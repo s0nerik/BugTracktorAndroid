@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.github.s0nerik.rxbus.RxBus;
 import com.github.s0nerik.rxlist.RxList;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
@@ -20,10 +21,8 @@ import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.events.EProjectClicked;
 import com.github.sonerik.bugtracktor.models.Permission;
 import com.github.sonerik.bugtracktor.models.Project;
-
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
 import com.github.sonerik.bugtracktor.utils.Rx;
-import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.google.common.collect.ImmutableMap;
 import com.trello.rxlifecycle.RxLifecycle;
 

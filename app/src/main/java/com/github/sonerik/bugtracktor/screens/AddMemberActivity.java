@@ -8,6 +8,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 
 import com.f2prateek.dart.InjectExtra;
+import com.github.s0nerik.rxbus.RxBus;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.bundlers.ParcelBundler;
 import com.github.sonerik.bugtracktor.events.EProjectMemberCreated;
@@ -18,7 +19,6 @@ import com.github.sonerik.bugtracktor.models.ProjectMember;
 import com.github.sonerik.bugtracktor.models.Role;
 import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
-import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.jakewharton.rxbinding.support.v4.view.RxViewPager;
 
 import java.util.ArrayList;
@@ -128,7 +128,7 @@ public class AddMemberActivity extends BaseActivity {
             val member = new ProjectMember();
             member.setUser(selectedUser);
             member.setRoles(selectedRoles);
-            RxBus.publish(new EProjectMemberCreated(member));
+            RxBus.post(new EProjectMemberCreated(member));
             finish();
         }
     }

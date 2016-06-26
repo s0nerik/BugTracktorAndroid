@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.f2prateek.dart.InjectExtra;
+import com.github.s0nerik.rxbus.RxBus;
 import com.github.s0nerik.rxlist.RxList;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
@@ -41,7 +42,6 @@ import com.github.sonerik.bugtracktor.ui.views.TintableMenuToolbar;
 import com.github.sonerik.bugtracktor.utils.EditTextUtils;
 import com.github.sonerik.bugtracktor.utils.NamingUtils;
 import com.github.sonerik.bugtracktor.utils.Rx;
-import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -296,7 +296,7 @@ public class IssueActivity extends EditableActivity {
                .doOnSubscribe(() -> progress.setVisibility(View.VISIBLE))
                .doOnTerminate(() -> progress.setVisibility(View.GONE))
                .doOnNext(issue -> this.issue = issue)
-               .doOnNext(issue -> RxBus.publish(new EIssueChanged(originalIssue, issue, EIssueChanged.Type.UPDATED)))
+               .doOnNext(issue -> RxBus.post(new EIssueChanged(originalIssue, issue, EIssueChanged.Type.UPDATED)))
                .subscribe(issue -> init());
         }
     }
@@ -317,12 +317,12 @@ public class IssueActivity extends EditableActivity {
             return api.createIssue(issue.getProject().getId(), issue)
                       .compose(Rx.applySchedulers())
                       .doOnNext(issue -> this.issue = issue)
-                      .doOnNext(issue -> RxBus.publish(new EIssueChanged(originalIssue, issue, EIssueChanged.Type.CREATED)));
+                      .doOnNext(issue -> RxBus.post(new EIssueChanged(originalIssue, issue, EIssueChanged.Type.CREATED)));
         else
             return api.updateIssue(issue.getProject().getId(), issue.getIssueIndex(), issue)
                       .compose(Rx.applySchedulers())
                       .doOnNext(issue -> this.issue = issue)
-                      .doOnNext(issue -> RxBus.publish(new EIssueChanged(originalIssue, issue, EIssueChanged.Type.UPDATED)));
+                      .doOnNext(issue -> RxBus.post(new EIssueChanged(originalIssue, issue, EIssueChanged.Type.UPDATED)));
     }
 
     @Override

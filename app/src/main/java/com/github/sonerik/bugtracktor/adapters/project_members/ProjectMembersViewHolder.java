@@ -8,11 +8,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.github.s0nerik.rxbus.RxBus;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.events.EProjectMemberClicked;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
 import com.github.sonerik.bugtracktor.models.Role;
-import com.github.sonerik.bugtracktor.utils.RxBus;
 
 import java.util.List;
 
@@ -58,12 +58,12 @@ public class ProjectMembersViewHolder extends FlexibleViewHolder {
             }
         }
 
-        layout.setOnClickListener(v -> RxBus.publish(new EProjectMemberClicked(projectMember, EProjectMemberClicked.Type.ITEM)));
+        layout.setOnClickListener(v -> RxBus.post(new EProjectMemberClicked(projectMember, EProjectMemberClicked.Type.ITEM)));
         btnOverflow.setOnClickListener(v -> {
             PopupMenu menu = new PopupMenu(btnOverflow.getContext(), btnOverflow, Gravity.RIGHT);
             menu.inflate(R.menu.edit_project_member);
             menu.setOnMenuItemClickListener(item -> {
-                RxBus.publish(new EProjectMemberClicked(projectMember, EProjectMemberClicked.Type.REMOVE));
+                RxBus.post(new EProjectMemberClicked(projectMember, EProjectMemberClicked.Type.REMOVE));
                 return true;
             });
             menu.show();

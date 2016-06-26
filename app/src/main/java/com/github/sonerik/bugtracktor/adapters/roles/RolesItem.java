@@ -3,10 +3,10 @@ package com.github.sonerik.bugtracktor.adapters.roles;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.github.s0nerik.rxbus.RxBus;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.events.ERoleSelectionChanged;
 import com.github.sonerik.bugtracktor.models.Role;
-import com.github.sonerik.bugtracktor.utils.RxBus;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class RolesItem extends AbstractFlexibleItem<RolesViewHolder> {
         holder.layout.setOnClickListener(v -> {
             selected = !selected;
             adapter.notifyItemChanged(position);
-            RxBus.publish(new ERoleSelectionChanged(role, selected));
+            RxBus.post(new ERoleSelectionChanged(role, selected));
         });
     }
 

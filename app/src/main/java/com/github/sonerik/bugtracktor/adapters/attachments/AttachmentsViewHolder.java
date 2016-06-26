@@ -4,10 +4,10 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.github.s0nerik.rxbus.RxBus;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.events.EAttachmentClicked;
 import com.github.sonerik.bugtracktor.models.IssueAttachment;
-import com.github.sonerik.bugtracktor.utils.RxBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,8 +40,8 @@ public class AttachmentsViewHolder extends FlexibleViewHolder {
                  .into(image);
         }
 
-        layout.setOnClickListener(v -> RxBus.publish(new EAttachmentClicked(attachment, EAttachmentClicked.Type.ITEM)));
-        icRemove.setOnClickListener(v -> RxBus.publish(new EAttachmentClicked(attachment, EAttachmentClicked.Type.REMOVE)));
+        layout.setOnClickListener(v -> RxBus.post(new EAttachmentClicked(attachment, EAttachmentClicked.Type.ITEM)));
+        icRemove.setOnClickListener(v -> RxBus.post(new EAttachmentClicked(attachment, EAttachmentClicked.Type.REMOVE)));
     }
 
     public void setEditMode(boolean state) {

@@ -4,10 +4,10 @@ import android.content.res.ColorStateList;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.s0nerik.rxbus.RxBus;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.events.EIssueClicked;
 import com.github.sonerik.bugtracktor.models.Issue;
-import com.github.sonerik.bugtracktor.utils.RxBus;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -59,7 +59,7 @@ public class IssuesViewHolder extends FlexibleViewHolder {
                 )
         );
 
-        layout.setOnClickListener(v -> RxBus.publish(new EIssueClicked(issue)));
+        layout.setOnClickListener(v -> RxBus.post(new EIssueClicked(issue)));
     }
 }
 

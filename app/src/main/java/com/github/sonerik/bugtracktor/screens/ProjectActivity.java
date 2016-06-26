@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.f2prateek.dart.InjectExtra;
+import com.github.s0nerik.rxbus.RxBus;
 import com.github.s0nerik.rxlist.RxList;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
@@ -38,7 +39,6 @@ import com.github.sonerik.bugtracktor.models.User;
 import com.github.sonerik.bugtracktor.screens.base.EditableActivity;
 import com.github.sonerik.bugtracktor.utils.EditTextUtils;
 import com.github.sonerik.bugtracktor.utils.Rx;
-import com.github.sonerik.bugtracktor.utils.RxBus;
 import com.google.common.collect.ImmutableMap;
 import com.jakewharton.rxbinding.widget.RxTextView;
 

@@ -7,10 +7,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.s0nerik.rxbus.RxBus;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.events.ERoleClicked;
 import com.github.sonerik.bugtracktor.models.Role;
-import com.github.sonerik.bugtracktor.utils.RxBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,7 +47,7 @@ public class RolesViewHolder extends FlexibleViewHolder {
             PopupMenu menu = new PopupMenu(btnOverflow.getContext(), btnOverflow, Gravity.RIGHT);
             menu.inflate(R.menu.edit_project_member);
             menu.setOnMenuItemClickListener(item -> {
-                RxBus.publish(new ERoleClicked(role, ERoleClicked.Type.REMOVE));
+                RxBus.post(new ERoleClicked(role, ERoleClicked.Type.REMOVE));
                 return true;
             });
             menu.show();
