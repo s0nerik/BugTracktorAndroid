@@ -5,12 +5,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
 import com.f2prateek.dart.InjectExtra;
+import com.github.s0nerik.rxlist.RxList;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersAdapter;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersItem;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
-import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
 import com.google.common.collect.ImmutableMap;
 
@@ -31,7 +31,7 @@ public class ProjectMembersActivity extends BaseActivity {
     @BindView(R.id.recycler)
     RecyclerView recycler;
 
-    private BindableRxList<ProjectMembersItem> memberItems = new BindableRxList<>();
+    private RxList<ProjectMembersItem> memberItems = new RxList<>();
     private ProjectMembersAdapter adapter = new ProjectMembersAdapter(memberItems);
 
     @InjectExtra
@@ -39,7 +39,7 @@ public class ProjectMembersActivity extends BaseActivity {
     int projectId;
 
     @Override
-    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
+    protected Map<RxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return ImmutableMap.of(memberItems, adapter);
     }
 

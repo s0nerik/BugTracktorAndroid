@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.github.s0nerik.rxlist.RxList;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.users.UsersAdapter;
@@ -12,7 +13,6 @@ import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.bundlers.ParcelBundler;
 import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.models.User;
-import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.BaseFragment;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.google.common.collect.ImmutableMap;
@@ -43,7 +43,7 @@ public class SelectUserFragment extends BaseFragment {
     @BindView(R.id.recycler)
     RecyclerView recycler;
 
-    private BindableRxList<UsersItem> items = new BindableRxList<>();
+    private RxList<UsersItem> items = new RxList<>();
     private UsersAdapter adapter = new UsersAdapter(items);
 
     @Override
@@ -52,7 +52,7 @@ public class SelectUserFragment extends BaseFragment {
     }
 
     @Override
-    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
+    protected Map<RxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return ImmutableMap.of(items, adapter);
     }
 

@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.f2prateek.dart.InjectExtra;
+import com.github.s0nerik.rxlist.RxList;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.attachments.AttachmentsAdapter;
@@ -34,7 +35,6 @@ import com.github.sonerik.bugtracktor.models.IssueAttachment;
 import com.github.sonerik.bugtracktor.models.IssueType;
 import com.github.sonerik.bugtracktor.models.Permission;
 import com.github.sonerik.bugtracktor.models.User;
-import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.EditableActivity;
 import com.github.sonerik.bugtracktor.ui.views.DummyNestedScrollView;
 import com.github.sonerik.bugtracktor.ui.views.TintableMenuToolbar;
@@ -132,11 +132,11 @@ public class IssueActivity extends EditableActivity {
     @State(ParcelBundler.class)
     Issue originalIssue;
 
-    private BindableRxList<AttachmentsItem> attachmentItems = new BindableRxList<>();
+    private RxList<AttachmentsItem> attachmentItems = new RxList<>();
     private AttachmentsAdapter attachmentsAdapter = new AttachmentsAdapter(attachmentItems);
 
     @Override
-    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
+    protected Map<RxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return ImmutableMap.of(attachmentItems, attachmentsAdapter);
     }
 

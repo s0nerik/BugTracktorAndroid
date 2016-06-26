@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.f2prateek.dart.InjectExtra;
+import com.github.s0nerik.rxlist.RxList;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.issues.IssuesAdapter;
@@ -34,7 +35,6 @@ import com.github.sonerik.bugtracktor.models.Permission;
 import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
 import com.github.sonerik.bugtracktor.models.User;
-import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.EditableActivity;
 import com.github.sonerik.bugtracktor.utils.EditTextUtils;
 import com.github.sonerik.bugtracktor.utils.Rx;
@@ -107,14 +107,14 @@ public class ProjectActivity extends EditableActivity {
     @State(ParcelBundler.class)
     Project project;
 
-    private BindableRxList<ProjectMembersItem> projectMembers = new BindableRxList<>();
+    private RxList<ProjectMembersItem> projectMembers = new RxList<>();
     private ProjectMembersAdapter projectMembersAdapter = new ProjectMembersAdapter(projectMembers);
 
-    private BindableRxList<IssuesItem> issueItems = new BindableRxList<>();
+    private RxList<IssuesItem> issueItems = new RxList<>();
     private IssuesAdapter issuesAdapter = new IssuesAdapter(issueItems);
 
     @Override
-    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
+    protected Map<RxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return ImmutableMap.of(issueItems, issuesAdapter, projectMembers, projectMembersAdapter);
     }
 

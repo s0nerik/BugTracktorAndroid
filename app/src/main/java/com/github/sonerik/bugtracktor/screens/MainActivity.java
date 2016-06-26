@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.github.s0nerik.rxlist.RxList;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.projects.ProjectsAdapter;
@@ -19,7 +20,7 @@ import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.events.EProjectClicked;
 import com.github.sonerik.bugtracktor.models.Permission;
 import com.github.sonerik.bugtracktor.models.Project;
-import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
+
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
@@ -49,13 +50,13 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.progress)
     ProgressBar progress;
 
-    private BindableRxList<ProjectsItem> projectItems = new BindableRxList<>();
+    private RxList<ProjectsItem> projectItems = new RxList<>();
     private ProjectsAdapter projectsAdapter = new ProjectsAdapter(projectItems);
 
     private static boolean wasPaused = false;
 
     @Override
-    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
+    protected Map<RxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return ImmutableMap.of(projectItems, projectsAdapter);
     }
 

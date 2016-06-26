@@ -8,7 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
+import com.github.s0nerik.rxlist.RxList;
+import com.github.s0nerik.rxlist.RxListBinder;
 import com.hannesdorfmann.fragmentargs.FragmentArgs;
 import com.trello.rxlifecycle.components.support.RxFragment;
 
@@ -23,7 +24,7 @@ import ru.noties.debug.Debug;
  * Created by sonerik on 6/5/16.
  */
 public abstract class BaseFragment extends RxFragment {
-    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
+    protected Map<RxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return new HashMap<>();
     }
 
@@ -36,11 +37,10 @@ public abstract class BaseFragment extends RxFragment {
         Icepick.restoreInstanceState(this, savedInstanceState);
         FragmentArgs.inject(this);
 
-        for (Map.Entry<BindableRxList<?>, RecyclerView.Adapter<?>> entry : getBindableLists().entrySet()) {
-            entry.getKey()
-                 .bind(entry.getValue())
-                 .compose(bindToLifecycle())
-                 .subscribe();
+        for (Map.Entry<RxList<?>, RecyclerView.Adapter<?>> entry : getBindableLists().entrySet()) {
+            RxListBinder.bind(entry.getKey(), entry.getValue())
+                        .compose(bindToLifecycle())
+                        .subscribe();
         }
     }
 

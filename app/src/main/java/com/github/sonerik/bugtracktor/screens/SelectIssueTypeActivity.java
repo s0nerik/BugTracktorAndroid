@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.f2prateek.dart.InjectExtra;
+import com.github.s0nerik.rxlist.RxList;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.issue_types.IssueTypesAdapter;
@@ -13,7 +14,6 @@ import com.github.sonerik.bugtracktor.adapters.issue_types.IssueTypesItem;
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.events.EIssueTypeClicked;
 import com.github.sonerik.bugtracktor.models.IssueType;
-import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
@@ -45,11 +45,11 @@ public class SelectIssueTypeActivity extends BaseActivity {
     @BindView(R.id.progress)
     ProgressBar progress;
 
-    private BindableRxList<IssueTypesItem> items = new BindableRxList<>();
+    private RxList<IssueTypesItem> items = new RxList<>();
     private IssueTypesAdapter adapter = new IssueTypesAdapter(items);
 
     @Override
-    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
+    protected Map<RxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return ImmutableMap.of(items, adapter);
     }
 

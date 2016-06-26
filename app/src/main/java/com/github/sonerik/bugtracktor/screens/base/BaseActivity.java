@@ -6,8 +6,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.f2prateek.dart.Dart;
+import com.github.s0nerik.rxlist.RxList;
+import com.github.s0nerik.rxlist.RxListBinder;
 import com.github.sonerik.bugtracktor.App;
-import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import java.util.HashMap;
@@ -20,7 +21,7 @@ import icepick.Icepick;
  * Created by sonerik on 5/28/16.
  */
 public abstract class BaseActivity extends RxAppCompatActivity {
-    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
+    protected Map<RxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return new HashMap<>();
     }
 
@@ -34,12 +35,11 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         ButterKnife.bind(this);
         Dart.inject(this);
 
-        for (Map.Entry<BindableRxList<?>, RecyclerView.Adapter<?>>
+        for (Map.Entry<RxList<?>, RecyclerView.Adapter<?>>
                 entry : getBindableLists().entrySet()) {
-            entry.getKey()
-                 .bind(entry.getValue())
-                 .compose(bindToLifecycle())
-                 .subscribe();
+            RxListBinder.bind(entry.getKey(), entry.getValue())
+                        .compose(bindToLifecycle())
+                        .subscribe();
         }
     }
 

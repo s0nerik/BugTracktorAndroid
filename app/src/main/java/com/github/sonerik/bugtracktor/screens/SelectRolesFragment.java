@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.github.s0nerik.rxlist.RxList;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.roles.RolesAdapter;
@@ -12,7 +13,6 @@ import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.bundlers.ParcelBundler;
 import com.github.sonerik.bugtracktor.models.Project;
 import com.github.sonerik.bugtracktor.models.Role;
-import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.BaseFragment;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.google.common.collect.Collections2;
@@ -44,11 +44,11 @@ public class SelectRolesFragment extends BaseFragment {
     @BindView(R.id.recycler)
     RecyclerView recycler;
 
-    private BindableRxList<RolesItem> items = new BindableRxList<>();
+    private RxList<RolesItem> items = new RxList<>();
     private RolesAdapter adapter = new RolesAdapter(items);
 
     @Override
-    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
+    protected Map<RxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return ImmutableMap.of(items, adapter);
     }
 

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.f2prateek.dart.InjectExtra;
+import com.github.s0nerik.rxlist.RxList;
 import com.github.sonerik.bugtracktor.App;
 import com.github.sonerik.bugtracktor.R;
 import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersAdapter;
@@ -13,7 +14,6 @@ import com.github.sonerik.bugtracktor.adapters.project_members.ProjectMembersIte
 import com.github.sonerik.bugtracktor.api.BugTracktorApi;
 import com.github.sonerik.bugtracktor.events.EProjectMemberClicked;
 import com.github.sonerik.bugtracktor.models.ProjectMember;
-import com.github.sonerik.bugtracktor.rx_adapter.BindableRxList;
 import com.github.sonerik.bugtracktor.screens.base.BaseActivity;
 import com.github.sonerik.bugtracktor.utils.Rx;
 import com.github.sonerik.bugtracktor.utils.RxBus;
@@ -45,11 +45,11 @@ public class SelectProjectMemberActivity extends BaseActivity {
     @BindView(R.id.progress)
     ProgressBar progress;
 
-    private BindableRxList<ProjectMembersItem> items = new BindableRxList<>();
+    private RxList<ProjectMembersItem> items = new RxList<>();
     private ProjectMembersAdapter adapter = new ProjectMembersAdapter(items);
 
     @Override
-    protected Map<BindableRxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
+    protected Map<RxList<?>, RecyclerView.Adapter<?>> getBindableLists() {
         return ImmutableMap.of(items, adapter);
     }
 
