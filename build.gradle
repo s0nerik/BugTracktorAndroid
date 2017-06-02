@@ -3,21 +3,21 @@
 buildscript {
     repositories {
         jcenter()
+        maven { url 'https://maven.google.com' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.android.tools.build:gradle:2.3.2'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-        classpath 'me.tatarka:gradle-retrolambda:3.3.0-beta4'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'me.tatarka:gradle-retrolambda:3.6.1'
     }
 }
 
 allprojects {
     repositories {
         jcenter()
+        maven { url 'https://maven.google.com' }
         maven { url 'http://github.com/wada811/Android-Material-Design-Colors/raw/master/repository/' }
-        maven {url "https://clojars.org/repo/"}
+        maven { url "https://clojars.org/repo/" }
         maven { url "https://jitpack.io" }
     }
 }
