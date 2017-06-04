@@ -377,6 +377,12 @@ public class IssueActivity extends EditableActivity {
     private void onAttachmentClicked(EAttachmentClicked e) {
         switch (e.type) {
             case ITEM:
+                startActivity(
+                        Henson.with(this)
+                                .gotoAttachmentViewerActivity()
+                                .attachment(e.attachment)
+                                .build()
+                );
                 break;
             case REMOVE:
                 issue.getAttachments().remove(e.attachment);

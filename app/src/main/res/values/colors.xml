@@ -8,6 +8,8 @@
     <color name="colorPrimaryDark">#388E3C</color>
     <color name="colorAccent">#FF5252</color>
 
+    <color name="bgSemiTransparent">#cc000000</color>
+
     <!--<color name="colorPrimary">#3F51B5</color>-->
     <!--<color name="colorPrimaryDark">#303F9F</color>-->
     <!--<color name="colorAccent">#FF4081</color>-->

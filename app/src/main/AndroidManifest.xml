@@ -77,6 +77,11 @@
             android:theme="@style/AppTheme.NoActionBar"
             />
 
+        <activity
+            android:name=".screens.AttachmentViewerActivity"
+            android:theme="@style/AppTheme.SemiTransparent"
+            />
+
     </application>
 
 </manifest>
